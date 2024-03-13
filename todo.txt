@@ -1,0 +1,13 @@
+- Namen der Variablen, Namesräume usw. überarbeiten
+
+- Simple Page Beiträge und Seitenanzahl einstelbar in ACP
+
+- Seperate Page Beiträge und Seitenanzahl einstelbar in UCP & ACP
+
+- Zeige ersten oder letzten Beitrag einstelbar in UCP & ACP (https://www.phpbb.de/community/viewtopic.php?p=1421676#p1421676)
+
+- Wenn Globale Einstellungen -> Anzeigen auf der Index-Seite -> deaktive    Einstellungen UCP ausblenden
+
+- Events hinterfragen paybas.recenttopics.topictitle_remove_re, paybas.recenttopics.modify_topictitle
+
+- Seperaten listemer für core.acp_... events
