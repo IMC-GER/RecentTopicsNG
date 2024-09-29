@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Recent Topics. An extension for the phpBB Forum Software package.
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
  *
  * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
  * @copyright (c) 2017, Sajaki, https://www.avathar.be
@@ -39,16 +39,16 @@ if (empty($lang) || !is_array($lang))
 // ‚ ‘ ’ « » “ ” … „ “
 //
 $lang = array_merge($lang, [
-	'RT_ENABLE'				 => '„Aktuelle Themen“ anzeigen',
-	'RT_TOP'				 => 'Ansicht oben',
-	'RT_BOTTOM'				 => 'Ansicht unten',
-	'RT_SIDE'				 => 'Ansicht auf der Seite',
-	'RT_SEPARAT'			 => 'Nur serarate Seite',
-	'RT_LOCATION'			 => 'Anzeigeort',
-	'RT_LOCATION_EXP'		 => 'Wählen Sie den Anzeigeort des Blocks „Aktuelle Themen“ auf der Forenseite.',
-	'RT_NUMBER'				 => 'Anzahl aktuelle Themen',
-	'RT_NUMBER_EXP'			 => 'Maximale Anzahl Themen pro Seite',
-	'RT_SORT_START_TIME'	 => 'Nach Themen Startzeit sortieren',
-	'RT_SORT_START_TIME_EXP' => 'Wenn diese Option aktiviert ist, werden die Themen nach dem Datum des ersten Beitrags anstelle des letzten Beitrags sortiert.',
-	'RT_UNREAD_ONLY'		 => 'Nur ungelesene Themen anzeigen',
+	'RTNG_ENABLE'				=> '„Aktuelle Themen“ anzeigen',
+	'RTNG_TOP'					=> 'Ansicht oben',
+	'RTNG_BOTTOM'				=> 'Ansicht unten',
+	'RTNG_SIDE'					=> 'Ansicht auf der Seite',
+	'RTNG_SEPARATE'				=> 'Nur serarate Seite',
+	'RTNG_LOCATION'				=> 'Anzeigeort',
+	'RTNG_LOCATION_EXP'			=> 'Wählen Sie den Anzeigeort des Blocks „Aktuelle Themen“ auf der Forenseite.',
+	'RTNG_NUMBER'				=> 'Anzahl aktuelle Themen',
+	'RTNG_NUMBER_EXP'			=> 'Maximale Anzahl Themen pro Seite',
+	'RTNG_SORT_START_TIME'		=> 'Nach Themen Startzeit sortieren',
+	'RTNG_SORT_START_TIME_EXP'	=> 'Wenn diese Option aktiviert ist, werden die Themen nach dem Datum des ersten Beitrags anstelle des letzten Beitrags sortiert.',
+	'RTNG_UNREAD_ONLY'			=> 'Nur ungelesene Themen anzeigen',
 ]);

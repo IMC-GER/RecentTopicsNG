@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Recent Topics. An extension for the phpBB Forum Software package.
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
  *
  * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
  * @copyright (c) 2017, Sajaki, https://www.avathar.be

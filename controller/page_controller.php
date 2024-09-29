@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Recent Topics. An extension for the phpBB Forum Software package.
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
  *
  * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
  * @copyright (c) 2017, Sajaki, https://www.avathar.be
@@ -28,7 +28,7 @@ class page_controller
 	protected $language;
 
 	/** @var recenttopics */
-	protected $rt_functions;
+	protected $rtng_functions;
 
 	/** @var string phpBB root path	*/
 	protected $phpbb_root_path;
@@ -63,7 +63,7 @@ class page_controller
 		$this->config			= $config;
 		$this->helper			= $helper;
 		$this->language			= $language;
-		$this->rt_functions		= $functions;
+		$this->rtng_functions		= $functions;
 		$this->phpbb_root_path	= $phpbb_root_path;
 		$this->phpEx			= $phpEx;
 	}
@@ -77,34 +77,34 @@ class page_controller
 	public function display($page)
 	{
 		$this->language->add_lang('info_acp_recenttopics', 'paybas/recenttopics');
-		$title = $this->language->lang('RECENT_TOPICS');
+		$title = $this->language->lang('RTNG_TITLE');
 
 		switch ($page)
 		{
 			// Displays ResentTopics in a simple page for further use
 			case 'simple':
 				// Topics per page, 0 use default settings
-				$this->rt_functions->topics_per_page = 0;
+				$this->rtng_functions->topics_per_page = 0;
 
 				// Numbers of pages, 0 use default settings
-				$this->rt_functions->topics_page_number = 0;
+				$this->rtng_functions->topics_page_number = 0;
 
 				// Set template
 				$rt_page  = "@paybas_recenttopics/recenttopics_body_simple.html";
 
 				if (isset($this->config['rt_index']) && $this->config['rt_index'])
 				{
-					$this->rt_functions->display_recent_topics();
+					$this->rtng_functions->display_recent_topics();
 				}
 			break;
 
 			// Displays ResentTopics in a separate page
 			case 'separate':
 				// Topics per page, 0 use default settings
-				$this->rt_functions->topics_per_page = 0;
+				$this->rtng_functions->topics_per_page = 0;
 
 				// Numbers of pages, 0 use default settings
-				$this->rt_functions->topics_page_number = 0;
+				$this->rtng_functions->topics_page_number = 0;
 
 				// Set template
 				$rt_page  = "@paybas_recenttopics/recenttopics_body_separate.html";
@@ -124,7 +124,7 @@ class page_controller
 						'U_BREADCRUMB'		=> $this->helper->route('paybas_recenttopics_page_controller', ['page' => 'separate']),
 					]);
 
-					$this->rt_functions->display_recent_topics();
+					$this->rtng_functions->display_recent_topics();
 				}
 			break;
 

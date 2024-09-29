@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Recent Topics. An extension for the phpBB Forum Software package.
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
  *
  * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
  * @copyright (c) 2017, Sajaki, https://www.avathar.be
@@ -25,34 +25,22 @@ class ucp_listener implements EventSubscriberInterface
 	*/
 	protected $auth;
 
-	/**
-	* @var \phpbb\config\config
-	*/
+	/** @var \phpbb\config\config */
 	protected $config;
 
-	/**
-	* @var \phpbb\request\request
-	*/
+	/** @var \phpbb\request\request */
 	protected $request;
 
-	/**
-	* @var \phpbb\template\template
-	*/
+	/** @var \phpbb\template\template */
 	protected $template;
 
-	/**
-	* @var \phpbb\user
-	*/
+	/** @var \phpbb\user */
 	protected $user;
 
-	/**
-	 * @var language
-	 */
+	/** @var language */
 	protected $language;
 
-	/**
-	 * @var \phpbb\db\driver\driver_interface
-	 */
+	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
 	/**
@@ -125,32 +113,26 @@ class ucp_listener implements EventSubscriberInterface
 			if ($this->auth->acl_get('u_rt_enable') || $this->auth->acl_get('u_rt_location') || $this->auth->acl_get('u_rt_sort_start_time') || $this->auth->acl_get('u_rt_unread_only'))
 			{
 				$template_vars += [
-					'S_RT_SHOW' => true,
+					'S_RTNG_SHOW' => true,
 				];
 			}
 
 			if ($this->auth->acl_get('u_rt_enable'))
 			{
 				$template_vars += [
-					'A_RT_ENABLE' => true,
-					'S_RT_ENABLE' => $event['data']['rt_enable'],
+					'S_RTNG_ENABLE' => $event['data']['rt_enable'],
 				];
 			}
 
 			if ($this->auth->acl_get('u_rt_location'))
 			{
-
 				$template_vars += [
-					'A_RT_LOCATION' => true,
-				];
-
-				$template_vars += [
-					'RT_LOCATION'		  => $event['data']['rt_location'],
-					'RT_LOCATION_OPTIONS' => [
-						'RT_TOP'	 => 'RT_TOP',
-						'RT_BOTTOM'	 => 'RT_BOTTOM',
-						'RT_SIDE'	 => 'RT_SIDE',
-						'RT_SEPARAT' => 'RT_SEPARAT',
+					'RTNG_LOCATION'			=> $event['data']['rt_location'],
+					'RTNG_LOCATION_OPTIONS' => [
+						'RTNG_TOP'		=> 'RT_TOP',
+						'RTNG_BOTTOM'	=> 'RT_BOTTOM',
+						'RTNG_SIDE'		=> 'RT_SIDE',
+						'RTNG_SEPARATE'	=> 'RT_SEPARAT',
 					],
 				];
 			}
@@ -158,24 +140,21 @@ class ucp_listener implements EventSubscriberInterface
 			if ($this->auth->acl_get('u_rt_number'))
 			{
 				$template_vars += [
-					'A_RT_NUMBER' => true,
-					'RT_NUMBER'	  => $event['data']['rt_number'],
+					'RTNG_NUMBER'	=> $event['data']['rt_number'],
 				];
 			}
 
 			if ($this->auth->acl_get('u_rt_sort_start_time'))
 			{
 				$template_vars += [
-					'A_RT_SORT_START_TIME' => true,
-					'S_RT_SORT_START_TIME' => $event['data']['rt_sort_start_time'],
+					'S_RTNG_SORT_START_TIME' => $event['data']['rt_sort_start_time'],
 				];
 			}
 
 			if ($this->auth->acl_get('u_rt_unread_only'))
 			{
 				$template_vars += [
-					'A_RT_UNREAD_ONLY' => true,
-					'S_RT_UNREAD_ONLY' => $event['data']['rt_unread_only'],
+					'S_RTNG_UNREAD_ONLY' => $event['data']['rt_unread_only'],
 				];
 			}
 

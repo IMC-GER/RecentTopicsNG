@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Recent Topics. An extension for the phpBB Forum Software package.
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
  *
  * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
  * @copyright (c) 2017, Sajaki, https://www.avathar.be
@@ -39,7 +39,7 @@ if (empty($lang) || !is_array($lang))
 // ‚ ‘ ’ « » “ ” … „ “
 //
 $lang = array_merge($lang, [
-	'RECENT_TOPICS'	  => 'Recent Topics',
-	'RT_NO_TOPICS'	  => 'There are no new topics to display.',
-	'RT_TOPICS_COUNT' => '%d Topics',
+	'RTNG_TITLE'		=> 'Recent Topics',
+	'RTNG_NO_TOPICS'	=> 'There are no new topics to display.',
+	'RTNG_TOPICS_COUNT' => '%d Topics',
 ]);

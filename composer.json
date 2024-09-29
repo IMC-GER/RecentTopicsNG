@@ -2,9 +2,9 @@
     "name": "paybas/recenttopics",
     "type": "phpbb-extension",
     "description": "Adds a list with a number of recent topics to the board index.",
-    "homepage": "https://github.com/sajaki/RecentTopics",
-    "version": "2.2.15-pl18",
-    "time": "2024-03-12",
+    "homepage": "https://github.com/IMC-GER/RecentTopicsNG",
+    "version": "2.2.15-pl19",
+    "time": "2024-09-29",
     "license": "GPL-2.0-only",
     "authors": [
 		{

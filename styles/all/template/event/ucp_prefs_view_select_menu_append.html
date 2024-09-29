@@ -1,6 +1,6 @@
 {#
  *
- * Recent Topics. An extension for the phpBB Forum Software package.
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
  *
  * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
  * @copyright (c) 2017, Sajaki, https://www.avathar.be
@@ -12,59 +12,59 @@
 
 {% import '@paybas_recenttopics/recenttopics_macros.html' as common %}
 
-{% if S_RT_SHOW %}
+{% if S_RTNG_SHOW %}
 	<hr>
-	{% if A_RT_ENABLE %}
+	{% if S_RTNG_ENABLE is defined %}
 		<dl>
 			<dt>
-				<label>{{ lang('RT_ENABLE') ~ lang('COLON') }}</label>
+				<label>{{ lang('RTNG_ENABLE') ~ lang('COLON') }}</label>
 			</dt>
 			<dd>
-				{{ common.switch('rt_enable', S_RT_ENABLE, 'radio') }}
+				{{ common.switch('rt_enable', S_RTNG_ENABLE, 'radio') }}
 			</dd>
 		</dl>
 	{% endif %}
-	{% if A_RT_LOCATION %}
+	{% if RTNG_LOCATION is defined %}
 		<dl>
 			<dt>
-				<label>{{ lang('RT_LOCATION') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RT_LOCATION_EXP') }}</span>
+				<label>{{ lang('RTNG_LOCATION') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_LOCATION_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.select('rt_location', RT_LOCATION, RT_LOCATION_OPTIONS) }}
+				{{ common.select('rt_location', RTNG_LOCATION, RTNG_LOCATION_OPTIONS) }}
 			</dd>
 		</dl>
 	{% endif %}
-	{% if A_RT_NUMBER %}
+	{% if RTNG_NUMBER is defined %}
 		<dl>
 			<dt>
-				<label>{{ lang('RT_NUMBER') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RT_NUMBER_EXP') }}</span>
+				<label>{{ lang('RTNG_NUMBER') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_NUMBER_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.number('rt_number', RT_NUMBER, 1, 999) }}
+				{{ common.number('rt_number', RTNG_NUMBER, 1, 999) }}
 			</dd>
 		</dl>
 	{% endif %}
 
-	{% if A_RT_SORT_START_TIME %}
+	{% if S_RTNG_SORT_START_TIME is defined %}
 		<dl>
 			<dt>
-				<label>{{ lang('RT_SORT_START_TIME') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RT_SORT_START_TIME_EXP') }}
+				<label>{{ lang('RTNG_SORT_START_TIME') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_SORT_START_TIME_EXP') }}
 			</dt>
 			<dd>
-				{{ common.switch('rt_sort_start_time', S_RT_SORT_START_TIME, 'radio') }}
+				{{ common.switch('rt_sort_start_time', S_RTNG_SORT_START_TIME, 'radio') }}
 			</dd>
 		</dl>
 	{% endif %}
-	{% if A_RT_UNREAD_ONLY %}
+	{% if S_RTNG_UNREAD_ONLY is defined %}
 		<dl>
 			<dt>
-				<label>{{ lang('RT_UNREAD_ONLY') ~ lang('COLON') }}</label>
+				<label>{{ lang('RTNG_UNREAD_ONLY') ~ lang('COLON') }}</label>
 			</dt>
 			<dd>
-				{{ common.switch('rt_unread_only', S_RT_UNREAD_ONLY, 'radio') }}
+				{{ common.switch('rt_unread_only', S_RTNG_UNREAD_ONLY, 'radio') }}
 			</dd>
 		</dl>
 	{% endif %}

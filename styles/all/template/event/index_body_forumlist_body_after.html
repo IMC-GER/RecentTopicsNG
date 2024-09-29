@@ -1,10 +1,10 @@
-{% if RECENT_TOPICS_DISPLAY && recent_topics_included != true %}
-	{% set recent_topics_included = true %}
-	{% if S_LOCATION_BOTTOM %}
+{% if RTNG_DISPLAY && rtng_included != true %}
+	{% set rtng_included = true %}
+	{% if S_RTNG_LOCATION_BOTTOM %}
 		<div id="recenttopics-bottom">
 		{% include '@paybas_recenttopics/recenttopics_body_topbottom.html' %}
 		</div>
-	{% elseif S_LOCATION_SIDE %}
+	{% elseif S_RTNG_LOCATION_SIDE %}
 		</div>
 		</div>
 	{% endif %}

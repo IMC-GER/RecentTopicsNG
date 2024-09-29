@@ -79,12 +79,4 @@ $lang = array_merge($lang, [
 	'RT_RESET_DEFAULT'				=> 'Benutzereinstellungen überschreiben',
 	'RT_RESET_DEFAULT_EXP'			=> 'Bei der Aktivierung dieser Option werden die Einstellungen aller Benutzer überschrieben. Ohne die Aktivierung werden nur Standardwerte für neue Benutzer und Gäste gesetzt.',
 	'RT_RESET_ASK_BEFORE_EXP'		=> 'Diese Einstellung überschreibt alle Benutzereinstellungen mit Ihren Standardwerten.<br><strong>Dieser Vorgang kann nicht rückgängig gemacht werden!</strong>',
-
-	//Donatiies
-	'RT_DONATE_URL'					=> 'http://www.avathar.be/forum/app.php/page/donate',
-	'RT_PAYPAL_IMAGE_URL'			=> 'https://www.paypalobjects.com/webstatic/en_US/i/btn/png/silver-pill-paypal-26px.png',
-	'RT_PAYPAL_ALT'					=> 'Machen eine Spende über PayPal',
-	'RT_DONATE'						=> 'Spende an RecentTopics',
-	'RT_DONATE_SHORT'				=> 'Spende an RecentTopics',
-	'RT_DONATE_EXPLAIN'				=> 'RecentTopics ist zu 100% kostenlos. Wenn Sie dies für eine nützliche Erweiterung halten, und Sie die Autoren unterstützen möchten, könntest Sie eine unverbindliche Spende in Erwägung ziehen.',
 ]);

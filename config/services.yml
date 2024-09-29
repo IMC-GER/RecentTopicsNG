@@ -37,17 +37,23 @@ services:
             - '%core.php_ext%'
             - '@?phpbb.collapsiblecategories.operator'
 
-    paybas.recenttopics.listener:
-        class: paybas\recenttopics\event\listener
+    paybas.recenttopics.main_listener:
+        class: paybas\recenttopics\event\main_listener
         arguments:
             - '@user'
             - '@paybas.recenttopics.functions'
             - '@config'
-            - '@request'
             - '@template'
             - '@controller.helper'
             - '@language'
             - '@auth'
+        tags:
+            - { name: event.listener }
+
+    paybas.recenttopics.acp_listener:
+        class: paybas\recenttopics\event\acp_listener
+        arguments:
+            - '@request'
         tags:
             - { name: event.listener }
 

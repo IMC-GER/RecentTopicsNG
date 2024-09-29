@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Recent Topics. An extension for the phpBB Forum Software package.
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
  *
  * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
  * @copyright (c) 2017, Sajaki, https://www.avathar.be
@@ -126,7 +126,7 @@ class recenttopics
 	/**
 	 * @var int
 	 */
-	private $rtstart;
+	private $rtng_start;
 
 	/**
 	 * @var int
@@ -203,7 +203,7 @@ class recenttopics
 		\phpbb\user $user,
 		$root_path,
 		$phpEx,
-		\phpbb\collapsiblecategories\operator\operator $collapsable_categories = null
+		?\phpbb\collapsiblecategories\operator\operator $collapsable_categories = null
 	)
 	{
 		$this->auth					= $auth;
@@ -220,6 +220,7 @@ class recenttopics
 		$this->root_path			= $root_path;
 		$this->phpEx				= $phpEx;
 		$this->collapsable_categories = $collapsable_categories;
+
 		$this->topics_per_page		= 0;
 		$this->total_topics_limit	= 0;
 		$this->topics_page_number	= 0;
@@ -228,9 +229,9 @@ class recenttopics
 	/**
 	 * @param string $tpl_loopname
 	 */
-	public function display_recent_topics($tpl_loopname = 'recent_topics'): void
+	public function display_recent_topics($tpl_loopname = 'rtng'): void
 	{
-		// can view rt ?
+		// can view rtng ?
 		if ($this->auth->acl_get('u_rt_view') == '0')
 		{
 			return;
@@ -248,9 +249,9 @@ class recenttopics
 		}
 
 		// support for phpbb collapsable categories extension
-		if ($this->collapsable_categories !== null)
+		if (isset($this->collapsable_categories))
 		{
-			$fid = 'fid_rt'; // can be any unique string to identify your extension's collapsible element
+			$fid = 'fid_rtng'; // can be any unique string to identify the collapsible element of your extension.
 			$this->template->assign_vars([
 				'S_EXT_COLCAT_HIDDEN'       => $this->collapsable_categories->is_collapsed($fid),
 				'U_EXT_COLCAT_COLLAPSE_URL' => $this->collapsable_categories->get_collapsible_link($fid),
@@ -275,7 +276,7 @@ class recenttopics
 			$this->unread_only = $this->user->data['user_rt_unread_only'];
 		}
 
-		$this->rtstart = $this->request->variable($tpl_loopname . '_start', 0);
+		$this->rtng_start = $this->request->variable($tpl_loopname . '_start', 0);
 
 		// set # topics shown per page
 		if ($this->topics_per_page == 0)
@@ -377,15 +378,11 @@ class recenttopics
 		//load language
 		$this->language->add_lang('recenttopics', 'paybas/recenttopics');
 		$this->template->assign_vars([
-				'RT_TOPICS_COUNT'		=> $this->language->lang('RT_TOPICS_COUNT', (int) $topics_count),
-				'RT_SORT_START_TIME'	=> $this->sort_topics === 'topic_time',
-				'S_RECENT_TOPICS'		=> true,
-				'S_LOCATION_TOP'		=> $this->location == 'RT_TOP',
-				'S_LOCATION_BOTTOM'		=> $this->location == 'RT_BOTTOM',
-				'S_LOCATION_SIDE'		=> $this->location == 'RT_SIDE',
-				'NEWEST_POST_IMG'		=> $this->user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),
-				'LAST_POST_IMG'			=> $this->user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
-				'POLL_IMG'				=> $this->user->img('icon_topic_poll', 'TOPIC_POLL'),
+				'RTNG_TOPICS_COUNT'		 => $this->language->lang('RTNG_TOPICS_COUNT', (int) $topics_count),
+				'RTNG_SORT_START_TIME'	 => $this->sort_topics === 'topic_time',
+				'S_RTNG_LOCATION_TOP'	 => $this->location == 'RT_TOP',
+				'S_RTNG_LOCATION_BOTTOM' => $this->location == 'RT_BOTTOM',
+				'S_RTNG_LOCATION_SIDE'	 => $this->location == 'RT_SIDE',
 				strtoupper($tpl_loopname) . '_DISPLAY' => true,
 			]
 		);
@@ -417,7 +414,7 @@ class recenttopics
 			$sql = 'SELECT forum_id
 					FROM ' . FORUMS_TABLE . '
 					WHERE ' . $this->db->sql_in_set('forum_id', $this->forum_ids) . '
-					AND forum_recent_topics = 1';
+						AND forum_recent_topics = 1';
 
 			$result = $this->db->sql_query($sql);
 
@@ -441,11 +438,11 @@ class recenttopics
 	 */
 	private function gettopiclist(): int
 	{
-		$this->rtstart = max(0, $this->rtstart);
+		$this->rtng_start = max(0, $this->rtng_start);
 
 		if ($this->total_topics_limit > 0)
 		{
-			$this->rtstart = min((int) $this->rtstart, $this->total_topics_limit);
+			$this->rtng_start = min((int) $this->rtng_start, $this->total_topics_limit);
 		}
 
 		$this->forums = $this->topic_list = [];
@@ -461,13 +458,13 @@ class recenttopics
 			$sql_extra	   = ' AND ' . $this->db->sql_in_set('t.topic_id', $this->excluded_topics, true);
 			$sql_extra	  .= ' AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $this->forum_ids, $table_alias = 't.');
 			$unread_topics = get_unread_topics(false, $sql_extra, '', $this->total_topics_limit);
-			$this->rtstart = min(count($unread_topics) - 1 , (int) $this->rtstart);
+			$this->rtng_start = min(count($unread_topics) - 1 , (int) $this->rtng_start);
 
 			foreach ($unread_topics as $topic_id => $mark_time)
 			{
 				$topics_count++;
 
-				if (($topics_count > $this->rtstart) && ($topics_count <= ($this->rtstart + $this->topics_per_page)))
+				if (($topics_count > $this->rtng_start) && ($topics_count <= ($this->rtng_start + $this->topics_per_page)))
 				{
 					$this->topic_list[] = $topic_id;
 				}
@@ -500,18 +497,18 @@ class recenttopics
 
 			if ($result != null)
 			{
-				$this->rtstart = min($num_rows - 1 , $this->rtstart);
+				$this->rtng_start = min($num_rows - 1 , $this->rtng_start);
 			}
 			else
 			{
-				$this->rtstart = 0;
+				$this->rtng_start = 0;
 			}
 
 			while ($row = $this->db->sql_fetchrow($result))
 			{
 				$topics_count++;
 
-				if (($topics_count > $this->rtstart) && ($topics_count <= ($this->rtstart + $this->topics_per_page)))
+				if (($topics_count > $this->rtng_start) && ($topics_count <= ($this->rtng_start + $this->topics_per_page)))
 				{
 					$rowset = [];
 
@@ -604,26 +601,6 @@ class recenttopics
 		$last_post_author_full		= get_username_string('full', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']);
 		$u_last_post_author			= get_username_string('profile', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']);
 		return [$topic_author, $topic_author_color, $topic_author_full, $u_topic_author, $last_post_author, $last_post_author_colour, $last_post_author_full, $u_last_post_author];
-	}
-
-	/**
-	 * this helper function checks if anyone is listening to events
-	 * @param string $class
-	 * @param string $event
-	 * @return bool
-	 */
-	public function is_listening($class, $event): bool
-	{
-		$listeners = $this->dispatcher->getListeners($event);
-
-		foreach ($listeners as $listener)
-		{
-			if (is_a($listener[0], $class))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -752,10 +729,38 @@ class recenttopics
 					}
 				}
 
-				$view_topic_url		= append_sid("{$this->root_path}viewtopic.$this->phpEx", 't=' . $topic_id);
-				$view_last_post_url	= append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $row['topic_last_post_id'] . '#p' . $row['topic_last_post_id']);
-				$view_report_url	= append_sid("{$this->root_path}mcp.$this->phpEx", 'i=reports&amp;mode=reports&amp;t=' . $topic_id, true, $this->user->session_id);
-				$view_forum_url		= append_sid("{$this->root_path}viewforum.$this->phpEx", 'f=' . $forum_id);
+				$first_unread = [];
+
+				if ($unread_topic)
+				{
+					// Get id and title of first unread post in topic
+					$sql_array = [
+						'SELECT'	=> 'p.post_id, p.post_subject',
+						'FROM'		=> [
+								POSTS_TABLE => 'p',
+						],
+						'LEFT_JOIN' => [
+							[
+								'FROM' => [TOPICS_TRACK_TABLE => 'tt'],
+								'ON'   => "tt.user_id = {$this->user->data['user_id']}
+										AND tt.topic_id = $topic_id",
+							],
+						],
+						'WHERE'		=> "p.topic_id = $topic_id
+								AND p.post_time > COALESCE(tt.mark_time, 0)",
+						'ORDER_BY'	=> 'p.post_time ASC, p.post_id ASC',
+					];
+					$sql = $this->db->sql_build_query('SELECT', $sql_array);
+					$result = $this->db->sql_query_limit($sql, 1);
+					$first_unread = $this->db->sql_fetchrow($result);
+					$this->db->sql_freeresult($result);
+				}
+
+				$view_topic_url				= append_sid("{$this->root_path}viewtopic.$this->phpEx", 't=' . $topic_id);
+				$view_last_post_url			= append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $row['topic_last_post_id'] . '#p' . $row['topic_last_post_id']);
+				$view_first_unread_post_url	= !empty($first_unread['post_id']) ? append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $first_unread['post_id'] . '#p' . $first_unread['post_id']) : '';
+				$view_report_url			= append_sid("{$this->root_path}mcp.$this->phpEx", 'i=reports&amp;mode=reports&amp;t=' . $topic_id, true, $this->user->session_id);
+				$view_forum_url				= append_sid("{$this->root_path}viewforum.$this->phpEx", 'f=' . $forum_id);
 				$topic_unapproved	= ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $forum_id));
 				$posts_unapproved	= ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $forum_id));
 				$u_mcp_queue		= ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$topic_id", true, $this->user->session_id) : '';
@@ -767,37 +772,6 @@ class recenttopics
 				}
 
 				topic_status($row, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
-				$topic_title = censor_text($row['topic_title']);
-				$prefix		 = '';
-
-				/**
-				 * Event to remove re
-				 *
-				 * @event paybas.recenttopics.topictitle_remove_re
-				 * @var	array	row		the forum row
-				 * @since 2.2.11
-				 */
-				$vars = ['row'];
-				extract($this->dispatcher->trigger_event('paybas.recenttopics.topictitle_remove_re', compact($vars)));
-
-				/**
-				 * Event to modify the topic title
-				 *
-				 * @event paybas.recenttopics.modify_topictitle
-				 * @var	array	row		the forum row
-				 * @var	string	prefix	the topic title prefix
-				 * @since 2.1.3
-				 */
-				$vars = ['row', 'prefix'];
-				extract($this->dispatcher->trigger_event('paybas.recenttopics.modify_topictitle', compact($vars)));
-
-				$topic_title = $prefix === '' ? $topic_title : $prefix . ' ' . $topic_title;
-				$last_post_subject = censor_text($row['topic_last_post_subject']);
-
-				if ($prefix != '')
-				{
-					$last_post_subject = $prefix . ' ' . $last_post_subject;
-				}
 
 				list($topic_author, $topic_author_color, $topic_author_full, $u_topic_author, $last_post_author, $last_post_author_colour, $last_post_author_full, $u_last_post_author) = $this->getusernamestrings($row);
 
@@ -811,7 +785,8 @@ class recenttopics
 					'TOPIC_AUTHOR_FULL'			=> $topic_author_full,
 					'U_TOPIC_AUTHOR'			=> $u_topic_author,
 					'FIRST_POST_TIME'			=> $this->user->format_date($row['topic_time']),
-					'LAST_POST_SUBJECT'			=> $last_post_subject,
+					'FIRST_UNREAD_POST_SUBJECT'	=> censor_text(!empty($first_unread['post_subject']) ? $first_unread['post_subject'] : ''),
+					'LAST_POST_SUBJECT'			=> censor_text($row['topic_last_post_subject']),
 					'LAST_POST_TIME'			=> $this->user->format_date($row['topic_last_post_time']),
 					'LAST_VIEW_TIME'			=> $this->user->format_date($row['topic_last_view_time']),
 					'LAST_POST_AUTHOR'			=> $last_post_author,
@@ -820,7 +795,7 @@ class recenttopics
 					'U_LAST_POST_AUTHOR'		=> $u_last_post_author,
 					'REPLIES'					=> $replies,
 					'VIEWS'						=> $row['topic_views'],
-					'TOPIC_TITLE'				=> $topic_title,
+					'TOPIC_TITLE'				=> censor_text($row['topic_title']),
 					'FORUM_NAME'				=> $row['forum_name'],
 					'TOPIC_TYPE'				=> $topic_type,
 					'TOPIC_IMG_STYLE'			=> $folder_img,
@@ -846,6 +821,7 @@ class recenttopics
 					'S_TOPIC_TYPE_SWITCH'		=> ($s_type_switch == $s_type_switch_test) ? -1 : $s_type_switch_test,
 					'U_NEWEST_POST'				=> $view_topic_url . '&amp;view=unread#unread',
 					'U_LAST_POST'				=> $view_last_post_url,
+					'U_FIRST_UNREAD_POST'		=> $view_first_unread_post_url,
 					'U_VIEW_TOPIC'				=> $view_topic_url,
 					'U_VIEW_FORUM'				=> $view_forum_url,
 					'U_MCP_REPORT'				=> $view_report_url,
@@ -910,10 +886,10 @@ class recenttopics
 
 			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $append_params);
 			$this->pagination->generate_template_pagination($pagination_url, 'pagination',
-				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, max(0, min((int) $this->rtstart, $this->total_topics_limit)));
+				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, max(0, min((int) $this->rtng_start, $this->total_topics_limit)));
 
 			$this->template->assign_vars([
-				'S_TOPIC_ICONS' => count($topic_icons) ? true : false,
+				'S_RTNG_TOPIC_ICONS' => count($topic_icons) ? true : false,
 			]);
 		} // topics found
 	}
