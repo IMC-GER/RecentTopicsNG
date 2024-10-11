@@ -44,6 +44,7 @@ $lang = array_merge($lang, [
 	'RT_FORUMS_EXPLAIN'				=> 'Aktiviere dieses Kontrollkästchen, um Themen in diesem Forum in der Erweiterung „Aktuelle Themen“ anzuzeigen.',
 
 	//acp title
+	'RTNG_TITLE'					=> 'Aktuelle Themen',
 	'RECENT_TOPICS'					=> 'Aktuelle Themen',
 	'RECENT_TOPICS_EXPLAIN'			=> 'Auf dieser Seite kannst du die Einstellungen der Erweiterung „Aktuelle Themen“ anpassen.<br><br>Spezifische Foren können eingeschlossen oder ausgeschlossen werden.<br>Überprüfe auch die Benutzerberechtigungen, welche Benutzern erlauben, einige der Parameter für sich selbst zu verändern. Diese haben dann Vorrang vor den Einstellungen des Admin-Panels.',
 	'RT_CONFIG'						=> 'Einstellungen',

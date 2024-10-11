@@ -735,7 +735,7 @@ class recenttopics
 				{
 					// Get id and title of first unread post in topic
 					$sql_array = [
-						'SELECT'	=> 'p.post_id, p.post_subject',
+						'SELECT'	=> 'p.poster_id, u.username, u.user_colour, p.post_id, p.post_subject, p.post_time',
 						'FROM'		=> [
 								POSTS_TABLE => 'p',
 						],
@@ -744,6 +744,10 @@ class recenttopics
 								'FROM' => [TOPICS_TRACK_TABLE => 'tt'],
 								'ON'   => "tt.user_id = {$this->user->data['user_id']}
 										AND tt.topic_id = $topic_id",
+							],
+							[
+								'FROM' => [USERS_TABLE => 'u'],
+								'ON'   => 'u.user_id = p.poster_id',
 							],
 						],
 						'WHERE'		=> "p.topic_id = $topic_id
@@ -754,6 +758,12 @@ class recenttopics
 					$result = $this->db->sql_query_limit($sql, 1);
 					$first_unread = $this->db->sql_fetchrow($result);
 					$this->db->sql_freeresult($result);
+
+					$first_unread_post_author		= get_username_string('username', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+					$first_unread_post_author_color	= get_username_string('colour', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+					$first_unread_post_author_full	= get_username_string('full', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+					$first_unread_post_time			= $this->user->format_date($first_unread['post_time']);
+					$u_first_unread_post_author		= get_username_string('profile', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
 				}
 
 				$view_topic_url				= append_sid("{$this->root_path}viewtopic.$this->phpEx", 't=' . $topic_id);
@@ -761,10 +771,10 @@ class recenttopics
 				$view_first_unread_post_url	= !empty($first_unread['post_id']) ? append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $first_unread['post_id'] . '#p' . $first_unread['post_id']) : '';
 				$view_report_url			= append_sid("{$this->root_path}mcp.$this->phpEx", 'i=reports&amp;mode=reports&amp;t=' . $topic_id, true, $this->user->session_id);
 				$view_forum_url				= append_sid("{$this->root_path}viewforum.$this->phpEx", 'f=' . $forum_id);
-				$topic_unapproved	= ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $forum_id));
-				$posts_unapproved	= ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $forum_id));
-				$u_mcp_queue		= ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$topic_id", true, $this->user->session_id) : '';
-				$s_type_switch		= ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
+				$topic_unapproved			= ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $forum_id));
+				$posts_unapproved			= ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $forum_id));
+				$u_mcp_queue				= ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$topic_id", true, $this->user->session_id) : '';
+				$s_type_switch				= ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
 
 				if (!empty($this->icons[$row['icon_id']]))
 				{
@@ -778,27 +788,32 @@ class recenttopics
 				//load language
 				$this->language->add_lang('recenttopics', 'paybas/recenttopics');
 				$tpl_ary = [
-					'FORUM_ID'					=> $forum_id,
-					'TOPIC_ID'					=> $topic_id,
-					'TOPIC_AUTHOR'				=> $topic_author,
-					'TOPIC_AUTHOR_COLOUR'		=> $topic_author_color,
-					'TOPIC_AUTHOR_FULL'			=> $topic_author_full,
-					'U_TOPIC_AUTHOR'			=> $u_topic_author,
-					'FIRST_POST_TIME'			=> $this->user->format_date($row['topic_time']),
-					'FIRST_UNREAD_POST_SUBJECT'	=> censor_text(!empty($first_unread['post_subject']) ? $first_unread['post_subject'] : ''),
-					'LAST_POST_SUBJECT'			=> censor_text($row['topic_last_post_subject']),
-					'LAST_POST_TIME'			=> $this->user->format_date($row['topic_last_post_time']),
-					'LAST_VIEW_TIME'			=> $this->user->format_date($row['topic_last_view_time']),
-					'LAST_POST_AUTHOR'			=> $last_post_author,
-					'LAST_POST_AUTHOR_COLOUR'	=> $last_post_author_colour,
-					'LAST_POST_AUTHOR_FULL'		=> $last_post_author_full,
-					'U_LAST_POST_AUTHOR'		=> $u_last_post_author,
-					'REPLIES'					=> $replies,
-					'VIEWS'						=> $row['topic_views'],
-					'TOPIC_TITLE'				=> censor_text($row['topic_title']),
-					'FORUM_NAME'				=> $row['forum_name'],
-					'TOPIC_TYPE'				=> $topic_type,
-					'TOPIC_IMG_STYLE'			=> $folder_img,
+					'FORUM_ID'							=> $forum_id,
+					'TOPIC_ID'							=> $topic_id,
+					'TOPIC_AUTHOR'						=> $topic_author,
+					'TOPIC_AUTHOR_COLOUR'				=> $topic_author_color,
+					'TOPIC_AUTHOR_FULL'					=> $topic_author_full,
+					'U_TOPIC_AUTHOR'					=> $u_topic_author,
+					'FIRST_POST_TIME'					=> $this->user->format_date($row['topic_time']),
+					'FIRST_UNREAD_POST_AUTHOR'			=> !empty($first_unread_post_author) ? $first_unread_post_author : '',
+					'FIRST_UNREAD_POST_AUTHOR_COLOUR'	=> !empty($first_unread_post_author_color) ? $first_unread_post_author_color : '',
+					'FIRST_UNREAD_POST_AUTHOR_FULL'		=> !empty($first_unread_post_author_full) ? $first_unread_post_author_full : '',
+					'U_FIRST_UNREAD_POST_AUTHOR'		=> !empty($u_first_unread_post_author) ? $u_first_unread_post_author : '',
+					'FIRST_UNREAD_POST_SUBJECT'			=> censor_text(!empty($first_unread['post_subject']) ? $first_unread['post_subject'] : ''),
+					'FIRST_UNREAD_POST_TIME'			=> !empty($first_unread_post_time) ? $first_unread_post_time : '',
+					'LAST_POST_SUBJECT'					=> censor_text($row['topic_last_post_subject']),
+					'LAST_POST_TIME'					=> $this->user->format_date($row['topic_last_post_time']),
+					'LAST_VIEW_TIME'					=> $this->user->format_date($row['topic_last_view_time']),
+					'LAST_POST_AUTHOR'					=> $last_post_author,
+					'LAST_POST_AUTHOR_COLOUR'			=> $last_post_author_colour,
+					'LAST_POST_AUTHOR_FULL'				=> $last_post_author_full,
+					'U_LAST_POST_AUTHOR'				=> $u_last_post_author,
+					'REPLIES'							=> $replies,
+					'VIEWS'								=> $row['topic_views'],
+					'TOPIC_TITLE'						=> censor_text($row['topic_title']),
+					'FORUM_NAME'						=> $row['forum_name'],
+					'TOPIC_TYPE'						=> $topic_type,
+					'TOPIC_IMG_STYLE'					=> $folder_img,
 					'TOPIC_FOLDER_IMG'			=> $this->user->img($folder_img, $folder_alt),
 					'TOPIC_FOLDER_IMG_ALT'		=> $this->language->lang($folder_alt),
 					'TOPIC_ICON_IMG'			=> (!empty($this->icons[$row['icon_id']])) ? $this->icons[$row['icon_id']]['img'] : '',
@@ -810,6 +825,8 @@ class recenttopics
 					'S_HAS_POLL'				=> $row['poll_start'] ? true : false,
 					'S_TOPIC_TYPE'				=> $row['topic_type'],
 					'S_UNREAD_TOPIC'			=> $unread_topic,
+					'S_DISP_FIRST_UNREAD_POST'	=> 0 && $unread_topic, // Muss noch im der Migration und ACP definiert werden
+					'S_DISP_LAST_POST'			=> 0, // Muss noch im der Migration und ACP definiert werden
 					'S_TOPIC_REPORTED'			=> $row['topic_reported'] && $this->auth->acl_get('m_report', $forum_id),
 					'S_TOPIC_UNAPPROVED'		=> $topic_unapproved,
 					'S_POSTS_UNAPPROVED'		=> $posts_unapproved,
