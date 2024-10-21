@@ -33,6 +33,9 @@ class admin_controller
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\extension\manager */
+	protected $ext_manager;
+
 	/**
 	 * Constructor
 	 *
@@ -41,6 +44,7 @@ class admin_controller
 	 * @param \phpbb\language\language			$language
 	 * @param \phpbb\request\request			$request
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\extension\manager			$ext_manager
 	 *
 	 */
 	public function __construct
@@ -49,7 +53,8 @@ class admin_controller
 		\phpbb\template\template $template,
 		\phpbb\language\language $language,
 		\phpbb\request\request $request,
-		\phpbb\db\driver\driver_interface $db
+		\phpbb\db\driver\driver_interface $db,
+		\phpbb\extension\manager $ext_manager
 	)
 	{
 		$this->config		= $config;
@@ -57,6 +62,7 @@ class admin_controller
 		$this->language		= $language;
 		$this->request		= $request;
 		$this->db			= $db;
+		$this->ext_manager	= $ext_manager;
 	}
 
 	/**
@@ -82,56 +88,81 @@ class admin_controller
 			}
 
 			// Store the variable to the db
-			$this->set_variable();
+			$this->set_vars_config();
 
 			// Upate user settings whith default data
 			$overwrite_userset = $this->request->variable('rt_reset_default', 0);
-			$this->set_user_table((bool) $overwrite_userset);
+			$this->set_vars_usertable((bool) $overwrite_userset);
 
 			trigger_error($this->language->lang('CONFIG_UPDATED') . adm_back_link($this->u_action));
 		}
 
-		$this->template->assign_vars([
-			'U_ACTION'						=> $this->u_action,
-			'RT_INDEX'						=> (int) $this->config['rt_index'],
-			'RT_PAGE_NUMBER'				=> (int) $this->config['rt_page_number'],
-			'RT_PAGE_NUMBERMAX'				=> (int) $this->config['rt_page_numbermax'],
-			'RT_ANTI_TOPICS'				=> $this->config['rt_anti_topics'],
-			'RT_PARENTS'					=> (int) $this->config['rt_parents'],
-			'RT_NUMBER'						=> (int) $this->config['rt_number'],
-			'RT_SORT_START_TIME'			=> (int) $this->config['rt_sort_start_time'],
-			'RT_UNREAD_ONLY'				=> (int) $this->config['rt_unread_only'],
-			'RT_MIN_TOPIC_LEVEL'			=> (int) $this->config['rt_min_topic_level'],
-			'RT_MIN_TOPIC_LEVEL_OPTIONS' => [
-				'POST'						=> '0',
-				'POST_STICKY'				=> '1',
-				'ANNOUNCEMENTS'				=> '2',
-				'GLOBAL_ANNOUNCEMENT'		=> '3',
-			],
-			'RT_LOCATION'					=> $this->config['rt_location'],
-			'RT_LOCATION_OPTIONS' => [
-				'RT_TOP'	 				=> 'RT_TOP',
-				'RT_BOTTOM'	 				=> 'RT_BOTTOM',
-				'RT_SIDE'	 				=> 'RT_SIDE',
-				'RT_SEPARAT' 				=> 'RT_SEPARAT',
-			],
-		]);
+		$this->set_template_vars();
 	}
 
 	/**
-	 * Store the variable to the db
+	 * Set template variables
 	 *
 	 * @return null
 	 * @access protected
 	 */
-	protected function set_variable()
+	protected function set_template_vars()
+	{
+		// Read guest account settings as default
+		$sql = 'SELECT user_rt_enable, user_rt_sort_start_time, user_rt_unread_only,
+					   user_rt_location, user_rt_number
+				FROM ' . USERS_TABLE . '
+				WHERE user_id = ' . ANONYMOUS;
+
+		$result	= $this->db->sql_query_limit($sql, 1);
+		$user_data = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		$metadata_manager = $this->ext_manager->create_extension_metadata_manager('paybas/recenttopics');
+
+		$this->template->assign_vars([
+			'U_ACTION'		=> $this->u_action,
+			'RTNG_TITLE'	=> $metadata_manager->get_metadata('display-name'),
+			'RTNG_EXT_VER'	=> $metadata_manager->get_metadata('version'),
+
+			'RT_PAGE_NUMBERMAX'			=> (int) $this->config['rt_page_numbermax'],
+			'RT_ANTI_TOPICS'			=> $this->config['rt_anti_topics'],
+			'RT_PARENTS'				=> (int) $this->config['rt_parents'],
+			'RT_PAGE_NUMBER'			=> (int) $this->config['rt_page_number'],
+			'RT_MIN_TOPIC_LEVEL'		=> (int) $this->config['rt_min_topic_level'],
+			'RT_MIN_TOPIC_LEVEL_OPTIONS' => [
+				'POST'				  => '0',
+				'POST_STICKY'		  => '1',
+				'ANNOUNCEMENTS'		  => '2',
+				'GLOBAL_ANNOUNCEMENT' => '3',
+			],
+
+			'RTNG_ENABLE'				=> $user_data['user_rt_enable'],
+			'RTNG_SORT_START_TIME'		=> $user_data['user_rt_sort_start_time'],
+			'RTNG_UNREAD_ONLY'			=> $user_data['user_rt_unread_only'],
+			'RTNG_LOCATION'				=> $user_data['user_rt_location'],
+			'RTNG_TOPIC_NUMBER'				=> $user_data['user_rt_number'],
+			'RTNG_LOCATION_OPTIONS' => [
+				'RT_TOP'	 	=> 'RT_TOP',
+				'RT_BOTTOM'		=> 'RT_BOTTOM',
+				'RT_SIDE'	 	=> 'RT_SIDE',
+				'RT_SEPARAT' 	=> 'RT_SEPARAT',
+			],
+		]);
+
+	}
+
+	/**
+	 * Store the variable to config
+	 *
+	 * @return null
+	 * @access protected
+	 */
+	protected function set_vars_config()
 	{
 		/*
 		* acp options for everyone
 		*/
-
-		$this->config->set('rt_index', $this->request->variable('rt_enable', 0));
-
 		// Maximum number of pages
 		$this->config->set('rt_page_numbermax', $this->request->variable('rt_page_numbermax', 0));
 
@@ -158,35 +189,23 @@ class admin_controller
 		}
 
 		$this->config->set('rt_parents', $this->request->variable('rt_parents', 0));
-
-		/*
-		 *  default positions, modifiable by ucp
-		 */
-
-		$this->config->set('rt_location', $this->request->variable('rt_location', ''));
-
-		//number of most recent topics shown per page
-		$this->config->set('rt_number', $this->request->variable('rt_number', 5));
-
-		$this->config->set('rt_sort_start_time', $this->request->variable('rt_sort_start_time', 0));
-
-		$this->config->set('rt_unread_only', $this->request->variable('rt_unread_only', 0));
 	}
 
 	/**
-	 * Upate user settings whith default data
+	 * Upate user settings
 	 *
+	 * @param  bool		$all_user	Store data to all user
 	 * @return null
 	 * @access protected
 	 */
-	protected function set_user_table($all_user)
+	protected function set_vars_usertable($all_user)
 	{
 		$sql_ary = [
-			'user_rt_enable'		  => (int) $this->config['rt_index'],
-			'user_rt_sort_start_time' => (int) $this->config['rt_sort_start_time'] ,
-			'user_rt_unread_only'	  => (int) $this->config['rt_unread_only'],
-			'user_rt_location'		  => $this->config['rt_location'],
-			'user_rt_number'		  => ((int) $this->config['rt_number'] > 0 ? (int) $this->config['rt_number'] : 5 )
+			'user_rt_enable'		  => (int) $this->request->variable('user_rtng_enable', 0),
+			'user_rt_sort_start_time' => (int) $this->request->variable('user_rtng_sort_start_time', 0),
+			'user_rt_unread_only'	  => (int) $this->request->variable('user_rtng_unread_only', 0),
+			'user_rt_location'		  => $this->request->variable('user_rtng_location', 'RT_TOP'),
+			'user_rt_number'		  => (int) $this->request->variable('user_rtng_topic_number', 5),
 		];
 
 		$sql_where = $all_user ? '' : ' WHERE user_id = ' . ANONYMOUS;

@@ -20,173 +20,107 @@ namespace paybas\recenttopics\core;
  */
 class recenttopics
 {
-	/**
-	 * @var auth
-	 */
+	/** @var auth */
 	protected $auth;
 
-	/**
-	 * @var config
-	 */
+	/** @var config */
 	protected $config;
 
-	/**
-	 * @var language
-	 */
+	/** @var language */
 	protected $language;
 
-	/**
-	 * @var \phpbb\cache\service
-	 */
+	/** @var \phpbb\cache\service */
 	protected $cache;
 
-	/**
-	 * @var content_visibility
-	 */
+	/** @var content_visibility */
 	protected $content_visibility;
 
-	/**
-	 * @var driver_interface
-	 */
+	/** @var driver_interface */
 	protected $db;
 
-	/**
-	 * @var dispatcher_interface
-	 */
+	/** @var dispatcher_interface */
 	protected $dispatcher;
 
-	/**
-	 * @var pagination
-	 */
+	/** @var pagination */
 	protected $pagination;
 
-	/**
-	 * @var request_interface
-	 */
+	/** @var request_interface */
 	protected $request;
 
-	/**
-	 * @var template
-	 */
+	/** @var template */
 	protected $template;
 
-	/**
-	 * @var \phpbb\user
-	 */
+	/** @var \phpbb\user */
 	protected $user;
 
-	/**
-	 * @var string phpBB root path
-	 */
+	/** @var string phpBB root path */
 	protected $root_path;
 
-	/**
-	 * @var string PHP extension
-	 */
+	/** @var string PHP extension */
 	protected $phpEx;
 
-	/**
-	 * array of allowable forum id's
-	 *
-	 * @var array
-	 */
+	/** @var array	array of allowable forum id's */
 	private $forum_ids;
 
-	/**
-	 * array of topics to show
-	 *
-	 * @var array
-	 */
+	/** @var array	array of topics to show */
 	private $topic_list;
 
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	private $unread_only;
 
-	/**
-	 * show a forum icon ?
-	 *
-	 * @var boolean
-	 */
+	/** @var boolean show a forum icon ? */
 	private $obtain_icons;
 
-	/**
-	 * forum objects we need
-	 *
-	 * @var array
-	 */
+	/** @var array forum objects we need */
 	private $forums;
 
-	/**
-	 * @var Collapsable
-	 */
+	/** @var Collapsable */
 	private $collapsable_categories;
 
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	private $rtng_start;
 
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	public $topics_per_page;
 
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	private $total_topics_limit;
 
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	private $sort_topics;
 
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	private $display_parent_forums;
 
-	/**
-	 * Block location
-	 *
-	 * @var string
-	 */
+	/** @var string	Block location */
 	private $location;
 
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	private $icons;
 
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $excluded_topics;
 
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	public $topics_page_number;
 
 	/**
 	 * recenttopics constructor.
 	 *
-	 * @param \phpbb\auth\auth                                    $auth
-	 * @param \phpbb\cache\service                                $cache
-	 * @param \phpbb\config\config                                $config
-	 * @param \phpbb\language\language                            $language
-	 * @param \phpbb\content_visibility                           $content_visibility
-	 * @param \phpbb\db\driver\driver_interface                   $db
-	 * @param \phpbb\event\dispatcher_interface                   $dispatcher
-	 * @param \phpbb\pagination                                   $pagination
-	 * @param \phpbb\request\request_interface                    $request
-	 * @param \phpbb\template\template                            $template
-	 * @param \phpbb\user                                         $user
-	 * @param                                                     $root_path
-	 * @param                                                     $phpEx
-	 * @param \phpbb\collapsiblecategories\operator\operator|NULL $collapsable_categories
+	 * @param \phpbb\auth\auth										$auth
+	 * @param \phpbb\cache\service									$cache
+	 * @param \phpbb\config\config									$config
+	 * @param \phpbb\language\language								$language
+	 * @param \phpbb\content_visibility								$content_visibility
+	 * @param \phpbb\db\driver\driver_interface						$db
+	 * @param \phpbb\event\dispatcher_interface						$dispatcher
+	 * @param \phpbb\pagination										$pagination
+	 * @param \phpbb\request\request_interface						$request
+	 * @param \phpbb\template\template								$template
+	 * @param \phpbb\user											$user
+	 * @param														$root_path
+	 * @param														$phpEx
+	 * @param \phpbb\collapsiblecategories\operator\operator|NULL	$collapsable_categories
 	 */
 	public function __construct
 	(
@@ -232,13 +166,7 @@ class recenttopics
 	public function display_recent_topics($tpl_loopname = 'rtng'): void
 	{
 		// can view rtng ?
-		if ($this->auth->acl_get('u_rt_view') == '0')
-		{
-			return;
-		}
-
-		// if user can enable recent topics and it is not enabled then return
-		if ($this->auth->acl_get('u_rt_enable') && !$this->user->data['user_rt_enable'])
+		if (!($this->user->data['user_rt_enable'] && $this->auth->acl_get('u_rt_view')))
 		{
 			return;
 		}
@@ -262,30 +190,16 @@ class recenttopics
 		$this->display_parent_forums = $this->config['rt_parents'];
 
 		//rt block location
-		$this->location = $this->config['rt_location'];
+		$this->location = $this->user->data['user_rt_location'];
 
-		// if user can set location and it is set then use the preference
-		if ($this->auth->acl_get('u_rt_location'))
-		{
-			$this->location = $this->user->data['user_rt_location'];
-		}
-
-		$this->unread_only = $this->config['rt_unread_only'];
-		if ($this->auth->acl_get('u_rt_unread_only'))
-		{
-			$this->unread_only = $this->user->data['user_rt_unread_only'];
-		}
+		$this->unread_only = $this->user->data['user_rt_unread_only'];
 
 		$this->rtng_start = $this->request->variable($tpl_loopname . '_start', 0);
 
 		// set # topics shown per page
 		if ($this->topics_per_page == 0)
 		{
-			$this->topics_per_page = (int) $this->config['rt_number'];
-			if ($this->auth->acl_get('u_rt_number'))
-			{
-				$this->topics_per_page = (int) $this->user->data['user_rt_number'];
-			}
+			$this->topics_per_page = (int) $this->user->data['user_rt_number'];
 		}
 
 		$this->excluded_topics = explode(',', $this->config['rt_anti_topics']);
@@ -323,13 +237,7 @@ class recenttopics
 			$this->db->sql_freeresult($result);
 		}
 
-		$this->sort_topics = $this->config['rt_sort_start_time'] ? 'topic_time' : 'topic_last_post_time';
-
-		// if user can set recent topic sorting order and it is set then use the preference
-		if ($this->auth->acl_get('u_rt_sort_start_time'))
-		{
-			$this->sort_topics = $this->user->data['user_rt_sort_start_time'] ? 'topic_time' : 'topic_last_post_time';
-		}
+		$this->sort_topics = $this->user->data['user_rt_sort_start_time'] ? 'topic_time' : 'topic_last_post_time';
 
 		$topics_count = $this->gettopiclist();
 

@@ -97,7 +97,7 @@ class main_listener implements EventSubscriberInterface
 	{
 		$this->template->assign_vars([
 			'U_RTNG_PAGE_SEPARATE'  => $this->helper->route('paybas_recenttopics_page_controller', ['page' => 'separate']),
-			'S_RTNG_LINK_IN_NAVBAR' => $this->auth->acl_get('u_rt_view') && $this->config['rt_index'] && $this->user->data['user_rt_enable'] && $this->user->data['user_rt_location'] == 'RT_SEPARAT',
+			'S_RTNG_LINK_IN_NAVBAR' => $this->auth->acl_get('u_rt_view') && $this->user->data['user_rt_enable'] && $this->user->data['user_rt_location'] == 'RT_SEPARAT',
 		]);
 
 		$this->language->add_lang('recenttopics', 'paybas/recenttopics');
@@ -111,7 +111,7 @@ class main_listener implements EventSubscriberInterface
 	 */
 	public function display_rt()
 	{
-		if (isset($this->config['rt_index']) && $this->config['rt_index'])
+		if (!($this->user->data['user_rt_enable'] && $this->auth->acl_get('u_rt_view')))
 		{
 			$this->rt_functions->display_recent_topics();
 		}

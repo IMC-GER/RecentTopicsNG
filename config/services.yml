@@ -3,9 +3,10 @@ services:
         class: paybas\recenttopics\controller\page_controller
         arguments:
             - '@template'
-            - '@config'
             - '@controller.helper'
             - '@language'
+            - '@user'
+            - '@auth'
             - '@paybas.recenttopics.functions'
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -18,6 +19,7 @@ services:
             - '@language'
             - '@request'
             - '@dbal.conn'
+            - '@ext.manager'
 
     paybas.recenttopics.functions:
         class: paybas\recenttopics\core\recenttopics
@@ -53,6 +55,8 @@ services:
     paybas.recenttopics.acp_listener:
         class: paybas\recenttopics\event\acp_listener
         arguments:
+            - '@template'
+            - '@language'
             - '@request'
         tags:
             - { name: event.listener }

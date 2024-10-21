@@ -83,6 +83,13 @@ input[class*="confirmbox_active"]:disabled {
 	content: "\f00c";
 }
 
+/* general setting*/
+
+.rtng-copyright {
+	text-align: center;
+	font-size: .8em;
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 700px) {

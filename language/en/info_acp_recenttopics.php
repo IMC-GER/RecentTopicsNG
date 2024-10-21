@@ -39,11 +39,17 @@ if (empty($lang) || !is_array($lang))
 // ‚ ‘ ’ « » “ ” … „ “
 //
 $lang = array_merge($lang, [
+	// Language pack author
+	'RTNG_LANG_DESC'				=> 'English',
+	'RTNG_LANG_EXT_VER' 			=> '2.2.15-pl21',
+	'RTNG_LANG_AUTHOR' 				=> 'RTNG',
+
 	//forum acp
 	'RT_FORUMS'						=> 'Display on “recent topics”',
 	'RT_FORUMS_EXPLAIN'				=> 'Enable to display topics in this forum in the “recent topics” extension.',
 
 	//acp title
+	'RTNG_TITLE'					=> 'Recent Topics',
 	'RECENT_TOPICS'					=> 'Recent Topics',
 	'RECENT_TOPICS_EXPLAIN'			=> 'On this page you can change the settings specific for the Recent Topics extension.<br><br>Specific forums can be included or excluded by editing the respective forums in your ACP.<br>Also be sure to check your user permissions, which allow users to change some of the settings found below for themselves.',
 	'RT_CONFIG'						=> 'Configuration',

@@ -18,14 +18,17 @@ class page_controller
 	/** @var template */
 	protected $template;
 
-	/** @var \phpbb\config\config */
-	protected $config;
-
 	/** @var \phpbb\controller\helper */
 	protected $helper;
 
 	/** @var language */
 	protected $language;
+
+	/** @var \phpbb\user */
+	protected $user;
+
+	/** @var auth */
+	protected $auth;
 
 	/** @var recenttopics */
 	protected $rtng_functions;
@@ -40,9 +43,10 @@ class page_controller
 	 * page constructor.
 	 *
 	 * @param \phpbb\template\template				 		$template
-	 * @param \phpbb\config\config							$config
 	 * @param \phpbb\controller\helper						$helper
 	 * @param \phpbb\language\language 						$language
+	 * @param \phpbb\user									$user
+	 * @param \phpbb\auth\auth								$auth
 	 * @param \paybas\recenttopics\core\recenttopics		$functions
 	 * @param \Symfony\Component\HttpFoundation\Response	$response
 	 * @param												$phpbb_root_path
@@ -51,19 +55,21 @@ class page_controller
 	public function __construct
 	(
 		\phpbb\template\template $template,
-		\phpbb\config\config $config,
 		\phpbb\controller\helper $helper,
 		\phpbb\language\language $language,
+		\phpbb\user $user,
+		\phpbb\auth\auth $auth,
 		\paybas\recenttopics\core\recenttopics $functions,
 		$phpbb_root_path,
 		$phpEx
 	)
 	{
 		$this->template			= $template;
-		$this->config			= $config;
 		$this->helper			= $helper;
 		$this->language			= $language;
-		$this->rtng_functions		= $functions;
+		$this->user				= $user;
+		$this->auth				= $auth;
+		$this->rtng_functions	= $functions;
 		$this->phpbb_root_path	= $phpbb_root_path;
 		$this->phpEx			= $phpEx;
 	}
@@ -79,6 +85,12 @@ class page_controller
 		$this->language->add_lang('info_acp_recenttopics', 'paybas/recenttopics');
 		$title = $this->language->lang('RTNG_TITLE');
 
+		// Redirect to index site when user has no permisson
+		if (!($this->user->data['user_rt_enable'] && $this->auth->acl_get('u_rt_view')))
+		{
+			redirect($this->phpbb_root_path . 'index.' . $this->phpEx);
+		}
+
 		switch ($page)
 		{
 			// Displays ResentTopics in a simple page for further use
@@ -92,10 +104,8 @@ class page_controller
 				// Set template
 				$rt_page  = "@paybas_recenttopics/recenttopics_body_simple.html";
 
-				if (isset($this->config['rt_index']) && $this->config['rt_index'])
-				{
-					$this->rtng_functions->display_recent_topics();
-				}
+				$this->rtng_functions->display_recent_topics();
+
 			break;
 
 			// Displays ResentTopics in a separate page
@@ -109,23 +119,21 @@ class page_controller
 				// Set template
 				$rt_page  = "@paybas_recenttopics/recenttopics_body_separate.html";
 
-				if (isset($this->config['rt_index']) && $this->config['rt_index'])
+				// Generate jumpbox
+				if (!function_exists('make_jumpbox'))
 				{
-					// Generate jumpbox
-					if (!function_exists('make_jumpbox'))
-					{
-						include($this->phpbb_root_path . 'includes/functions_content.' . $this->phpEx);
-					}
-					make_jumpbox(append_sid($this->phpbb_root_path . 'viewforum.' . $this->phpEx));
-
-					// Generate link in NavBar
-					$this->template->assign_block_vars('navlinks', [
-						'BREADCRUMB_NAME'	=> $title,
-						'U_BREADCRUMB'		=> $this->helper->route('paybas_recenttopics_page_controller', ['page' => 'separate']),
-					]);
-
-					$this->rtng_functions->display_recent_topics();
+					include($this->phpbb_root_path . 'includes/functions_content.' . $this->phpEx);
 				}
+				make_jumpbox(append_sid($this->phpbb_root_path . 'viewforum.' . $this->phpEx));
+
+				// Generate link in NavBar
+				$this->template->assign_block_vars('navlinks', [
+					'BREADCRUMB_NAME'	=> $this->language->lang('RTNG_TITLE'),
+					'U_BREADCRUMB'		=> $this->helper->route('paybas_recenttopics_page_controller', ['page' => 'separate']),
+				]);
+
+				$this->rtng_functions->display_recent_topics();
+
 			break;
 
 			// Displays the start page of phpBB

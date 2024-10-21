@@ -6,8 +6,23 @@
 
 - Zeige ersten oder letzten Beitrag einstelbar in UCP & ACP (https://www.phpbb.de/community/viewtopic.php?p=1421676#p1421676)
 
-- Wenn Globale Einstellungen -> Anzeigen auf der Index-Seite -> deaktive    Einstellungen UCP ausblenden
+- erledigt! Wenn Globale Einstellungen ($this->auth->acl_get('u_rt_view')) deaktive Einstellungen UCP ausblenden
 
-- Events hinterfragen paybas.recenttopics.topictitle_remove_re, paybas.recenttopics.modify_topictitle
+- erledigt! Events hinterfragen paybas.recenttopics.topictitle_remove_re, paybas.recenttopics.modify_topictitle
 
-- Seperaten listemer für core.acp_... events
+- erledigt! Seperaten listemer für core.acp_... events
+
+- erledigt! UCP Settings im ACP Benutzerverwalzung
+
+- erledigt! Default Settings für neu Benutzer vom Gästekonto
+
+- Bei der neuen Migration entfernen:
+	rt_index, rt_sort_start_time, rt_unread_only, rt_location, rt_number
+
+- Bei der neuen Migration hinzufügen plus Berechtigungen:
+	rtng_simple_topic_number, rtng_simple_page_number
+	user_rtng_page_number
+	user_rtng_separate_topic_number, user_rtng_separate_page_number
+	user_rtng_disp_last_post,  user_rtng_disp_first_unread_post
+
+

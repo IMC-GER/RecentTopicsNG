@@ -39,11 +39,17 @@ if (empty($lang) || !is_array($lang))
 // ‚ ‘ ’ « » “ ” … „ “
 //
 $lang = array_merge($lang, [
+	// Language pack author
+	'RTNG_LANG_DESC'				=> 'Deutsch (Sie)',
+	'RTNG_LANG_EXT_VER' 			=> '2.2.15-pl21',
+	'RTNG_LANG_AUTHOR' 				=> 'RTNG',
+
 	//forum acp
 	'RT_FORUMS'						=> 'In „Aktuelle Themen“ anzeigen',
 	'RT_FORUMS_EXPLAIN'				=> 'Aktiviere dieses Kontrollkästchen, um Themen in diesem Forum in der Erweiterung ”Aktuelle Themen” anzuzeigen.',
 
 	//acp title
+	'RTNG_TITLE'					=> 'Aktuelle Themen',
 	'RECENT_TOPICS'					=> 'Aktuelle Themen',
 	'RECENT_TOPICS_EXPLAIN'			=> 'Auf dieser Seite können Sie die Einstellungen der aktuellen Themenerweiterung anpassen.<br><br>Spezifische Foren können durch ändern der Einstellungen der jeweiligen Foren eingeschlossen oder ausgeschlossen werden.<br>Überprüfen Sie doch auch die Benutzerberechtigungen, so dass die Benutzer sich einige Parameter ändern können, die Vorrang haben vor den Einstellungen des Admin-Panels.',
 	'RT_CONFIG'						=> 'Einstellungen',

@@ -15,23 +15,13 @@
 
 {% include 'overall_header.html' %}
 
-<h1>{{ lang('RECENT_TOPICS') }}</h1>
+<h1>{{ lang('RTNG_TITLE') }}</h1>
 <p>{{ lang('RECENT_TOPICS_EXPLAIN') }}</p>
 
 <form id="acp_board" method="post" action="{{ U_ACTION }}">
 
 	<fieldset>
 		<legend>{{ lang('RT_GLOBAL_SETTINGS') }}</legend>
-
-		<dl>
-			<dt>
-				<label>{{ lang('INDEX') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RT_DISPLAY_INDEX') }}</span>
-			</dt>
-			<dd>
-				{{ common.switch('rt_enable', RT_INDEX, switch_type) }}
-			</dd>
-		</dl>
 
 		<dl>
 			<dt>
@@ -88,11 +78,21 @@
 
 		<dl>
 			<dt>
+				<label>{{ lang('INDEX') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RT_DISPLAY_INDEX') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_enable', RTNG_ENABLE, switch_type) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
 				<label>{{ lang('RT_LOCATION') ~ lang('COLON') }}</label><br>
 				<span>{{ lang('RT_LOCATION_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.select('rt_location', RT_LOCATION, RT_LOCATION_OPTIONS) }}
+				{{ common.select('user_rtng_location', RTNG_LOCATION, RTNG_LOCATION_OPTIONS) }}
 			</dd>
 		</dl>
 
@@ -102,7 +102,7 @@
 				<span>{{ lang('RT_NUMBER_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.number('rt_number', RT_NUMBER, 1, 999) }}
+				{{ common.number('user_rtng_topic_number', RTNG_TOPIC_NUMBER, 1, 999) }}
 			</dd>
 		</dl>
 
@@ -112,7 +112,7 @@
 				<span>{{ lang('RT_SORT_START_TIME_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.switch('rt_sort_start_time', RT_SORT_START_TIME, switch_type) }}
+				{{ common.switch('user_rtng_sort_start_time', RTNG_SORT_START_TIME, switch_type) }}
 			</dd>
 		</dl>
 
@@ -122,7 +122,7 @@
 				<span>{{ lang('RT_UNREAD_ONLY_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.switch('rt_unread_only', RT_UNREAD_ONLY, switch_type) }}
+				{{ common.switch('user_rtng_unread_only', RTNG_UNREAD_ONLY, switch_type) }}
 			</dd>
 		</dl>
 
@@ -151,6 +151,11 @@
 
 	{{ S_FORM_TOKEN }}
 </form>
+
+<p class="rtng-copyright">
+	{{ RTNG_TITLE }} v{{ RTNG_EXT_VER }} &copy; RTNG<br>
+	{{ lang('RTNG_LANG_DESC') }} v{{ lang('RTNG_LANG_EXT_VER') }} &bull; {{ lang('RTNG_LANG_AUTHOR') }}
+</p>
 
 {% include 'overall_footer.html' %}
 

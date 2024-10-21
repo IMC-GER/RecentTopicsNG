@@ -50,7 +50,7 @@ class recenttopics_module
 				$this->tpl_name = 'acp_recenttopics';
 
 				// Set the page title for our ACP page
-				$this->page_title = $language->lang('RECENT_TOPICS');
+				$this->page_title = $language->lang('RTNG_TITLE');
 
 				// Load the display options handle in the admin controller
 				$admin_controller->display_options();
