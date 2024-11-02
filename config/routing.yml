@@ -1,4 +1,0 @@
-paybas_recenttopics_page_controller:
-    path: /rt/{page}
-    defaults:
-        _controller: 'paybas.recenttopics.controller.page_controller:display'

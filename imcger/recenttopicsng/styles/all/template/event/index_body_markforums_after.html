@@ -1,0 +1,37 @@
+{#
+ *
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
+ * @copyright (c) 2017, Sajaki, https://www.avathar.be
+ * @copyright (c) 2015, PayBas
+ * @license GNU General Public License, version 2 (GPL-2.0-only)
+ *
+ * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
+ #}
+
+{% if RTNG_DISPLAY && rtng_included != true %}
+	{% set rtng_included = true %}
+	{% if S_RTNG_LOCATION_TOP %}
+
+		<div id="rtng-stop">
+		{% include '@imcger_recenttopicsng/rtng_body_topbottom.html' %}
+		</div>
+	{% elseif S_RTNG_LOCATION_SIDE %}
+		<div id="phpbbsection">
+		<div class="index-right">
+		<div id="rtng-side">
+		{% include '@imcger_recenttopicsng/rtng_body_side.html' %}
+		</div>
+		{% EVENT recenttopics_mchat_side %}
+
+		{% if ADS_INDEX_CODE && !S_IS_BOT && definition.ADSIDE == false %}
+		{% set ADSIDE = 1 %}
+		<div class="misc-block advertisement">{{ ADS_INDEX_CODE }}</div>
+		{{ definition.ADS }}
+		{% endif %}
+
+		</div>
+		<div class="index-left">
+	{% endif %}
+{% endif %}

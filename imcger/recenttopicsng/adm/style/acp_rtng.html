@@ -1,0 +1,174 @@
+{#
+ *
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
+ * @copyright (c) 2017, Sajaki, https://www.avathar.be
+ * @copyright (c) 2015, PayBas
+ * @license GNU General Public License, version 2 (GPL-2.0-only)
+ *
+ * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
+ #}
+
+{% import '@imcger_recenttopicsng/rtng_macros.html' as common %}
+{% set switch_type = TOGGLECTRL_TYPE ?? 'toggle' %}
+
+{% include 'overall_header.html' %}
+
+<h1>{{ lang('RTNG_TITLE') }}</h1>
+<p>{{ lang('RTNG_EXPLAIN') }}</p>
+
+<form id="acp_board" method="post" action="{{ U_ACTION }}">
+
+	<fieldset>
+		<legend>{{ lang('RTNG_GLOBAL_SETTINGS') }}</legend>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_ALL_TOPICS') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_ALL_TOPICS_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('rtng_all_topics', RTNG_ALL_TOPICS, switch_type) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_MIN_TOPIC_LEVEL') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_MIN_TOPIC_LEVEL_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.select('rtng_min_topic_level', RTNG_MIN_TOPIC_LEVEL, RTNG_MIN_TOPIC_LEVEL_OPTIONS) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_ANTI_TOPICS') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_ANTI_TOPICS_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.text('rtng_anti_topics', RTNG_ANTI_TOPICS, 30) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_PARENTS') ~ lang('COLON') }}</label><br><span>{{ lang('RTNG_PARENTS_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('rtng_parents', RTNG_PARENTS, switch_type) }}
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('RTNG_OVERRIDABLE') }}</legend>
+
+		<dl>
+			<dt>
+				<label>{{ lang('INDEX') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_INDEX_DISPLAY_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_enable', RTNG_ENABLE, switch_type) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_LOCATION') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_LOCATION_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.select('user_rtng_location', RTNG_LOCATION, RTNG_LOCATION_OPTIONS) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_TOPIC_NUMBER') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_TOPIC_NUMBER_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.number('user_rtng_index_topics_qty', RTNG_TOPIC_NUMBER, 1, 999) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_INDEX_PAGE_NUMBER') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_INDEX_PAGE_NUMBER_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.number('user_rtng_index_page_qty', RTNG_INDEX_PAGE_NUMBER, 1, 999) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_SORT_START_TIME') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_SORT_START_TIME_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_sort_start_time', RTNG_SORT_START_TIME, switch_type) }}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_UNREAD_ONLY') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_UNREAD_ONLY_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_unread_only', RTNG_UNREAD_ONLY, switch_type) }}
+			</dd>
+		</dl>
+
+		<hr>
+
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_RESET_DEFAULT') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_RESET_DEFAULT_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('rtng_reset_default', false, switch_type) }}
+				{{ _self.confirmbox('rtng_reset_default', lang('RTNG_RESET_ASK_BEFORE_EXP')) }}
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_SUBMIT_CHANGES') }}</legend>
+
+		<p class="submit-buttons">
+			<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}">
+			<input class="button2" type="reset" name="reset" value="{{ lang('RESET') }}">
+		</p>
+	</fieldset>
+
+	{{ S_FORM_TOKEN }}
+</form>
+
+<p class="rtng-copyright">
+	{{ RTNG_TITLE }} v{{ RTNG_EXT_VER }} &copy; RTNG<br>
+	{{ lang('RTNG_LANG_DESC') }} v{{ lang('RTNG_LANG_EXT_VER') }} &bull; {{ lang('RTNG_LANG_AUTHOR') }}
+</p>
+
+{% include 'overall_footer.html' %}
+
+{% INCLUDECSS '@imcger_recenttopicsng/acp_rtng.css' %}
+{% INCLUDEJS '@imcger_recenttopicsng/acp_rtng.js' %}
+
+{% macro confirmbox(name, message, default = false) -%}
+	<div id="{{ name }}_confirmbox" data-default="{{ default }}" style="display: none;">
+		<h2>{{ lang('CONFIRM') }}</h2>
+		<p>{{ message }}</p>
+		<p>
+			<input type="button" class="button1" name="{{ name }}_confirm_yes" value="{{ lang('YES') }}">&nbsp;
+			<input type="button" class="button2" name="{{ name }}_confirm_no" value="{{ lang('NO') }}">
+		</p>
+	</div>
+{%- endmacro %}

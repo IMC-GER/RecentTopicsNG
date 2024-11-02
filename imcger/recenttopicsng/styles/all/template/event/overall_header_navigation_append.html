@@ -1,0 +1,19 @@
+{#
+ *
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
+ * @copyright (c) 2017, Sajaki, https://www.avathar.be
+ * @copyright (c) 2015, PayBas
+ * @license GNU General Public License, version 2 (GPL-2.0-only)
+ *
+ * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
+ #}
+
+{% if S_RTNG_LINK_IN_NAVBAR %}
+<li {% if !S_USER_LOGGED_IN %}data-skip-responsive="true"{% else %}data-last-responsive="true"{% endif %}>
+	<a href="{{ U_RTNG_PAGE_SEPARATE }}" title="{{ lang('RTNG_TITLE') }}" role="menuitem">
+		<i class="icon fa-list fa-fw" aria-hidden="true"></i>{{ lang('RTNG_TITLE') }}
+	</a>
+</li>
+{% endif %}

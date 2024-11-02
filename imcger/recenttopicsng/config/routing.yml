@@ -1,0 +1,4 @@
+imcger_recenttopicsng_page_controller:
+    path: /rtng/{page}
+    defaults:
+        _controller: 'imcger.recenttopicsng.controller.page_controller:display'

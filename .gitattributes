@@ -5,4 +5,3 @@
 .gitattributes  export-ignore
 .editorconfig   export-ignore
 .github         export-ignore
-contrib         export-ignore

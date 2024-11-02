@@ -1,0 +1,76 @@
+services:
+    imcger.recenttopicsng.controller.page_controller:
+        class: imcger\recenttopicsng\controller\page_controller
+        arguments:
+            - '@config'
+            - '@template'
+            - '@controller.helper'
+            - '@language'
+            - '@user'
+            - '@auth'
+            - '@imcger.recenttopicsng.functions'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    imcger.recenttopicsng.admin.controller:
+        class: imcger\recenttopicsng\controller\admin_controller
+        arguments:
+            - '@config'
+            - '@template'
+            - '@language'
+            - '@request'
+            - '@dbal.conn'
+            - '@ext.manager'
+
+    imcger.recenttopicsng.functions:
+        class: imcger\recenttopicsng\core\rtng_functions
+        arguments:
+            - '@auth'
+            - '@cache'
+            - '@config'
+            - '@language'
+            - '@content.visibility'
+            - '@dbal.conn'
+            - '@dispatcher'
+            - '@pagination'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '@?phpbb.collapsiblecategories.operator'
+
+    imcger.recenttopicsng.main_listener:
+        class: imcger\recenttopicsng\event\main_listener
+        arguments:
+            - '@user'
+            - '@imcger.recenttopicsng.functions'
+            - '@config'
+            - '@template'
+            - '@controller.helper'
+            - '@language'
+            - '@auth'
+        tags:
+            - { name: event.listener }
+
+    imcger.recenttopicsng.acp_listener:
+        class: imcger\recenttopicsng\event\acp_listener
+        arguments:
+            - '@template'
+            - '@language'
+            - '@request'
+        tags:
+            - { name: event.listener }
+
+    imcger.recenttopicsng.ucp_listener:
+        class: imcger\recenttopicsng\event\ucp_listener
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@language'
+            - '@dbal.conn'
+        tags:
+            - { name: event.listener }
