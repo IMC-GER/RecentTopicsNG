@@ -1,0 +1,126 @@
+{#
+ *
+ * Recent Topics NG. An extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2022, IMC, https://github.com/IMC-GER / LukeWCS, https://github.com/LukeWCS
+ * @copyright (c) 2017, Sajaki, https://www.avathar.be
+ * @copyright (c) 2015, PayBas
+ * @license GNU General Public License, version 2 (GPL-2.0-only)
+ *
+ * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
+ #}
+
+{%- import '@imcger_recenttopicsng/rtng_macros.html' as common %}
+{%- set switch_type = TOGGLECTRL_TYPE ?? 'toggle' %}
+{%- set switch_type = TOGGLECTRL_RTNG ? TOGGLECTRL_RTNG : switch_type %}
+
+	{%- if RTNG_ENABLE is defined %}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_ENABLE') ~ lang('COLON') }}</label>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_enable', RTNG_ENABLE, switch_type) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_LOCATION is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_LOCATION') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_LOCATION_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.select('user_rtng_location', RTNG_LOCATION, RTNG_LOCATION_OPTIONS) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_SORT_START_TIME is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_SORT_START_TIME') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_SORT_START_TIME_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_sort_start_time', RTNG_SORT_START_TIME, switch_type) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_DISP_LAST_POST is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_DISP_LAST_POST') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_DISP_LAST_POST_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_disp_last_post', RTNG_DISP_LAST_POST, switch_type) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_DISP_FIRST_UNRD_POST is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_DISP_FIRST_UNRD_POST') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_DISP_FIRST_UNRD_POST_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_disp_first_unrd_post', RTNG_DISP_FIRST_UNRD_POST, switch_type) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_UNREAD_ONLY is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_UNREAD_ONLY') ~ lang('COLON') }}</label>
+				<span>{{ lang('RTNG_UNREAD_ONLY_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.switch('user_rtng_unread_only', RTNG_UNREAD_ONLY, switch_type) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_INDEX_TOPICS_QTY is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_INDEX_TOPICS_QTY') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_INDEX_TOPICS_QTY_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.number('user_rtng_index_topics_qty', RTNG_INDEX_TOPICS_QTY, 1, 999) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_INDEX_PAGE_QTY is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_INDEX_PAGE_QTY') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_INDEX_PAGE_QTY_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.number('user_rtng_index_page_qty', RTNG_INDEX_PAGE_QTY, 1, 999) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_SEPARATE_TOPICS_QTY is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_SEPARATE_TOPICS_QTY') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_SEPARATE_TOPICS_QTY_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.number('user_rtng_separate_topics_qty', RTNG_SEPARATE_TOPICS_QTY, 1, 999) }}
+			</dd>
+		</dl>
+	{% endif %}
+	{% if RTNG_SEPARATE_PAGE_QTY is defined -%}
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_SEPARATE_PAGE_QTY') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_SEPARATE_PAGE_QTY_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.number('user_rtng_separate_page_qty', RTNG_SEPARATE_PAGE_QTY, 1, 999) }}
+			</dd>
+		</dl>
+	{% endif %}
+

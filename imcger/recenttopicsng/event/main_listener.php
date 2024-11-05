@@ -26,9 +26,6 @@ class main_listener implements EventSubscriberInterface
 	/** @var imcger\recenttopicsng\core\rtng_functions */
 	protected $rtng_functions;
 
-	/** @var \phpbb\config\config */
-	protected $config;
-
 	/** @var \phpbb\template\template */
 	protected $template;
 
@@ -48,7 +45,6 @@ class main_listener implements EventSubscriberInterface
 	(
 		\phpbb\user $user,
 		\imcger\recenttopicsng\core\rtng_functions $rtng_functions,
-		\phpbb\config\config $config,
 		\phpbb\template\template $template,
 		\phpbb\controller\helper $helper,
 		\phpbb\language\language $language,
@@ -57,7 +53,6 @@ class main_listener implements EventSubscriberInterface
 	{
 		$this->user				= $user;
 		$this->rtng_functions	= $rtng_functions;
-		$this->config			= $config;
 		$this->template			= $template;
 		$this->helper			= $helper;
 		$this->language			= $language;
@@ -66,9 +61,6 @@ class main_listener implements EventSubscriberInterface
 
 	/**
 	 * Get subscribed events
-	 *
-	 * @return array
-	 * @static
 	 */
 	public static function getSubscribedEvents()
 	{
@@ -81,9 +73,6 @@ class main_listener implements EventSubscriberInterface
 
 	/**
 	 * Set template vars and load language
-	 *
-	 * @return null
-	 * @access public
 	 */
 	public function set_template_vars()
 	{
@@ -97,9 +86,6 @@ class main_listener implements EventSubscriberInterface
 
 	/**
 	 * The main magic
-	 *
-	 * @return null
-	 * @access public
 	 */
 	public function display_rt()
 	{
@@ -111,25 +97,23 @@ class main_listener implements EventSubscriberInterface
 
 	/**
 	 * Add permissions
-	 *
-	 * @param \phpbb\event\data $event The event object
-	 * @return null
-	 * @access public
 	 */
 	public function add_permission($event)
 	{
 		$permissions = $event['permissions'];
 		$categories = $event['categories'];
 		$categories['rtng'] = 'ACL_CAT_RTNG';
-		$permissions['u_rtng_view']					= ['lang' => 'ACL_U_RTNG_VIEW',						'cat' => 'rtng'];
-		$permissions['u_rtng_enable']				= ['lang' => 'ACL_U_RTNG_ENABLE',					'cat' => 'rtng'];
-		$permissions['u_rtng_location']				= ['lang' => 'ACL_U_RTNG_LOCATION',					'cat' => 'rtng'];
-		$permissions['u_rtng_sort_start_time']		= ['lang' => 'ACL_U_RTNG_SORT_START_TIME',			'cat' => 'rtng'];
-		$permissions['u_rtng_unread_only']			= ['lang' => 'ACL_U_RTNG_UNREAD_ONLY',				'cat' => 'rtng'];
-		$permissions['u_rtng_index_topics_qty']		= ['lang' => 'ACL_U_RTNG_INDEX_TOPICS_NUMBER',		'cat' => 'rtng'];
-		$permissions['u_rtng_index_page_qty']		= ['lang' => 'ACL_U_RTNG_INDEX_PAGE_NUMBER',		'cat' => 'rtng'];
-		$permissions['u_rtng_separate_topics_qty']	= ['lang' => 'ACL_U_RTNG_SEPARATE_TOPICS_NUMBER',	'cat' => 'rtng'];
-		$permissions['u_rtng_separate_page_qty']	= ['lang' => 'ACL_U_RTNG_SEPARATE_PAGE_NUMBER',		'cat' => 'rtng'];
+		$permissions['u_rtng_view']					= ['lang' => 'ACL_U_RTNG_VIEW',					'cat' => 'rtng'];
+		$permissions['u_rtng_enable']				= ['lang' => 'ACL_U_RTNG_ENABLE',				'cat' => 'rtng'];
+		$permissions['u_rtng_location']				= ['lang' => 'ACL_U_RTNG_LOCATION',				'cat' => 'rtng'];
+		$permissions['u_rtng_sort_start_time']		= ['lang' => 'ACL_U_RTNG_SORT_START_TIME',		'cat' => 'rtng'];
+		$permissions['u_rtng_unread_only']			= ['lang' => 'ACL_U_RTNG_UNREAD_ONLY',			'cat' => 'rtng'];
+		$permissions['u_rtng_disp_last_post']		= ['lang' => 'ACL_U_RTNG_DISP_LAST_POST',		'cat' => 'rtng'];
+		$permissions['u_rtng_disp_first_unrd_post']	= ['lang' => 'ACL_U_RTNG_DISP_FIRST_UNRD_POST',	'cat' => 'rtng'];
+		$permissions['u_rtng_index_topics_qty']		= ['lang' => 'ACL_U_RTNG_INDEX_TOPICS_QTY',		'cat' => 'rtng'];
+		$permissions['u_rtng_index_page_qty']		= ['lang' => 'ACL_U_RTNG_INDEX_PAGE_QTY',		'cat' => 'rtng'];
+		$permissions['u_rtng_separate_topics_qty']	= ['lang' => 'ACL_U_RTNG_SEPARATE_TOPICS_QTY',	'cat' => 'rtng'];
+		$permissions['u_rtng_separate_page_qty']	= ['lang' => 'ACL_U_RTNG_SEPARATE_PAGE_QTY',	'cat' => 'rtng'];
 		$event['permissions'] = $permissions;
 		$event['categories'] = $categories;
 	}

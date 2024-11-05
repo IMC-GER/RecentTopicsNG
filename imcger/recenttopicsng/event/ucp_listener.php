@@ -23,9 +23,6 @@ class ucp_listener implements EventSubscriberInterface
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
-	/** @var \phpbb\config\config */
-	protected $config;
-
 	/** @var \phpbb\request\request */
 	protected $request;
 
@@ -47,7 +44,6 @@ class ucp_listener implements EventSubscriberInterface
 	public function __construct
 	(
 		\phpbb\auth\auth $auth,
-		\phpbb\config\config $config,
 		\phpbb\request\request $request,
 		\phpbb\template\template $template,
 		\phpbb\user $user,
@@ -56,7 +52,6 @@ class ucp_listener implements EventSubscriberInterface
 	)
 	{
 		$this->auth		= $auth;
-		$this->config	= $config;
 		$this->request	= $request;
 		$this->template = $template;
 		$this->user		= $user;
@@ -65,7 +60,7 @@ class ucp_listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * @return array
+	 * Get subscribed events
 	 */
 	public static function getSubscribedEvents()
 	{
@@ -77,27 +72,30 @@ class ucp_listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * Add UCP edit display options data before they are assigned to the template or submitted
-	 *
-	 * @param $event
+	 * Set template vars. On submit store settings to user table.
 	 */
 	public function ucp_prefs_get_data($event)
 	{
 		// Request the user option vars and add them to the data array
 		$event['data'] = array_merge(
 			$event['data'], [
-				'user_rtng_enable'          => $this->request->variable('user_rtng_enable', (int) $this->user->data['user_rtng_enable']),
-				'user_rtng_location'        => $this->request->variable('user_rtng_location', $this->user->data['user_rtng_location']),
-				'user_rtng_number'          => $this->request->variable('user_rtng_number', (int) $this->user->data['user_rtng_index_topics_qty']),
-				'user_rtng_sort_start_time' => $this->request->variable('user_rtng_sort_start_time', (int) $this->user->data['user_rtng_sort_start_time']),
-				'user_rtng_unread_only'     => $this->request->variable('user_rtng_unread_only', (int) $this->user->data['user_rtng_unread_only']),
+				'user_rtng_enable'				 => $this->request->variable('user_rtng_enable', (int) $this->user->data['user_rtng_enable']),
+				'user_rtng_location'			 => $this->request->variable('user_rtng_location', $this->user->data['user_rtng_location']),
+				'user_rtng_sort_start_time'		 => $this->request->variable('user_rtng_sort_start_time', (int) $this->user->data['user_rtng_sort_start_time']),
+				'user_rtng_unread_only'			 => $this->request->variable('user_rtng_unread_only', (int) $this->user->data['user_rtng_unread_only']),
+				'user_rtng_disp_last_post'		 => $this->request->variable('user_rtng_disp_last_post', (int) $this->user->data['user_rtng_disp_last_post']),
+				'user_rtng_disp_first_unrd_post' => $this->request->variable('user_rtng_disp_first_unrd_post', (int) $this->user->data['user_rtng_disp_first_unrd_post']),
+				'user_rtng_index_topics_qty'	 => $this->request->variable('user_rtng_index_topics_qty', (int) $this->user->data['user_rtng_index_topics_qty']),
+				'user_rtng_index_page_qty'		 => $this->request->variable('user_rtng_index_page_qty', (int) $this->user->data['user_rtng_index_page_qty']),
+				'user_rtng_separate_topics_qty'	 => $this->request->variable('user_rtng_separate_topics_qty', (int) $this->user->data['user_rtng_separate_topics_qty']),
+				'user_rtng_separate_page_qty'	 => $this->request->variable('user_rtng_separate_page_qty', (int) $this->user->data['user_rtng_separate_page_qty']),
 			]
 		);
 
 		// Output the data vars to the template (except on form submit)
 		if (!$event['submit'] && $this->auth->acl_get('u_rtng_view'))
 		{
-			$this->language->add_lang('rtng_ucp', 'imcger/recenttopicsng');
+			$this->language->add_lang('info_acp_rtng', 'imcger/recenttopicsng');
 
 			$template_vars = [];
 
@@ -105,14 +103,15 @@ class ucp_listener implements EventSubscriberInterface
 			if ($this->auth->acl_get('u_rtng_view') && ($this->auth->acl_get('u_rtng_enable') || $event['data']['user_rtng_enable']) && ($this->auth->acl_get('u_rtng_enable') || $this->auth->acl_get('u_rtng_location') || $this->auth->acl_get('u_rtng_sort_start_time') || $this->auth->acl_get('u_rtng_unread_only')))
 			{
 				$template_vars += [
-					'S_RTNG_SHOW' => true,
+					'S_RTNG_SHOW'		=> true,
+					'TOGGLECTRL_TYPE'	=> 'radio',
 				];
 			}
 
 			if ($this->auth->acl_get('u_rtng_enable'))
 			{
 				$template_vars += [
-					'S_RTNG_ENABLE' => $event['data']['user_rtng_enable'],
+					'RTNG_ENABLE' => $event['data']['user_rtng_enable'],
 				];
 			}
 
@@ -129,24 +128,59 @@ class ucp_listener implements EventSubscriberInterface
 				];
 			}
 
-			if ($this->auth->acl_get('u_rtng_index_topics_qty'))
-			{
-				$template_vars += [
-					'RTNG_NUMBER'	=> $event['data']['user_rtng_number'],
-				];
-			}
-
 			if ($this->auth->acl_get('u_rtng_sort_start_time'))
 			{
 				$template_vars += [
-					'S_RTNG_SORT_START_TIME' => $event['data']['user_rtng_sort_start_time'],
+					'RTNG_SORT_START_TIME' => $event['data']['user_rtng_sort_start_time'],
 				];
 			}
 
 			if ($this->auth->acl_get('u_rtng_unread_only'))
 			{
 				$template_vars += [
-					'S_RTNG_UNREAD_ONLY' => $event['data']['user_rtng_unread_only'],
+					'RTNG_UNREAD_ONLY' => $event['data']['user_rtng_unread_only'],
+				];
+			}
+
+			if ($this->auth->acl_get('u_rtng_disp_last_post'))
+			{
+				$template_vars += [
+					'RTNG_DISP_LAST_POST' => $event['data']['user_rtng_disp_last_post'],
+				];
+			}
+
+			if ($this->auth->acl_get('u_rtng_disp_first_unrd_post'))
+			{
+				$template_vars += [
+					'RTNG_DISP_FIRST_UNRD_POST' => $event['data']['user_rtng_disp_first_unrd_post'],
+				];
+			}
+
+			if ($this->auth->acl_get('u_rtng_index_topics_qty'))
+			{
+				$template_vars += [
+					'RTNG_INDEX_TOPICS_QTY' => $event['data']['user_rtng_index_topics_qty'],
+				];
+			}
+
+			if ($this->auth->acl_get('u_rtng_index_page_qty'))
+			{
+				$template_vars += [
+					'RTNG_INDEX_PAGE_QTY' => $event['data']['user_rtng_index_page_qty'],
+				];
+			}
+
+			if ($this->auth->acl_get('u_rtng_separate_topics_qty'))
+			{
+				$template_vars += [
+					'RTNG_SEPARATE_TOPICS_QTY' => $event['data']['user_rtng_separate_topics_qty'],
+				];
+			}
+
+			if ($this->auth->acl_get('u_rtng_separate_page_qty'))
+			{
+				$template_vars += [
+					'RTNG_SEPARATE_PAGE_QTY' => $event['data']['user_rtng_separate_page_qty'],
 				];
 			}
 
@@ -155,33 +189,36 @@ class ucp_listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * Update UCP edit display options data on form submit
-	 *
-	 * @param $event
+	 * Update the UCP settings in the user table when submitting the form.
 	 */
 	public function ucp_prefs_set_data($event)
 	{
 		$event['sql_ary'] = array_merge(
 			$event['sql_ary'], [
-				'user_rtng_enable'			 => $event['data']['user_rtng_enable'],
-				'user_rtng_location'		 => $event['data']['user_rtng_location'],
-				'user_rtng_index_topics_qty' => $event['data']['user_rtng_number'],
-				'user_rtng_sort_start_time'	 => $event['data']['user_rtng_sort_start_time'],
-				'user_rtng_unread_only'	 	 => $event['data']['user_rtng_unread_only'],
+				'user_rtng_enable'			 	 => $event['data']['user_rtng_enable'],
+				'user_rtng_location'		 	 => $event['data']['user_rtng_location'],
+				'user_rtng_sort_start_time'	 	 => $event['data']['user_rtng_sort_start_time'],
+				'user_rtng_unread_only'		 	 => $event['data']['user_rtng_unread_only'],
+				'user_rtng_disp_last_post'		 => $event['data']['user_rtng_disp_last_post'],
+				'user_rtng_disp_first_unrd_post' => $event['data']['user_rtng_disp_first_unrd_post'],
+				'user_rtng_index_topics_qty'	 => $event['data']['user_rtng_index_topics_qty'],
+				'user_rtng_index_page_qty'		 => $event['data']['user_rtng_index_page_qty'],
+				'user_rtng_separate_topics_qty'	 => $event['data']['user_rtng_separate_topics_qty'],
+				'user_rtng_separate_page_qty'	 => $event['data']['user_rtng_separate_page_qty'],
 			]
 		);
 	}
 
 	/**
-	 * After new user registration, set rt user parameters to default
-	 *
-	 * @param $event
+	 * After registering a new user, transfer the default values to their settings.
 	 */
 	public function ucp_register_set_data($event)
 	{
 		// Read guest account settings as default
 		$sql = 'SELECT user_rtng_enable, user_rtng_sort_start_time, user_rtng_unread_only,
-					   user_rtng_location, user_rtng_index_topics_qty
+					   user_rtng_location, user_rtng_disp_last_post, user_rtng_disp_first_unrd_post,
+					   user_rtng_index_topics_qty, user_rtng_index_page_qty,
+					   user_rtng_separate_topics_qty, user_rtng_separate_page_qty
 				FROM ' . USERS_TABLE . '
 				WHERE user_id = ' . ANONYMOUS;
 

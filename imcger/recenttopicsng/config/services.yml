@@ -21,6 +21,7 @@ services:
             - '@request'
             - '@dbal.conn'
             - '@ext.manager'
+            - '@controller.helper'
 
     imcger.recenttopicsng.functions:
         class: imcger\recenttopicsng\core\rtng_functions
@@ -45,7 +46,6 @@ services:
         arguments:
             - '@user'
             - '@imcger.recenttopicsng.functions'
-            - '@config'
             - '@template'
             - '@controller.helper'
             - '@language'
@@ -57,7 +57,6 @@ services:
         class: imcger\recenttopicsng\event\acp_listener
         arguments:
             - '@template'
-            - '@language'
             - '@request'
         tags:
             - { name: event.listener }
@@ -66,7 +65,6 @@ services:
         class: imcger\recenttopicsng\event\ucp_listener
         arguments:
             - '@auth'
-            - '@config'
             - '@request'
             - '@template'
             - '@user'

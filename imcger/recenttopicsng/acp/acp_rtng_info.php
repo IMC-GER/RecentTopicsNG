@@ -27,12 +27,12 @@ class acp_rtng_info
 	{
 		return [
 			'filename'	=> '\imcger\recenttopicsng\acp\acp_rtng_module',
-			'title'		=> 'RTNG_TITLE',
+			'title'		=> 'RTNG_NAME',
 			'modes'		=> [
 				'settings' => [
 					'title'	=> 'RTNG_CONFIG',
 					'auth'	=> 'ext_imcger/recenttopicsng && acl_a_board',
-					'cat'	=> ['RTNG_TITLE', ],
+					'cat'	=> ['RTNG_NAME', ],
 				],
 			]
 		];

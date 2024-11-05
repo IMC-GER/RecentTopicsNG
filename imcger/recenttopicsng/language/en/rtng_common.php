@@ -39,7 +39,8 @@ if (empty($lang) || !is_array($lang))
 // ‚ ‘ ’ « » “ ” … „ “
 //
 $lang = array_merge($lang, [
-	'RTNG_TITLE'		=> 'Recent Topics NG',
+	'RTNG_NAME'			=> 'Recent Topics NG',
+	'RTNG_DESIG'		=> 'Recent Topics',
 	'RTNG_NO_TOPICS'	=> 'There are no new topics to display.',
 	'RTNG_TOPICS_COUNT' => '%d Topics',
 ]);

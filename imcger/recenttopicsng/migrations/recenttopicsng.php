@@ -36,13 +36,13 @@ class recenttopicsng extends \phpbb\db\migration\migration
 					'user_rtng_disp_last_post'			=> ['BOOL', 0],
 					'user_rtng_disp_first_unrd_post'	=> ['BOOL', 0],
 					'user_rtng_location'				=> ['VCHAR:15', 'RTNG_TOP'],
-					'user_rtng_index_topics_qty'		=> ['UINT', 10],
+					'user_rtng_index_topics_qty'		=> ['UINT', 5],
 					'user_rtng_index_page_qty'			=> ['UINT', 3],
 					'user_rtng_separate_topics_qty'		=> ['UINT', 10],
 					'user_rtng_separate_page_qty'		=> ['UINT', 3],
 				],
 				FORUMS_TABLE => [
-					'forum_recenttopics_ng' => ['UINT', 1],
+					'forum_rtng_disp' => ['BOOL', 1],
 				],
 			],
 		];
@@ -65,7 +65,7 @@ class recenttopicsng extends \phpbb\db\migration\migration
 					'user_rtng_separate_page_qty',
 				],
 				FORUMS_TABLE => [
-					'forum_recenttopics_ng',
+					'forum_rtng_disp',
 				],
 			],
 		];
@@ -80,7 +80,7 @@ class recenttopicsng extends \phpbb\db\migration\migration
 			['config.add', ['rtng_all_topics', 0]],
 			['config.add', ['rtng_anti_topics', 0]],
 			['config.add', ['rtng_min_topic_level', 0]],
-			['config.add', ['rtng_simple_topic_qty', 5]],
+			['config.add', ['rtng_simple_topics_qty', 5]],
 			['config.add', ['rtng_simple_page_qty', 3]],
 
 			['permission.add', ['u_rtng_view']],
@@ -112,11 +112,11 @@ class recenttopicsng extends \phpbb\db\migration\migration
 			['module.add', [
 				'acp',
 				'ACP_CAT_DOT_MODS',
-				'RTNG_TITLE'
+				'RTNG_NAME'
 			]],
 			['module.add', [
 				'acp',
-				'RTNG_TITLE',
+				'RTNG_NAME',
 				[
 					'module_basename'	=> '\imcger\recenttopicsng\acp\acp_rtng_module',
 					'modes'				=> ['settings'],

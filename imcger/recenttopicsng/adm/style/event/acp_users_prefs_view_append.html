@@ -10,50 +10,5 @@
  * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
  #}
 
-{% import '@imcger_recenttopicsng/rtng_macros.html' as common %}
-{% set switch_type = 'radio' %}
-
-	<hr>
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_ENABLE') ~ lang('COLON') }}</label>
-			</dt>
-			<dd>
-				{{ common.switch('user_rtng_enable', S_RTNG_ENABLE, switch_type) }}
-			</dd>
-		</dl>
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_LOCATION') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_LOCATION_EXP') }}</span>
-			</dt>
-			<dd>
-				{{ common.select('user_rtng_location', RTNG_LOCATION, RTNG_LOCATION_OPTIONS) }}
-			</dd>
-		</dl>
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_NUMBER') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_NUMBER_EXP') }}</span>
-			</dt>
-			<dd>
-				{{ common.number('user_rtng_index_topics_qty', RTNG_TOPIC_NUMBER, 1, 999) }}
-			</dd>
-		</dl>
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_SORT_START_TIME') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_SORT_START_TIME_EXP') }}
-			</dt>
-			<dd>
-				{{ common.switch('user_rtng_sort_start_time', S_RTNG_SORT_START_TIME, switch_type) }}
-			</dd>
-		</dl>
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_UNREAD_ONLY') ~ lang('COLON') }}</label>
-			</dt>
-			<dd>
-				{{ common.switch('user_rtng_unread_only', S_RTNG_UNREAD_ONLY, switch_type) }}
-			</dd>
-		</dl>
+<hr>
+{% include '@imcger_recenttopicsng/rtng_user_settings.html' %}

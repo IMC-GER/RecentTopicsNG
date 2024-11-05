@@ -39,16 +39,16 @@ if (empty($lang) || !is_array($lang))
 // ‚ ‘ ’ « » “ ” … „ “
 //
 $lang = array_merge($lang, [
-	'ACL_CAT_RTNG' 						=> 'Aktuelle Themen NG',
+	'ACL_CAT_RTNG' 						=> 'Recent Topics NG',
 	'ACL_U_RTNG_VIEW'					=> 'Kann „Aktuelle Themen NG“ sehen.',
 	'ACL_U_RTNG_ENABLE'					=> 'Kann „Aktuelle Themen NG“ aktivieren / deaktivieren.',
 	'ACL_U_RTNG_LOCATION'				=> 'Kann den Anzeigeort des Blocks „Aktuelle Themen NG“ ändern.',
 	'ACL_U_RTNG_SORT_START_TIME'		=> 'Kann Sortierung des Blocks „Aktuelle Themen NG“ ändern.',
 	'ACL_U_RTNG_UNREAD_ONLY'			=> 'Kann „Aktuelle Themen NG“-Modus auf „nur ungelesene“ ändern.',
-	'ACL_U_RTNG_DISP_LAST_POST'			=> 'Kann .',
-	'ACL_U_RTNG_DISP_FIRST_UNRD_POST'	=> 'Kann .',
-	'ACL_U_RTNG_INDEX_TOPICS_NUMBER'	=> 'Kann Anzahl der aktuellen Themen pro Seite in der Foren-Übersicht ändern.',
-	'ACL_U_RTNG_INDEX_PAGE_NUMBER'		=> 'Kann Anzahl der angezeigten Seite in der Foren-Übersicht ändern.',
-	'ACL_U_RTNG_SEPARATE_TOPICS_NUMBER'	=> 'Kann Anzahl der aktuellen pro Seite auf der separaten Seite ändern.',
-	'ACL_U_RTNG_SEPARATE_PAGE_NUMBER'	=> 'Kann Anzahl der angezeigten Seite auf der separaten Seite ändern.',
+	'ACL_U_RTNG_DISP_LAST_POST'			=> 'Kann den letzten Post als Anzeige im Thementitel wählen.',
+	'ACL_U_RTNG_DISP_FIRST_UNRD_POST'	=> 'Kann den ersten ungelesenen Post als Anzeige im Thementitel wählen.',
+	'ACL_U_RTNG_INDEX_TOPICS_QTY'		=> 'Kann Anzahl der aktuellen Themen pro Seite in der Foren-Übersicht ändern.',
+	'ACL_U_RTNG_INDEX_PAGE_QTY'			=> 'Kann Anzahl der angezeigten Seite in der Foren-Übersicht ändern.',
+	'ACL_U_RTNG_SEPARATE_TOPICS_QTY'	=> 'Kann Anzahl der aktuellen Themen pro Seite auf der separaten Seite ändern.',
+	'ACL_U_RTNG_SEPARATE_PAGE_QTY'		=> 'Kann Anzahl der angezeigten Themen Seite auf der separaten Seite ändern.',
 ]);

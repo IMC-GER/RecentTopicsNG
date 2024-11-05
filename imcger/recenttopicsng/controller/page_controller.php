@@ -71,14 +71,11 @@ class page_controller
 
 	/**
 	 * Display the page app.php/rtng/{page}
-	 *
-	 * @return \Symfony\Component\HttpFoundation\Response A Symfony Response object
-	 * @access public
 	 */
 	public function display($page)
 	{
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
-		$title = $this->language->lang('RTNG_TITLE');
+		$title = $this->language->lang('RTNG_DESIG');
 
 		// Redirect to index site when user has no permisson
 		if (!($this->user->data['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view')))
@@ -90,10 +87,8 @@ class page_controller
 		{
 			// Displays ResentTopics NG in a simple page for further use
 			case 'simple':
-				// Topics per page, 0 use default settings
+				// Set the number of pages and topics
 				$this->rtng_functions->topics_per_page = $this->config['rtng_simple_topic_qty'];
-
-				// Numbers of pages, 0 use default settings
 				$this->rtng_functions->topics_page_number = $this->config['rtng_simple_page_qty'];
 
 				// Set template
@@ -105,10 +100,8 @@ class page_controller
 
 			// Displays ResentTopics NG in a separate page
 			case 'separate':
-				// Topics per page, 0 use default settings
+				// Set the number of pages and topics
 				$this->rtng_functions->topics_per_page = $this->user->data['user_rtng_separate_topics_qty'];
-
-				// Numbers of pages, 0 use default settings
 				$this->rtng_functions->topics_page_number = $this->user->data['user_rtng_separate_page_qty'];
 
 				// Set template
@@ -123,7 +116,7 @@ class page_controller
 
 				// Generate link in NavBar
 				$this->template->assign_block_vars('navlinks', [
-					'BREADCRUMB_NAME'	=> $this->language->lang('RTNG_TITLE'),
+					'BREADCRUMB_NAME'	=> $this->language->lang('RTNG_DESIG'),
 					'U_BREADCRUMB'		=> $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
 				]);
 

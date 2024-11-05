@@ -146,6 +146,8 @@ class rtng_functions
 	}
 
 	/**
+	 * Display recent topics
+	 *
 	 * @param string $tpl_loopname
 	 */
 	public function display_recent_topics($tpl_loopname = 'rtng'): void
@@ -304,7 +306,7 @@ class rtng_functions
 			$sql = 'SELECT forum_id
 					FROM ' . FORUMS_TABLE . '
 					WHERE ' . $this->db->sql_in_set('forum_id', $this->forum_ids) . '
-						AND forum_recenttopics_ng = 1';
+						AND forum_rtng_disp = 1';
 
 			$result = $this->db->sql_query($sql);
 
@@ -425,8 +427,9 @@ class rtng_functions
 	}
 
 	/**
-	 * custom function to get allowed topics
-	 * used for anon access or when unread topics is not requested
+	 * Custom function to get allowed topics
+	 * Used for anon access or when unread topics is not requested
+	 *
 	 * @param $excluded_topics
 	 * @param $min_topic_level
 	 * @return array
@@ -477,6 +480,8 @@ class rtng_functions
 	}
 
 	/**
+	 * Get username details for placing into templates.
+	 *
 	 * @param $row
 	 * @return array
 	 */
@@ -494,7 +499,8 @@ class rtng_functions
 	}
 
 	/**
-	 * pull the data of the requested topics
+	 * Pull the data of the requested topics
+	 *
 	 * @return array
 	 */
 	private function get_topics_sql (): array
@@ -545,6 +551,8 @@ class rtng_functions
 	}
 
 	/**
+	 * Set template vars
+	 *
 	 * @param       $tpl_loopname
 	 * @param       $topic_tracking_info
 	 * @param int   $topics_count
@@ -623,7 +631,7 @@ class rtng_functions
 
 				if ($unread_topic && $this->user->data['user_rtng_disp_first_unrd_post'])
 				{
-					// Get id and title of first unread post in topic
+					// Get author, posttime, id and title of first unread post in topic
 					$sql_array = [
 						'SELECT'	=> 'p.poster_id, u.username, u.user_colour, p.post_id, p.post_subject, p.post_time',
 						'FROM'		=> [

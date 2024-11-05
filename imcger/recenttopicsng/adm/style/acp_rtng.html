@@ -15,7 +15,7 @@
 
 {% include 'overall_header.html' %}
 
-<h1>{{ lang('RTNG_TITLE') }}</h1>
+<h1>{{ lang('RTNG_NAME') }}</h1>
 <p>{{ lang('RTNG_EXPLAIN') }}</p>
 
 <form id="acp_board" method="post" action="{{ U_ACTION }}">
@@ -32,7 +32,6 @@
 				{{ common.switch('rtng_all_topics', RTNG_ALL_TOPICS, switch_type) }}
 			</dd>
 		</dl>
-
 		<dl>
 			<dt>
 				<label>{{ lang('RTNG_MIN_TOPIC_LEVEL') ~ lang('COLON') }}</label><br>
@@ -42,7 +41,6 @@
 				{{ common.select('rtng_min_topic_level', RTNG_MIN_TOPIC_LEVEL, RTNG_MIN_TOPIC_LEVEL_OPTIONS) }}
 			</dd>
 		</dl>
-
 		<dl>
 			<dt>
 				<label>{{ lang('RTNG_ANTI_TOPICS') ~ lang('COLON') }}</label><br>
@@ -52,13 +50,31 @@
 				{{ common.text('rtng_anti_topics', RTNG_ANTI_TOPICS, 30) }}
 			</dd>
 		</dl>
-
 		<dl>
 			<dt>
-				<label>{{ lang('RTNG_PARENTS') ~ lang('COLON') }}</label><br><span>{{ lang('RTNG_PARENTS_EXP') }}</span>
+				<label>{{ lang('RTNG_PARENTS') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_PARENTS_EXP') }}</span>
 			</dt>
 			<dd>
 				{{ common.switch('rtng_parents', RTNG_PARENTS, switch_type) }}
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_SIMPLE_TOPICS_QTY') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_SIMPLE_TOPICS_QTY_EXP') }}</span>
+			</dt>
+			<dd>
+				{{ common.number('rtng_simple_topics_qty', RTNG_SIMPLE_TOPICS_QTY, 1, 999) }}
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label>{{ lang('RTNG_SIMPLE_PAGE_QTY') ~ lang('COLON') }}</label><br>
+				<span>{{ lang('RTNG_SIMPLE_PAGE_QTY_EXP') }}<br>{{ U_RTNG_PAGE_SIMPLE|e('html') }}</span>
+			</dt>
+			<dd>
+				{{ common.number('rtng_simple_page_qty', RTNG_SIMPLE_PAGE_QTY, 1, 999) }}
 			</dd>
 		</dl>
 	</fieldset>
@@ -66,65 +82,7 @@
 	<fieldset>
 		<legend>{{ lang('RTNG_OVERRIDABLE') }}</legend>
 
-		<dl>
-			<dt>
-				<label>{{ lang('INDEX') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_INDEX_DISPLAY_EXP') }}</span>
-			</dt>
-			<dd>
-				{{ common.switch('user_rtng_enable', RTNG_ENABLE, switch_type) }}
-			</dd>
-		</dl>
-
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_LOCATION') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_LOCATION_EXP') }}</span>
-			</dt>
-			<dd>
-				{{ common.select('user_rtng_location', RTNG_LOCATION, RTNG_LOCATION_OPTIONS) }}
-			</dd>
-		</dl>
-
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_TOPIC_NUMBER') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_TOPIC_NUMBER_EXP') }}</span>
-			</dt>
-			<dd>
-				{{ common.number('user_rtng_index_topics_qty', RTNG_TOPIC_NUMBER, 1, 999) }}
-			</dd>
-		</dl>
-
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_INDEX_PAGE_NUMBER') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_INDEX_PAGE_NUMBER_EXP') }}</span>
-			</dt>
-			<dd>
-				{{ common.number('user_rtng_index_page_qty', RTNG_INDEX_PAGE_NUMBER, 1, 999) }}
-			</dd>
-		</dl>
-
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_SORT_START_TIME') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_SORT_START_TIME_EXP') }}</span>
-			</dt>
-			<dd>
-				{{ common.switch('user_rtng_sort_start_time', RTNG_SORT_START_TIME, switch_type) }}
-			</dd>
-		</dl>
-
-		<dl>
-			<dt>
-				<label>{{ lang('RTNG_UNREAD_ONLY') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_UNREAD_ONLY_EXP') }}</span>
-			</dt>
-			<dd>
-				{{ common.switch('user_rtng_unread_only', RTNG_UNREAD_ONLY, switch_type) }}
-			</dd>
-		</dl>
+		{% include '@imcger_recenttopicsng/rtng_user_settings.html' %}
 
 		<hr>
 
@@ -153,7 +111,7 @@
 </form>
 
 <p class="rtng-copyright">
-	{{ RTNG_TITLE }} v{{ RTNG_EXT_VER }} &copy; RTNG<br>
+	{{ RTNG_NAME }} v{{ RTNG_EXT_VER }} &copy; IMC-GER / LukeWCS<br>
 	{{ lang('RTNG_LANG_DESC') }} v{{ lang('RTNG_LANG_EXT_VER') }} &bull; {{ lang('RTNG_LANG_AUTHOR') }}
 </p>
 

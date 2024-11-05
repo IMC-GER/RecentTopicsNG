@@ -19,7 +19,7 @@
 				<dl class="row-item">
 					<dt></dt>
 					<dd class="list-inner">&nbsp;
-						<a href="{{ U_RTNG_PAGE_SEPARATE }}" title="{{ lang('RTNG_TITLE') }}">{{ lang('RTNG_TITLE') }}</a></dd>
+						<a href="{{ U_RTNG_PAGE_SEPARATE }}" title="{{ lang('RTNG_DESIG') }}">{{ lang('RTNG_DESIG') }}</a></dd>
 				</dl>
 				{% set S_CC_FORUM_HIDDEN = S_EXT_COLCAT_HIDDEN %}
 				{% set U_CC_COLLAPSE_URL = U_EXT_COLCAT_COLLAPSE_URL %}
@@ -48,7 +48,19 @@
 					{% if rtng.S_UNREAD_TOPIC && !S_IS_BOT %}<a href="{{ rtng.U_NEWEST_POST }}" class="row-item-link"></a>{% endif %}
 					<div class="list-inner">
 						{% EVENT topiclist_row_prepend %}
-						<a href="{{ rtng.S_DISP_FIRST_UNREAD_POST ? rtng.U_FIRST_UNREAD_POST : (rtng.S_DISP_LAST_POST ? rtng.U_LAST_POST : rtng.U_VIEW_TOPIC) }}" class="topictitle">{{ rtng.S_DISP_FIRST_UNREAD_POST ? rtng.FIRST_UNREAD_POST_SUBJECT : (rtng.S_DISP_LAST_POST ? rtng.LAST_POST_SUBJECT : rtng.TOPIC_TITLE) }}</a>
+						<a href="
+							{% if rtng.S_DISP_FIRST_UNREAD_POST %}
+								{{ rtng.U_FIRST_UNREAD_POST }}
+							{% else %}
+								{{ rtng.S_DISP_LAST_POST ? rtng.U_LAST_POST : rtng.U_VIEW_TOPIC }}
+							{% endif %}
+						" class="topictitle">
+							{% if rtng.S_DISP_FIRST_UNREAD_POST %}
+								{{ rtng.FIRST_UNREAD_POST_SUBJECT }}
+							{% else %}
+								{{ rtng.S_DISP_LAST_POST ? rtng.LAST_POST_SUBJECT : rtng.TOPIC_TITLE }}
+							{% endif %}
+						</a>
 						<div class="forum-links">
 							{% if rtng.S_HAS_POLL %}<i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i>{% endif %}
 							{% if rtng.S_POST_GLOBAL && FORUM_ID != rtng.FORUM_ID %}
@@ -63,8 +75,18 @@
 				{% if !S_IS_BOT %}
 				<dd class="lastpost">
 						<span>
-							{{ lang('POST_BY_AUTHOR') }} {% EVENT viewforum_body_last_post_author_username_prepend %} {{ rtng.S_DISP_FIRST_UNREAD_POST ? rtng.FIRST_UNREAD_POST_AUTHOR_FULL : (rtng.S_DISP_LAST_POST ? rtng.LAST_POST_AUTHOR_FULL : rtng.TOPIC_AUTHOR_FULL) }} {% EVENT viewforum_body_last_post_author_username_append %} &laquo;
-							{{ rtng.S_DISP_FIRST_UNREAD_POST ? rtng.FIRST_UNREAD_POST_TIME : (rtng.S_DISP_LAST_POST ? rtng.LAST_POST_TIME : rtng.FIRST_POST_TIME) }}
+							{{ lang('POST_BY_AUTHOR') }} {% EVENT viewforum_body_last_post_author_username_prepend %}
+								{% if rtng.S_DISP_FIRST_UNREAD_POST %}
+									{{ rtng.FIRST_UNREAD_POST_AUTHOR_FULL }}
+								{% else %}
+									{{ rtng.S_DISP_LAST_POST ? rtng.LAST_POST_AUTHOR_FULL : rtng.TOPIC_AUTHOR_FULL }}
+								{% endif %}
+							{% EVENT viewforum_body_last_post_author_username_append %} &laquo;
+								{% if rtng.S_DISP_FIRST_UNREAD_POST %}
+									{{ rtng.FIRST_UNREAD_POST_TIME }}
+								{% else %}
+									{{ rtng.S_DISP_LAST_POST ? rtng.LAST_POST_TIME : rtng.FIRST_POST_TIME }}
+								{% endif %}
 							<a href="{{ rtng.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">
 								<i class="icon fa-external-link-square fa-fw {% if rtng.S_UNREAD_TOPIC && !S_IS_BOT %}icon-red icon-md{% else %}icon-lightgrey icon-md{% endif %}" aria-hidden="true"></i>
 								<span class="sr-only">{{ VIEW_LATEST_POST }}</span>
