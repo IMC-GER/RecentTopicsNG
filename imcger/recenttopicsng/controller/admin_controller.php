@@ -39,6 +39,8 @@ class admin_controller
 	/** @var \phpbb\controller\helper */
 	protected $helper;
 
+	protected $ctrl_common;
+
 	/**
 	 * Constructor
 	 */
@@ -50,7 +52,8 @@ class admin_controller
 		\phpbb\request\request $request,
 		\phpbb\db\driver\driver_interface $db,
 		\phpbb\extension\manager $ext_manager,
-		\phpbb\controller\helper $helper
+		\phpbb\controller\helper $helper,
+		\imcger\recenttopicsng\controller\controller_common $controller_common
 	)
 	{
 		$this->config		= $config;
@@ -60,6 +63,7 @@ class admin_controller
 		$this->db			= $db;
 		$this->ext_manager	= $ext_manager;
 		$this->helper		= $helper;
+		$this->ctrl_common	= $controller_common;
 	}
 
 	/**
@@ -67,6 +71,8 @@ class admin_controller
 	 */
 	public function display_options()
 	{
+		$this->language->add_lang(['viewforum', 'ucp']);
+
 		add_form_key('imcger/recenttopicsng');
 
 		// Is the form being submitted to us?
@@ -88,6 +94,16 @@ class admin_controller
 		}
 
 		$this->set_template_vars();
+	}
+
+	/**
+	 * Set page url
+	 *
+	 * @param string $u_action Custom form action
+	 */
+	public function set_page_url($u_action)
+	{
+		$this->u_action = $u_action;
 	}
 
 	/**
@@ -114,40 +130,41 @@ class admin_controller
 		$simple_page_url  = $board_url . explode('?', $simple_page_path)[0];
 
 		$this->template->assign_vars([
-			'U_ACTION'				=> $this->u_action,
-			'U_RTNG_PAGE_SIMPLE'	=> $simple_page_url,
+			'U_ACTION'						=> $this->u_action,
+			'U_RTNG_PAGE_SIMPLE'			=> $simple_page_url,
 
-			'RTNG_NAME'				=> $metadata_manager->get_metadata('display-name'),
-			'RTNG_EXT_VER'			=> $metadata_manager->get_metadata('version'),
+			'RTNG_NAME'						=> $metadata_manager->get_metadata('display-name'),
+			'RTNG_EXT_VER'					=> $metadata_manager->get_metadata('version'),
 
-			'RTNG_ANTI_TOPICS'		=> $this->config['rtng_anti_topics'],
-			'RTNG_PARENTS'			=> (int) $this->config['rtng_parents'],
-			'RTNG_ALL_TOPICS'		=> (int) $this->config['rtng_all_topics'],
-			'RTNG_MIN_TOPIC_LEVEL'	=> (int) $this->config['rtng_min_topic_level'],
-			'RTNG_MIN_TOPIC_LEVEL_OPTIONS' => [
-				'POST'				  => '0',
-				'POST_STICKY'		  => '1',
-				'ANNOUNCEMENTS'		  => '2',
-				'GLOBAL_ANNOUNCEMENT' => '3',
-			],
-			'RTNG_ENABLE'			=> $user_data['user_rtng_enable'],
-			'RTNG_SORT_START_TIME'	=> $user_data['user_rtng_sort_start_time'],
-			'RTNG_UNREAD_ONLY'		=> $user_data['user_rtng_unread_only'],
-			'RTNG_LOCATION'			=> $user_data['user_rtng_location'],
-			'RTNG_LOCATION_OPTIONS' => [
-				'RTNG_TOP'	 	=> 'RTNG_TOP',
-				'RTNG_BOTTOM'	=> 'RTNG_BOTTOM',
-				'RTNG_SIDE'	 	=> 'RTNG_SIDE',
-				'RTNG_SEPARATE' => 'RTNG_SEPARATE',
-			],
-			'RTNG_DISP_LAST_POST'		=> $user_data['user_rtng_disp_last_post'],
-			'RTNG_DISP_FIRST_UNRD_POST'	=> $user_data['user_rtng_disp_first_unrd_post'],
-			'RTNG_INDEX_TOPICS_QTY'		=> $user_data['user_rtng_index_topics_qty'],
-			'RTNG_INDEX_PAGE_QTY'		=> $user_data['user_rtng_index_page_qty'],
-			'RTNG_SEPARATE_TOPICS_QTY'	=> $user_data['user_rtng_separate_topics_qty'],
-			'RTNG_SEPARATE_PAGE_QTY'	=> $user_data['user_rtng_separate_page_qty'],
-			'RTNG_SIMPLE_TOPICS_QTY'	=> (int) $this->config['rtng_simple_topics_qty'],
-			'RTNG_SIMPLE_PAGE_QTY'		=> (int) $this->config['rtng_simple_page_qty'],
+			'RTNG_ANTI_TOPICS'				=> $this->config['rtng_anti_topics'],
+			'RTNG_PARENTS'					=> (int) $this->config['rtng_parents'],
+			'RTNG_ALL_TOPICS'				=> (int) $this->config['rtng_all_topics'],
+			'RTNG_MIN_TOPIC_LEVEL_OPTIONS'	=> $this->ctrl_common->select_struct((int) $this->config['rtng_min_topic_level'], [
+				'POST'						=> 0,
+				'POST_STICKY'				=> 1,
+				'ANNOUNCEMENTS'				=> 2,
+				'GLOBAL_ANNOUNCEMENT'		=> 3,
+			]),
+			'RTNG_ENABLE'					=> $user_data['user_rtng_enable'],
+			'RTNG_SORT_START_TIME'			=> $user_data['user_rtng_sort_start_time'],
+			'RTNG_UNREAD_ONLY'				=> $user_data['user_rtng_unread_only'],
+			'RTNG_LOCATION_OPTIONS' 		=> $this->ctrl_common->select_struct($user_data['user_rtng_location'], [
+				'RTNG_TOP'					=> 'RTNG_TOP',
+				'RTNG_BOTTOM'				=> 'RTNG_BOTTOM',
+				'RTNG_SIDE'					=> 'RTNG_SIDE',
+				'RTNG_SEPARATE'				=> 'RTNG_SEPARATE',
+			]),
+			'RTNG_DISP_LAST_POST_OPTIONS'	=> $this->ctrl_common->select_struct((int) $user_data['user_rtng_disp_last_post'], [
+				'RTNG_FIRST_POST'	 		=> 0,
+				'RTNG_LAST_POST'			=> 1,
+			]),
+			'RTNG_DISP_FIRST_UNRD_POST'		=> $user_data['user_rtng_disp_first_unrd_post'],
+			'RTNG_INDEX_TOPICS_QTY'			=> $user_data['user_rtng_index_topics_qty'],
+			'RTNG_INDEX_PAGE_QTY'			=> $user_data['user_rtng_index_page_qty'],
+			'RTNG_SEPARATE_TOPICS_QTY'		=> $user_data['user_rtng_separate_topics_qty'],
+			'RTNG_SEPARATE_PAGE_QTY'		=> $user_data['user_rtng_separate_page_qty'],
+			'RTNG_SIMPLE_TOPICS_QTY'		=> (int) $this->config['rtng_simple_topics_qty'],
+			'RTNG_SIMPLE_PAGE_QTY'			=> (int) $this->config['rtng_simple_page_qty'],
 		]);
 
 	}
@@ -205,15 +222,5 @@ class admin_controller
 				SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . $sql_where;
 
 		$this->db->sql_query($sql);
-	}
-
-	/**
-	 * Set page url
-	 *
-	 * @param string $u_action Custom form action
-	 */
-	public function set_page_url($u_action)
-	{
-		$this->u_action = $u_action;
 	}
 }

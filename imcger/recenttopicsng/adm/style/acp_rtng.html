@@ -38,7 +38,7 @@
 				<span>{{ lang('RTNG_MIN_TOPIC_LEVEL_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.select('rtng_min_topic_level', RTNG_MIN_TOPIC_LEVEL, RTNG_MIN_TOPIC_LEVEL_OPTIONS) }}
+				{{ common.select('rtng_min_topic_level', RTNG_MIN_TOPIC_LEVEL_OPTIONS) }}
 			</dd>
 		</dl>
 		<dl>
@@ -61,6 +61,14 @@
 		</dl>
 		<dl>
 			<dt>
+				<label>{{ lang('RTNG_SIMPLE_LINK') ~ lang('COLON') }}</label><br>
+			</dt>
+			<dd>
+				<a href="{{ U_RTNG_PAGE_SIMPLE }}" target="_blank">{{ U_RTNG_PAGE_SIMPLE|e('html') }}</a>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
 				<label>{{ lang('RTNG_SIMPLE_TOPICS_QTY') ~ lang('COLON') }}</label><br>
 				<span>{{ lang('RTNG_SIMPLE_TOPICS_QTY_EXP') }}</span>
 			</dt>
@@ -71,7 +79,7 @@
 		<dl>
 			<dt>
 				<label>{{ lang('RTNG_SIMPLE_PAGE_QTY') ~ lang('COLON') }}</label><br>
-				<span>{{ lang('RTNG_SIMPLE_PAGE_QTY_EXP') }}<br>{{ U_RTNG_PAGE_SIMPLE|e('html') }}</span>
+				<span>{{ lang('RTNG_SIMPLE_PAGE_QTY_EXP') }}</span>
 			</dt>
 			<dd>
 				{{ common.number('rtng_simple_page_qty', RTNG_SIMPLE_PAGE_QTY, 1, 999) }}

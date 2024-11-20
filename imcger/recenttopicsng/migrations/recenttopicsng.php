@@ -17,7 +17,7 @@ class recenttopicsng extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return isset($this->config['rtng_simple_topic_qty']);
+		return isset($this->config['rtng_simple_topics_qty']);
 	}
 
 	public static function depends_on()

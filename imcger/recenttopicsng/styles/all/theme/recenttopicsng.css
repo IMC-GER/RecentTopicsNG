@@ -2,7 +2,7 @@
 --------------------------------------------- */
 
 #phpbbsection {
-	overflow: hidden;
+	list-style: none;
 }
 
 /* side view big screen maxed out */

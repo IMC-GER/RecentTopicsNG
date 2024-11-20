@@ -38,6 +38,8 @@ class ucp_listener implements EventSubscriberInterface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	protected $ctrl_common;
+
 	/**
 	 * Constructor
 	 */
@@ -48,15 +50,17 @@ class ucp_listener implements EventSubscriberInterface
 		\phpbb\template\template $template,
 		\phpbb\user $user,
 		\phpbb\language\language $language,
-		\phpbb\db\driver\driver_interface $db
+		\phpbb\db\driver\driver_interface $db,
+		\imcger\recenttopicsng\controller\controller_common $controller_common
 	)
 	{
-		$this->auth		= $auth;
-		$this->request	= $request;
-		$this->template = $template;
-		$this->user		= $user;
-		$this->language	= $language;
-		$this->db		= $db;
+		$this->auth			= $auth;
+		$this->request		= $request;
+		$this->template 	= $template;
+		$this->user			= $user;
+		$this->language		= $language;
+		$this->db			= $db;
+		$this->ctrl_common	= $controller_common;
 	}
 
 	/**
@@ -104,7 +108,7 @@ class ucp_listener implements EventSubscriberInterface
 			{
 				$template_vars += [
 					'S_RTNG_SHOW'		=> true,
-					'TOGGLECTRL_TYPE'	=> 'radio',
+					'TOGGLECTRL_RTNG'	=> 'radio',
 				];
 			}
 
@@ -118,13 +122,12 @@ class ucp_listener implements EventSubscriberInterface
 			if ($this->auth->acl_get('u_rtng_location'))
 			{
 				$template_vars += [
-					'RTNG_LOCATION'			=> $event['data']['user_rtng_location'],
-					'RTNG_LOCATION_OPTIONS' => [
-						'RTNG_TOP'		=> 'RTNG_TOP',
-						'RTNG_BOTTOM'	=> 'RTNG_BOTTOM',
-						'RTNG_SIDE'		=> 'RTNG_SIDE',
-						'RTNG_SEPARATE'	=> 'RTNG_SEPARATE',
-					],
+					'RTNG_LOCATION_OPTIONS' => $this->ctrl_common->select_struct($event['data']['user_rtng_location'], [
+						'RTNG_TOP'			=> 'RTNG_TOP',
+						'RTNG_BOTTOM'		=> 'RTNG_BOTTOM',
+						'RTNG_SIDE'			=> 'RTNG_SIDE',
+						'RTNG_SEPARATE'		=> 'RTNG_SEPARATE',
+					]),
 				];
 			}
 
@@ -145,7 +148,10 @@ class ucp_listener implements EventSubscriberInterface
 			if ($this->auth->acl_get('u_rtng_disp_last_post'))
 			{
 				$template_vars += [
-					'RTNG_DISP_LAST_POST' => $event['data']['user_rtng_disp_last_post'],
+					'RTNG_DISP_LAST_POST_OPTIONS'	=> $this->ctrl_common->select_struct((int) $event['data']['user_rtng_disp_last_post'], [
+						'RTNG_FIRST_POST'			=> 0,
+						'RTNG_LAST_POST'			=> 1,
+					])
 				];
 			}
 

@@ -88,7 +88,7 @@ class page_controller
 			// Displays ResentTopics NG in a simple page for further use
 			case 'simple':
 				// Set the number of pages and topics
-				$this->rtng_functions->topics_per_page = $this->config['rtng_simple_topic_qty'];
+				$this->rtng_functions->topics_per_page = $this->config['rtng_simple_topics_qty'];
 				$this->rtng_functions->topics_page_number = $this->config['rtng_simple_page_qty'];
 
 				// Set template

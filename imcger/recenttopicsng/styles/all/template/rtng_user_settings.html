@@ -11,8 +11,7 @@
  #}
 
 {%- import '@imcger_recenttopicsng/rtng_macros.html' as common %}
-{%- set switch_type = TOGGLECTRL_TYPE ?? 'toggle' %}
-{%- set switch_type = TOGGLECTRL_RTNG ? TOGGLECTRL_RTNG : switch_type %}
+{%- set switch_type = TOGGLECTRL_RTNG ?? TOGGLECTRL_TYPE ?? 'toggle' %}
 
 	{%- if RTNG_ENABLE is defined %}
 		<dl>
@@ -24,14 +23,14 @@
 			</dd>
 		</dl>
 	{% endif %}
-	{% if RTNG_LOCATION is defined -%}
+	{% if RTNG_LOCATION_OPTIONS is defined -%}
 		<dl>
 			<dt>
 				<label>{{ lang('RTNG_LOCATION') ~ lang('COLON') }}</label><br>
 				<span>{{ lang('RTNG_LOCATION_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.select('user_rtng_location', RTNG_LOCATION, RTNG_LOCATION_OPTIONS) }}
+				{{ common.select('user_rtng_location', RTNG_LOCATION_OPTIONS) }}
 			</dd>
 		</dl>
 	{% endif %}
@@ -46,14 +45,14 @@
 			</dd>
 		</dl>
 	{% endif %}
-	{% if RTNG_DISP_LAST_POST is defined -%}
+	{% if RTNG_DISP_LAST_POST_OPTIONS is defined -%}
 		<dl>
 			<dt>
 				<label>{{ lang('RTNG_DISP_LAST_POST') ~ lang('COLON') }}</label><br>
 				<span>{{ lang('RTNG_DISP_LAST_POST_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.switch('user_rtng_disp_last_post', RTNG_DISP_LAST_POST, switch_type) }}
+				{{ common.select('user_rtng_disp_last_post', RTNG_DISP_LAST_POST_OPTIONS) }}
 			</dd>
 		</dl>
 	{% endif %}
@@ -71,7 +70,7 @@
 	{% if RTNG_UNREAD_ONLY is defined -%}
 		<dl>
 			<dt>
-				<label>{{ lang('RTNG_UNREAD_ONLY') ~ lang('COLON') }}</label>
+				<label>{{ lang('RTNG_UNREAD_ONLY') ~ lang('COLON') }}</label><br>
 				<span>{{ lang('RTNG_UNREAD_ONLY_EXP') }}</span>
 			</dt>
 			<dd>
