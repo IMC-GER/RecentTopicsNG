@@ -10,9 +10,7 @@
  * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
  #}
 
-{% import '@imcger_recenttopicsng/rtng_macros.html' as common %}
-
-{% if S_RTNG_SHOW %}
+{% if S_RTNG_SHOW is defined %}
 	<hr>
 	{% include '@imcger_recenttopicsng/rtng_user_settings.html' %}
 {% endif %}

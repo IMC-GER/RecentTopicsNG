@@ -20,9 +20,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class main_listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\user */
-	protected $user;
-
 	/** @var imcger\recenttopicsng\core\rtng_functions */
 	protected $rtng_functions;
 
@@ -38,25 +35,31 @@ class main_listener implements EventSubscriberInterface
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
+	protected $ctrl_common;
+
+	private $user_setting;
+
 	/**
 	 * Constructor
 	 */
 	public function __construct
 	(
-		\phpbb\user $user,
 		\imcger\recenttopicsng\core\rtng_functions $rtng_functions,
 		\phpbb\template\template $template,
 		\phpbb\controller\helper $helper,
 		\phpbb\language\language $language,
-		\phpbb\auth\auth $auth
+		\phpbb\auth\auth $auth,
+		\imcger\recenttopicsng\controller\controller_common $controller_common
 	)
 	{
-		$this->user				= $user;
 		$this->rtng_functions	= $rtng_functions;
 		$this->template			= $template;
 		$this->helper			= $helper;
 		$this->language			= $language;
 		$this->auth				= $auth;
+		$this->ctrl_common		= $controller_common;
+
+		$this->user_setting = $this->ctrl_common->get_user_setting();
 	}
 
 	/**
@@ -78,7 +81,7 @@ class main_listener implements EventSubscriberInterface
 	{
 		$this->template->assign_vars([
 			'U_RTNG_PAGE_SEPARATE'  => $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
-			'S_RTNG_LINK_IN_NAVBAR' => $this->auth->acl_get('u_rtng_view') && $this->user->data['user_rtng_enable'] && $this->user->data['user_rtng_location'] == 'RTNG_SEPARATE',
+			'S_RTNG_LINK_IN_NAVBAR' => $this->auth->acl_get('u_rtng_view') && $this->user_setting['user_rtng_enable'] && $this->user_setting['user_rtng_location'] == 'RTNG_SEPARATE',
 		]);
 
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
@@ -89,7 +92,7 @@ class main_listener implements EventSubscriberInterface
 	 */
 	public function display_rt()
 	{
-		if ($this->user->data['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view'))
+		if ($this->user_setting['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view'))
 		{
 			$this->rtng_functions->display_recent_topics();
 		}

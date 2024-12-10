@@ -1,6 +1,7 @@
 ### Changelog
 
 #### 3.0.0 (05/11/2024)
+  - [CHG] Changed php max version to 8.4
   - [CHG] Changed repository folder structure.
   - [CHG] Changed vendor and package name to `ìmcger/recenttopcsng`
   - [CHG] Migration has been completely renewed.
@@ -9,20 +10,20 @@
   - [CHG] ChangeLog has been revised.
   - [CHG] Texts in the language files have been revised.
   - [CHG] Rename variable names in language files, template files, ACP, UCP and core.
-  - [CHG] The display conditions for the settings in the UCP have been revised.
-  - [CHG] The conditions for displaying recent topics on the index page have been revised.
   - [CHG] Added template vars to switch in template between first post, first unread post and last post.
   - [CHG] Modified template topbottom.html to display the first post, the first unread post or the last post.
   - [CHG] Modified template body_side.html to display the first post, the first unread post or the last post.
   - [CHG] Split listener.php into main_listen.php and acp_listener.php.
   - [CHG] Optimize code for support extension `\phpbb\collapsiblecategories`.
-  - [ADD] Copyright for the author of the language files added to the ACP template.
+  - [ADD] Copyright notice for the author of the language files added to the ACP template.
   - [ADD] User settings added to the user administration panel in ACP.
   - [ADD] DB query extended to include all information required to display the link to the first unread post.
   - [ADD] Added template vars to show all info for the first unread post.
   - [ADD] Added user settings for Simple and Separate page display.
   - [ADD] Added a user preference to toggle the topic heading between the first post, the last post, or the first unread post.
   - [ADD] Added template file for user settings in UCP, ACP and user administration.
+  - [ADD] Added methode in core to set number of topics and number of sites
+  - [ADD] Added helper functions to optimize code in the core, listeners and controller
   - [DEL] Removed the donation section from the ACP.
   - [DEL] Removed unused template variables in function display_recent_topics().
   - [DEL] Redundant data rows in the config table has been removed. Use settings from guest as template for new user.

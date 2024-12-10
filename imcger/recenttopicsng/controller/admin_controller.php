@@ -111,18 +111,6 @@ class admin_controller
 	 */
 	protected function set_template_vars()
 	{
-		// Read guest account settings as default
-		$sql = 'SELECT user_rtng_enable, user_rtng_sort_start_time, user_rtng_unread_only,
-					   user_rtng_location, user_rtng_disp_last_post, user_rtng_disp_first_unrd_post,
-					   user_rtng_index_topics_qty, user_rtng_index_page_qty,
-					   user_rtng_separate_topics_qty, user_rtng_separate_page_qty
-				FROM ' . USERS_TABLE . '
-				WHERE user_id = ' . ANONYMOUS;
-
-		$result	= $this->db->sql_query_limit($sql, 1);
-		$user_data = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
-
 		$metadata_manager = $this->ext_manager->create_extension_metadata_manager('imcger/recenttopicsng');
 
 		$board_url		  = generate_board_url(true);
@@ -145,28 +133,15 @@ class admin_controller
 				'ANNOUNCEMENTS'				=> 2,
 				'GLOBAL_ANNOUNCEMENT'		=> 3,
 			]),
-			'RTNG_ENABLE'					=> $user_data['user_rtng_enable'],
-			'RTNG_SORT_START_TIME'			=> $user_data['user_rtng_sort_start_time'],
-			'RTNG_UNREAD_ONLY'				=> $user_data['user_rtng_unread_only'],
-			'RTNG_LOCATION_OPTIONS' 		=> $this->ctrl_common->select_struct($user_data['user_rtng_location'], [
-				'RTNG_TOP'					=> 'RTNG_TOP',
-				'RTNG_BOTTOM'				=> 'RTNG_BOTTOM',
-				'RTNG_SIDE'					=> 'RTNG_SIDE',
-				'RTNG_SEPARATE'				=> 'RTNG_SEPARATE',
-			]),
-			'RTNG_DISP_LAST_POST_OPTIONS'	=> $this->ctrl_common->select_struct((int) $user_data['user_rtng_disp_last_post'], [
-				'RTNG_FIRST_POST'	 		=> 0,
-				'RTNG_LAST_POST'			=> 1,
-			]),
-			'RTNG_DISP_FIRST_UNRD_POST'		=> $user_data['user_rtng_disp_first_unrd_post'],
-			'RTNG_INDEX_TOPICS_QTY'			=> $user_data['user_rtng_index_topics_qty'],
-			'RTNG_INDEX_PAGE_QTY'			=> $user_data['user_rtng_index_page_qty'],
-			'RTNG_SEPARATE_TOPICS_QTY'		=> $user_data['user_rtng_separate_topics_qty'],
-			'RTNG_SEPARATE_PAGE_QTY'		=> $user_data['user_rtng_separate_page_qty'],
 			'RTNG_SIMPLE_TOPICS_QTY'		=> (int) $this->config['rtng_simple_topics_qty'],
 			'RTNG_SIMPLE_PAGE_QTY'			=> (int) $this->config['rtng_simple_page_qty'],
 		]);
 
+		// Read guest account settings as default and setting template vars
+		$user_data		= $this->ctrl_common->get_rtng_user_data(ANONYMOUS);
+		$template_vars	= $this->ctrl_common->get_user_set_template_vars(ANONYMOUS, $user_data);
+		unset($template_vars['TOGGLECTRL_RTNG']);
+		$this->template->assign_vars($template_vars);
 	}
 
 	/**
@@ -180,20 +155,18 @@ class admin_controller
 		$this->config->set('rtng_simple_topics_qty', $this->request->variable('rtng_simple_topics_qty', 5));
 		$this->config->set('rtng_simple_page_qty', $this->request->variable('rtng_simple_page_qty', 3));
 
-		// variable should be '' as it is a string ("1, 2, 3928") here, not an integer.
+		// Variable should be a string ("1234,2457,3928").
 		$rtng_anti_topics = $this->request->variable('rtng_anti_topics', '');
-		$ants = explode(",", $rtng_anti_topics);
-		$checkants = true;
-		foreach ($ants as $ant)
-		{
-			if (!is_numeric($ant))
-			{
-				$checkants = false;
-			}
-		}
-		if ($checkants)
+		$rtng_anti_topics = str_replace(' ', '', $rtng_anti_topics);
+		$pattern = '/^\d+(,\d+)*$/';
+
+		if (preg_match($pattern, $rtng_anti_topics))
 		{
 			$this->config->set('rtng_anti_topics', $rtng_anti_topics);
+		}
+		else
+		{
+			$this->config->set('rtng_anti_topics', '0');
 		}
 	}
 

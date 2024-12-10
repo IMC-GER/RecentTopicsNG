@@ -88,7 +88,7 @@ class acp_listener implements EventSubscriberInterface
 	public function acp_manage_forums_display_form($event)
 	{
 		$array = $event['template_data'];
-		$array['RECENT_TOPICS_NG'] = $event['forum_data']['forum_rtng_disp'];
+		$array['RTNG_DISP_FORUM'] = $event['forum_data']['forum_rtng_disp'];
 		$event['template_data'] = $array;
 	}
 
@@ -135,26 +135,18 @@ class acp_listener implements EventSubscriberInterface
 	 */
 	public function acp_users_prefs_modify_template_data($event)
 	{
-		$event['user_prefs_data'] = array_merge($event['user_prefs_data'], [
-				'TOGGLECTRL_RTNG'				=> 'radio',
-				'RTNG_ENABLE'					=> $event['user_row']['user_rtng_enable'],
-				'RTNG_SORT_START_TIME'			=> $event['user_row']['user_rtng_sort_start_time'],
-				'RTNG_UNREAD_ONLY'				=> $event['user_row']['user_rtng_unread_only'],
-				'RTNG_LOCATION_OPTIONS'			=> $this->ctrl_common->select_struct($event['user_row']['user_rtng_location'], [
-					'RTNG_TOP'					=> 'RTNG_TOP',
-					'RTNG_BOTTOM'				=> 'RTNG_BOTTOM',
-					'RTNG_SIDE'					=> 'RTNG_SIDE',
-					'RTNG_SEPARATE' 			=> 'RTNG_SEPARATE',
-				]),
-				'RTNG_DISP_LAST_POST_OPTIONS'	=> $this->ctrl_common->select_struct((int) $event['user_row']['user_rtng_disp_last_post'], [
-					'RTNG_FIRST_POST'			=> 0,
-					'RTNG_LAST_POST'			=> 1,
-				]),
-				'RTNG_DISP_FIRST_UNRD_POST'		=> $event['user_row']['user_rtng_disp_first_unrd_post'],
-				'RTNG_INDEX_TOPICS_QTY'			=> $event['user_row']['user_rtng_index_topics_qty'],
-				'RTNG_INDEX_PAGE_QTY'			=> $event['user_row']['user_rtng_index_page_qty'],
-				'RTNG_SEPARATE_TOPICS_QTY'		=> $event['user_row']['user_rtng_separate_topics_qty'],
-				'RTNG_SEPARATE_PAGE_QTY'		=> $event['user_row']['user_rtng_separate_page_qty'],
-			]);
+		$template_vars = $this->ctrl_common->get_user_set_template_vars($event['user_row']['user_id'], $event['user_row']);
+
+		if (isset($template_vars['S_RTNG_SHOW']))
+		{
+			// Vars not used in guest account
+			if ($event['user_row']['user_id'] == ANONYMOUS)
+			{
+				unset($template_vars['RTNG_DISP_FIRST_UNRD_POST']);
+				unset($template_vars['RTNG_UNREAD_ONLY']);
+			}
+
+			$event['user_prefs_data'] = array_merge($event['user_prefs_data'], $template_vars);
+		}
 	}
 }

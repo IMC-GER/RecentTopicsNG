@@ -97,100 +97,15 @@ class ucp_listener implements EventSubscriberInterface
 		);
 
 		// Output the data vars to the template (except on form submit)
-		if (!$event['submit'] && $this->auth->acl_get('u_rtng_view'))
+		if (!$event['submit'])
 		{
-			$this->language->add_lang('info_acp_rtng', 'imcger/recenttopicsng');
+			$template_vars = $this->ctrl_common->get_user_set_template_vars($this->user->data['user_id'], $event['data']);
 
-			$template_vars = [];
-
-			// if authorised for one of these then set ucp master template variable to true
-			if ($this->auth->acl_get('u_rtng_view') && ($this->auth->acl_get('u_rtng_enable') || $event['data']['user_rtng_enable']) && ($this->auth->acl_get('u_rtng_enable') || $this->auth->acl_get('u_rtng_location') || $this->auth->acl_get('u_rtng_sort_start_time') || $this->auth->acl_get('u_rtng_unread_only')))
+			if (isset($template_vars['S_RTNG_SHOW']))
 			{
-				$template_vars += [
-					'S_RTNG_SHOW'		=> true,
-					'TOGGLECTRL_RTNG'	=> 'radio',
-				];
+				$this->language->add_lang('info_acp_rtng', 'imcger/recenttopicsng');
+				$this->template->assign_vars($template_vars);
 			}
-
-			if ($this->auth->acl_get('u_rtng_enable'))
-			{
-				$template_vars += [
-					'RTNG_ENABLE' => $event['data']['user_rtng_enable'],
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_location'))
-			{
-				$template_vars += [
-					'RTNG_LOCATION_OPTIONS' => $this->ctrl_common->select_struct($event['data']['user_rtng_location'], [
-						'RTNG_TOP'			=> 'RTNG_TOP',
-						'RTNG_BOTTOM'		=> 'RTNG_BOTTOM',
-						'RTNG_SIDE'			=> 'RTNG_SIDE',
-						'RTNG_SEPARATE'		=> 'RTNG_SEPARATE',
-					]),
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_sort_start_time'))
-			{
-				$template_vars += [
-					'RTNG_SORT_START_TIME' => $event['data']['user_rtng_sort_start_time'],
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_unread_only'))
-			{
-				$template_vars += [
-					'RTNG_UNREAD_ONLY' => $event['data']['user_rtng_unread_only'],
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_disp_last_post'))
-			{
-				$template_vars += [
-					'RTNG_DISP_LAST_POST_OPTIONS'	=> $this->ctrl_common->select_struct((int) $event['data']['user_rtng_disp_last_post'], [
-						'RTNG_FIRST_POST'			=> 0,
-						'RTNG_LAST_POST'			=> 1,
-					])
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_disp_first_unrd_post'))
-			{
-				$template_vars += [
-					'RTNG_DISP_FIRST_UNRD_POST' => $event['data']['user_rtng_disp_first_unrd_post'],
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_index_topics_qty'))
-			{
-				$template_vars += [
-					'RTNG_INDEX_TOPICS_QTY' => $event['data']['user_rtng_index_topics_qty'],
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_index_page_qty'))
-			{
-				$template_vars += [
-					'RTNG_INDEX_PAGE_QTY' => $event['data']['user_rtng_index_page_qty'],
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_separate_topics_qty'))
-			{
-				$template_vars += [
-					'RTNG_SEPARATE_TOPICS_QTY' => $event['data']['user_rtng_separate_topics_qty'],
-				];
-			}
-
-			if ($this->auth->acl_get('u_rtng_separate_page_qty'))
-			{
-				$template_vars += [
-					'RTNG_SEPARATE_PAGE_QTY' => $event['data']['user_rtng_separate_page_qty'],
-				];
-			}
-
-			$this->template->assign_vars($template_vars);
 		}
 	}
 
@@ -221,16 +136,7 @@ class ucp_listener implements EventSubscriberInterface
 	public function ucp_register_set_data($event)
 	{
 		// Read guest account settings as default
-		$sql = 'SELECT user_rtng_enable, user_rtng_sort_start_time, user_rtng_unread_only,
-					   user_rtng_location, user_rtng_disp_last_post, user_rtng_disp_first_unrd_post,
-					   user_rtng_index_topics_qty, user_rtng_index_page_qty,
-					   user_rtng_separate_topics_qty, user_rtng_separate_page_qty
-				FROM ' . USERS_TABLE . '
-				WHERE user_id = ' . ANONYMOUS;
-
-		$result	= $this->db->sql_query_limit($sql, 1);
-		$user_data = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
+		$user_data = $this->ctrl_common->get_rtng_user_data();
 
 		$sql = 'UPDATE ' . USERS_TABLE . '
                 SET ' . $this->db->sql_build_array('UPDATE', $user_data) . '
