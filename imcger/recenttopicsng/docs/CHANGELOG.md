@@ -3,32 +3,32 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
 
 #### Changes since 2.2.15-pl18 (22/02/2025)
   - [Change] Changed ***Version changed to 1.0.*** Since RTNG is an independent project, there is no reason to continue the RT version number.
-  - [Change] Changed vendor and package name to `ìmcger/recenttopcsng`
+  - [Change] Changed vendor and package name to `ìmcger/recenttopcsng`.
   - [Change] Changed repository folder structure.
-  - [Change] Changed php max version to 8.4
+  - [Change] Changed php max version to 8.4.
   - [Change] Existing migration has been completely renewed into DB changes (`s_1_0_0.php`) and other changes (`v_1_0_0.php`).
-  - [Feature] Current macro `select()` adopted from Extension Manager Plus 2.1.0 Beta
+  - [Feature] Current macro `select()` adopted from Extension Manager Plus 2.1.0 Beta.
   - [Feature] Existing `common.select()` calls adapted to the new macro version.
   - [Feature] New class `controller_common` for general helper functions for controllers/listeners.
   - [Feature] Function `select_struct()` adopted from Extension Manager Plus 2.1.0 Beta.
   - [Feature] Existing select arrays converted to the new function `select_struct()`.
-  - [Feature] Added pattern and placeholder to rtng_anti_topics input
-  - [Change] Added set rtng_anti_topics to 0 if the input field was empty
-  - [Change] Added rtng settings in user administration for guest account
-  - [Change] Added methode to set number of topics in rtng_functions.php
-  - [Change] Added methode to set number of pages in rtng_functions.php
-  - [Change] Added helper functions to controller_common.php
-  - [Change] plausibility check of the rtng_anti_topics variable
-  - [Change] SQL query in core changed from string to array
+  - [Feature] Added pattern and placeholder to rtng_anti_topics input.
+  - [Change] Added set `rtng_anti_topics` to `0` if the input field was empty.
+  - [Change] Added rtng settings in user administration for guest account.
+  - [Change] Added methode to set number of topics in `rtng_functions.php`.
+  - [Change] Added methode to set number of pages in `rtng_functions.php`.
+  - [Change] Added helper functions to `controller_common.php`.
+  - [Change] plausibility check of the `rtng_anti_topics` variable.
+  - [Change] SQL query in core changed from string to array.
   - [Change] Changed some filenames.
   - [Change] Rename `contrib` folder in `docs`.
   - [Change] ChangeLog has been revised.
   - [Change] Texts in the language files have been revised.
   - [Change] Rename variable names in language files, template files, ACP, UCP and core.
   - [Change] Added template vars to switch in template between first post, first unread post and last post.
-  - [Change] Modified template topbottom.html to display the first post, the first unread post or the last post.
-  - [Change] Modified template body_side.html to display the first post, the first unread post or the last post.
-  - [Change] Split listener.php into main_listen.php and acp_listener.php.
+  - [Change] Modified template `topbottom.html` to display the first post, the first unread post or the last post.
+  - [Change] Modified template `body_side.html` to display the first post, the first unread post or the last post.
+  - [Change] Split `listener.php` into `main_listen.php` and `acp_listener.php`.
   - [Change] Optimize code for support extension `\phpbb\collapsiblecategories`.
   - [Feature] Copyright notice for the author of the language files added to the ACP template.
   - [Feature] User settings added to the user administration panel in ACP.
@@ -37,18 +37,18 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Feature] Added user settings for Simple and Separate page display.
   - [Feature] Added a user preference to toggle the topic heading between the first post, the last post, or the first unread post.
   - [Feature] Added template file for user settings in UCP, ACP and user administration.
-  - [Feature] Added methode in core to set number of topics and number of sites
-  - [Feature] Added helper functions to optimize code in the core, listeners and controller
+  - [Feature] Added methode in core to set number of topics and number of sites.
+  - [Feature] Added helper functions to optimize code in the core, listeners and controller.
   - [Delete] Removed the donation section from the ACP.
-  - [Delete] Removed unused template variables in function display_recent_topics().
+  - [Delete] Removed unused template variables in function `display_recent_topics()`.
   - [Delete] Redundant data rows in the config table has been removed. Use settings from guest as template for new user.
-  - [Delete] Event paybas.recenttopics.topictitle_remove_re has been removed.
-  - [Delete] Event paybas.recenttopics.modify_topictitle has been removed.
-  - [Delete] Function topictitle_remove_re() has been removed.
-  - [Delete] Function is_listening() has been removed.
+  - [Delete] Event `paybas.recenttopics.topictitle_remove_re` has been removed.
+  - [Delete] Event `paybas.recenttopics.modify_topictitle has` been removed.
+  - [Delete] Function `topictitle_remove_re()` has been removed.
+  - [Delete] Function `is_listening()` has been removed.
   - [Delete] Removed constructor comments.
   - [Fixed] Small style errors in "View on the side" Fixeded; errors in template and CSS. [Report from Kirk (phpBB.de)]
-  - [Fixed] Declaration of the array $rowset within a while loop in gettopiclist()
+  - [Fixed] Declaration of the array $rowset within a while loop in `gettopiclist()`.
 
 #### Changes since 2.2.15-pl14 (13/03/2024)
   - [Change] Permission management:

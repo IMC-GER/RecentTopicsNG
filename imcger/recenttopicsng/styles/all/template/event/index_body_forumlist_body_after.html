@@ -10,14 +10,13 @@
  * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
  #}
 
-{% if RTNG_DISPLAY && rtng_included != true %}
-	{% set rtng_included = true %}
+{% if RTNG_DISPLAY %}
 	{% if S_RTNG_LOCATION_BOTTOM %}
 		<div id="rtng-bottom">
-		{% include '@imcger_recenttopicsng/rtng_body_topbottom.html' %}
+			{% include '@imcger_recenttopicsng/rtng_body_topbottom.html' %}
 		</div>
 	{% elseif S_RTNG_LOCATION_SIDE %}
-		</div>
+			</div>
 		</div>
 	{% endif %}
 {% endif %}
