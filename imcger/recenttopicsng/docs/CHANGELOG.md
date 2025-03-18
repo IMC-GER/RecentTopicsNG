@@ -1,7 +1,7 @@
-## Changelog Recent Topics NG V1.0.0
+## Changelog Recent Topics NG V1.0.0-rc1
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
-#### Changes since 2.2.15-pl18 (22/02/2025)
+#### Changes since 2.2.15-pl18 (18/03/2025)
   - [Change] Changed ***Version changed to 1.0.*** Since RTNG is an independent project, there is no reason to continue the RT version number.
   - [Change] Changed vendor and package name to `ìmcger/recenttopcsng`.
   - [Change] Changed repository folder structure.
@@ -47,6 +47,7 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Delete] Function `topictitle_remove_re()` has been removed.
   - [Delete] Function `is_listening()` has been removed.
   - [Delete] Removed constructor comments.
+  - [Delete] Removed the interface to the "PBWoW" extension/style.
   - [Fixed] Small style errors in "View on the side" Fixeded; errors in template and CSS. [Report from Kirk (phpBB.de)]
   - [Fixed] Declaration of the array $rowset within a while loop in `gettopiclist()`.
 
