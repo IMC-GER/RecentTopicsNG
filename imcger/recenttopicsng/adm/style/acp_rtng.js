@@ -18,7 +18,7 @@ var RecentTopicsNG = {};
 
 class LukeWCSphpBBConfirmBox {
 /*
-* phpBB ConfirmBox class for checkboxes and yes/no radio buttons - v1.5.0
+* phpBB ConfirmBox class for checkboxes and yes/no radio buttons - v1.5.1
 * @copyright (c) 2023, LukeWCS, https://www.wcsaga.org
 * @license GNU General Public License, version 2 (GPL-2.0-only)
 */
@@ -29,10 +29,10 @@ class LukeWCSphpBBConfirmBox {
 		this.animDuration	= animDuration;
 
 		this.$formObject.find('div.lukewcs_confirmbox').each(function () {
-			$('input[name="' + this.dataset['name'] + '"]')	.on('change', _this.#Show);
-			$(this).find('input[type="button"]')			.on('click'	, _this.#Button);
+			$('input[name="' + $(this).attr('data-name') + '"]').on('change', _this.#Show);
+			$(this).find('input[type="button"]')				.on('click'	, _this.#Button);
 		});
-		this.$formObject									.on('reset'	, _this.HideAll);
+		this.$formObject										.on('reset'	, _this.HideAll);
 	}
 
 	#Show = (e) => {
@@ -45,7 +45,7 @@ class LukeWCSphpBBConfirmBox {
 	}
 
 	#Button = (e) => {
-		const elementName		= e.target.closest('div.lukewcs_confirmbox').dataset['name'];
+		const elementName		= $(e.target).parents('div.lukewcs_confirmbox').attr('data-name');
 		const $elementObject	= $('input[name="' + elementName + '"]');
 		const $confirmBoxObject	= $('div.lukewcs_confirmbox[data-name="' + elementName + '"]');
 		const elementType		= $elementObject.attr('type');
