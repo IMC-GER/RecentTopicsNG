@@ -508,7 +508,7 @@ class rtng_functions
 		 *
 		 * @event imcger.recenttopicsng.sql_pull_topics_list
 		 * @var	array	sql_array	The SQL array
-		 * @since 2.0.4
+		 * @since 1.0.0
 		 */
 		$vars = ['sql_array'];
 		extract($this->dispatcher->trigger_event('imcger.recenttopicsng.sql_pull_topics_list', compact($vars)));
@@ -569,7 +569,7 @@ class rtng_functions
 		 *
 		 * @event imcger.recenttopicsng.sql_pull_topics_data
 		 * @var	array	sql_array	The SQL array
-		 * @since 2.0.0
+		 * @since 1.0.0
 		 */
 		$vars = ['sql_array'];
 		extract($this->dispatcher->trigger_event('imcger.recenttopicsng.sql_pull_topics_data', compact($vars)));
@@ -611,7 +611,7 @@ class rtng_functions
 			 * @event imcger.recenttopicsng.modify_topics_list
 			 * @var	array	topic_list	Array of all the topic IDs
 			 * @var	array	rowset		The full topics list array
-			 * @since 2.0.1
+			 * @since 1.0.0
 			 */
 			$vars = ['topic_list', 'rowset'];
 			extract($this->dispatcher->trigger_event('imcger.recenttopicsng.modify_topics_list', compact($vars)));
@@ -784,7 +784,7 @@ class rtng_functions
 				 * @event imcger.recenttopicsng.modify_tpl_ary
 				 * @var	array	row		Array with topic data
 				 * @var	array	tpl_ary	Template block array with topic data
-				 * @since 2.0.0
+				 * @since 1.0.0
 				 */
 				$vars = ['row', 'tpl_ary'];
 				extract($this->dispatcher->trigger_event('imcger.recenttopicsng.modify_tpl_ary', compact($vars)));
