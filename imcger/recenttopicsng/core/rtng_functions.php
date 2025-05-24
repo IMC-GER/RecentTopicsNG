@@ -20,93 +20,36 @@ namespace imcger\recenttopicsng\core;
  */
 class rtng_functions
 {
-	/** @var \phpbb\auth\auth */
-	protected $auth;
-
-	/** @var \phpbb\config\config */
-	protected $config;
-
-	/** @var \phpbb\language\language */
-	protected $language;
-
-	/** @var \phpbb\cache\service */
-	protected $cache;
-
-	/** @var \phpbb\content_visibility */
-	protected $content_visibility;
-
-	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
-
-	/** @var \phpbb\event\dispatcher_interface */
-	protected $dispatcher;
-
-	/** @var \phpbb\pagination */
-	protected $pagination;
-
-	/** @var \phpbb\request\request */
-	protected $request;
-
-	/** @var \phpbb\template\template */
-	protected $template;
-
-	/** @var \phpbb\user */
-	protected $user;
-
-	/** @var string phpBB root path */
-	protected $root_path;
-
-	/** @var string PHP extension */
-	protected $phpEx;
-
-	/** @var array	array of allowable forum id's */
-	private $forum_ids;
-
-	/** @var array	array of topics to show */
-	private $topic_list;
-
-	/** @var int display only unread topics */
-	private $unread_only;
-
-	/** @var boolean show a forum icon ? */
-	private $obtain_icons;
-
-	/** @var array forum objects we need */
-	private $forums;
-
-	/** @var \phpbb\collapsiblecategories\operator\operator	Support extension "Collapsible Forum Categories" */
-	private $collapsable_categories;
-
-	/** @var int Start number of the listed topics */
-	private $rtng_start;
-
-	/** @var string Sort by the content of this variable */
-	private $sort_topics;
-
-	/** @var int */
-	private $display_parent_forums;
-
-	/** @var string	Block location */
-	private $location;
-
-	/** @var array Currently listed icons */
-	private $icons;
-
-	/** @var array	List of topics not to be displayed */
-	private $excluded_topics;
-
-	/** @var int */
-	private $topics_per_page;
-
-	/** @var int */
-	private $topics_page_number;
-
-	/** @var int	Maximum number of topics to be displayed */
-	private $total_topics_limit;
-
-	protected $ctrl_common;
-
-	private $user_setting;
+	protected object $auth;
+	protected object $config;
+	protected object $language;
+	protected object $cache;
+	protected object $content_visibility;
+	protected object $db;
+	protected object $dispatcher;
+	protected object $pagination;
+	protected object $request;
+	protected object $template;
+	protected object $user;
+	protected string $root_path;
+	protected string $phpEx;
+	protected object $ctrl_common;
+	private ?object $collapsable_categories; // var support extension "Collapsible Forum Categories"
+	private array $forum_ids;
+	private array $topic_list;
+	private array $excluded_topics;
+	private array $forums;
+	private array $icons;
+	private array $user_setting;
+	private bool $obtain_icons;
+	private bool $unread_only;
+	private string $sort_topics;
+	private string $location;
+	private int $display_parent_forums;
+	private int $rtng_start;
+	private int $topics_per_page;
+	private int $topics_page_number;
+	private int $total_topics_limit;
 
 	/**
 	 * Constructor
@@ -156,7 +99,7 @@ class rtng_functions
 	/**
 	 * Set number of recent topics per page
 	 */
-	public function set_topics_per_page($topics_number): bool
+	public function set_topics_per_page(int $topics_number): bool
 	{
 		if (is_int($topics_number) && $topics_number > 0)
 		{
@@ -186,7 +129,7 @@ class rtng_functions
 	 *
 	 * @param string $tpl_loopname
 	 */
-	public function display_recent_topics($tpl_loopname = 'rtng'): void
+	public function display_recent_topics(string $tpl_loopname = 'rtng'): void
 	{
 		// can view rtng ?
 		if (!($this->user_setting['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view')))
@@ -209,7 +152,6 @@ class rtng_functions
 			]);
 		}
 
-		//display parent forums
 		$this->display_parent_forums = $this->config['rtng_parents'];
 
 		$this->rtng_start = $this->request->variable($tpl_loopname . '_start', 0);
@@ -217,6 +159,8 @@ class rtng_functions
 		$this->excluded_topics = explode(',', $this->config['rtng_anti_topics']);
 
 		$min_topic_level = $this->config['rtng_min_topic_level'];
+
+		$this->sort_topics = $this->user_setting['user_rtng_sort_start_time'] ? 'topic_time' : 'topic_last_post_time';
 
 		$this->getforumlist();
 
@@ -256,8 +200,6 @@ class rtng_functions
 			$this->total_topics_limit = (int) $this->db->sql_fetchfield('topic_count');
 			$this->db->sql_freeresult($result);
 		}
-
-		$this->sort_topics = $this->user_setting['user_rtng_sort_start_time'] ? 'topic_time' : 'topic_last_post_time';
 
 		$topics_count = $this->gettopiclist();
 
@@ -466,12 +408,8 @@ class rtng_functions
 	/**
 	 * Custom function to get allowed topics
 	 * Used for anon access or when unread topics is not requested
-	 *
-	 * @param $excluded_topics
-	 * @param $min_topic_level
-	 * @return array
 	 */
-	private function get_allowed_topics_sql($excluded_topics, $min_topic_level): array
+	private function get_allowed_topics_sql(array $excluded_topics, int $min_topic_level): array
 	{
 		// Get the allowed topics
 		$sql_array = [
@@ -522,7 +460,7 @@ class rtng_functions
 	 * @param $row
 	 * @return array
 	 */
-	private function getusernamestrings($row): array
+	private function getusernamestrings(array $row): array
 	{
 		$topic_author				= get_username_string('username', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']);
 		$topic_author_color			= get_username_string('colour', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']);
@@ -536,11 +474,9 @@ class rtng_functions
 	}
 
 	/**
-	 * Pull the data of the requested topics
-	 *
-	 * @return array
+	 * Pull the data of the requested
 	 */
-	private function get_topics_sql (): array
+	private function get_topics_sql(): array
 	{
 		$sql_array = [
 			'SELECT'    => 't.*, f.forum_name, tp.topic_posted',
@@ -589,12 +525,8 @@ class rtng_functions
 
 	/**
 	 * Set template vars
-	 *
-	 * @param       $tpl_loopname
-	 * @param       $topic_tracking_info
-	 * @param int   $topics_count
 	 */
-	private function fill_template ($tpl_loopname, $topic_tracking_info, int $topics_count): void
+	private function fill_template(string $tpl_loopname, array $topic_tracking_info, int $topics_count): void
 	{
 		// get topics from db
 		$rowset = $this->get_topics_sql();

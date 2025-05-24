@@ -20,14 +20,9 @@ namespace imcger\recenttopicsng\controller;
  */
 class controller_common
 {
-	/** @var \phpbb\user */
-	protected $user;
-
-	/** @var \phpbb\auth\auth */
-	protected $auth;
-
-	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	protected object $user;
+	protected object $auth;
+	protected object $db;
 
 	public function __construct
 	(
@@ -41,6 +36,12 @@ class controller_common
 		$this->db	= $db;
 	}
 
+	/*
+	 * Creates an array of variables for the SelectBox macro
+	 *
+	 * The variable $cfg_value is a union type array|string
+	 * Not specified for reasons of compatibility with php 7
+	 */
 	public function select_struct($cfg_value, array $options): array
 	{
 		$options_tpl = [];

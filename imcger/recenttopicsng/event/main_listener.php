@@ -20,24 +20,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class main_listener implements EventSubscriberInterface
 {
-	/** @var imcger\recenttopicsng\core\rtng_functions */
-	protected $rtng_functions;
-
-	/** @var \phpbb\template\template */
-	protected $template;
-
-	/** @var \phpbb\controller\helper */
-	protected $helper;
-
-	/** @var \phpbb\language\language */
-	protected $language;
-
-	/** @var \phpbb\auth\auth */
-	protected $auth;
-
-	protected $ctrl_common;
-
-	private $user_setting;
+	protected object $rtng_functions;
+	protected object $template;
+	protected object $helper;
+	protected object $language;
+	protected object $auth;
+	protected object $ctrl_common;
+	private array $user_setting;
 
 	/**
 	 * Constructor
@@ -65,7 +54,7 @@ class main_listener implements EventSubscriberInterface
 	/**
 	 * Get subscribed events
 	 */
-	public static function getSubscribedEvents()
+	public static function getSubscribedEvents(): array
 	{
 		return [
 			'core.page_header'				=> 'set_template_vars',
@@ -77,7 +66,7 @@ class main_listener implements EventSubscriberInterface
 	/**
 	 * Set template vars and load language
 	 */
-	public function set_template_vars()
+	public function set_template_vars(): void
 	{
 		$this->template->assign_vars([
 			'U_RTNG_PAGE_SEPARATE'  => $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
@@ -90,7 +79,7 @@ class main_listener implements EventSubscriberInterface
 	/**
 	 * The main magic
 	 */
-	public function display_rt()
+	public function display_rt(): void
 	{
 		if ($this->user_setting['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view'))
 		{
@@ -101,7 +90,7 @@ class main_listener implements EventSubscriberInterface
 	/**
 	 * Add permissions
 	 */
-	public function add_permission($event)
+	public function add_permission(object $event): void
 	{
 		$permissions = $event['permissions'];
 		$categories = $event['categories'];

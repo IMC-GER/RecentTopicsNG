@@ -30,7 +30,7 @@ class acp_rtng_module
 	 * @throws \Exception
 	 *
 	 */
-	public function main($id, $mode)
+	public function main(string $id, string $mode): void
 	{
 		global $phpbb_container;
 

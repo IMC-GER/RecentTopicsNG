@@ -20,25 +20,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class ucp_listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\auth\auth */
-	protected $auth;
-
-	/** @var \phpbb\request\request */
-	protected $request;
-
-	/** @var \phpbb\template\template */
-	protected $template;
-
-	/** @var \phpbb\user */
-	protected $user;
-
-	/** @var \phpbb\language\language */
-	protected $language;
-
-	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
-
-	protected $ctrl_common;
+	protected object $auth;
+	protected object $request;
+	protected object $template;
+	protected object $user;
+	protected object $language;
+	protected object $db;
+	protected object $ctrl_common;
 
 	/**
 	 * Constructor
@@ -66,7 +54,7 @@ class ucp_listener implements EventSubscriberInterface
 	/**
 	 * Get subscribed events
 	 */
-	public static function getSubscribedEvents()
+	public static function getSubscribedEvents(): array
 	{
 		return [
 		'core.ucp_prefs_view_data'        	=> 'ucp_prefs_get_data',
@@ -78,7 +66,7 @@ class ucp_listener implements EventSubscriberInterface
 	/**
 	 * Set template vars. On submit store settings to user table.
 	 */
-	public function ucp_prefs_get_data($event)
+	public function ucp_prefs_get_data(object $event): void
 	{
 		// Request the user option vars and add them to the data array
 		$event['data'] = array_merge(
@@ -112,7 +100,7 @@ class ucp_listener implements EventSubscriberInterface
 	/**
 	 * Update the UCP settings in the user table when submitting the form.
 	 */
-	public function ucp_prefs_set_data($event)
+	public function ucp_prefs_set_data(object $event): void
 	{
 		$event['sql_ary'] = array_merge(
 			$event['sql_ary'], [
@@ -133,7 +121,7 @@ class ucp_listener implements EventSubscriberInterface
 	/**
 	 * After registering a new user, transfer the default values to their settings.
 	 */
-	public function ucp_register_set_data($event)
+	public function ucp_register_set_data(object $event): void
 	{
 		// Read guest account settings as default
 		$user_data = $this->ctrl_common->get_rtng_user_data();

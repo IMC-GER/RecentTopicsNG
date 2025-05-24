@@ -23,7 +23,7 @@ class acp_rtng_info
 	/**
 	 * @return array
 	 */
-	public function module()
+	public function module(): array
 	{
 		return [
 			'filename'	=> '\imcger\recenttopicsng\acp\acp_rtng_module',
