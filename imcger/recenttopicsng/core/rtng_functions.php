@@ -15,8 +15,6 @@ namespace imcger\recenttopicsng\core;
 
 /**
  * Class rtng_functions
- *
- * @package imcger\recenttopicsng\core
  */
 class rtng_functions
 {
@@ -35,21 +33,9 @@ class rtng_functions
 	protected string $phpEx;
 	protected object $ctrl_common;
 	private ?object $collapsable_categories; // var support extension "Collapsible Forum Categories"
-	private array $forum_ids;
-	private array $topic_list;
-	private array $excluded_topics;
-	private array $forums;
-	private array $icons;
 	private array $user_setting;
-	private bool $obtain_icons;
-	private bool $unread_only;
-	private string $sort_topics;
-	private string $location;
-	private int $display_parent_forums;
-	private int $rtng_start;
 	private int $topics_per_page;
 	private int $topics_page_number;
-	private int $total_topics_limit;
 
 	/**
 	 * Constructor
@@ -91,7 +77,6 @@ class rtng_functions
 
 		$this->topics_per_page		= 0;
 		$this->topics_page_number	= 0;
-		$this->total_topics_limit	= 0;
 
 		$this->user_setting = $this->ctrl_common->get_user_setting();
 	}
@@ -101,7 +86,7 @@ class rtng_functions
 	 */
 	public function set_topics_per_page(int $topics_number): bool
 	{
-		if (is_int($topics_number) && $topics_number > 0)
+		if ($topics_number > 0)
 		{
 			$this->topics_per_page = $topics_number;
 			return true;
@@ -113,9 +98,9 @@ class rtng_functions
 	/**
 	 * Set the number of pages for recent topics
 	 */
-	public function set_topics_page_number($page_number): bool
+	public function set_topics_page_number(int $page_number): bool
 	{
-		if (is_int($page_number) && $page_number > 0)
+		if ($page_number > 0)
 		{
 			$this->topics_page_number = $page_number;
 			return true;
@@ -126,8 +111,6 @@ class rtng_functions
 
 	/**
 	 * Display recent topics
-	 *
-	 * @param string $tpl_loopname
 	 */
 	public function display_recent_topics(string $tpl_loopname = 'rtng'): void
 	{
@@ -152,20 +135,16 @@ class rtng_functions
 			]);
 		}
 
-		$this->display_parent_forums = $this->config['rtng_parents'];
+		$rtng_start = $this->request->variable($tpl_loopname . '_start', 0);
 
-		$this->rtng_start = $this->request->variable($tpl_loopname . '_start', 0);
-
-		$this->excluded_topics = explode(',', $this->config['rtng_anti_topics']);
+		$excluded_topics = explode(',', $this->config['rtng_anti_topics']);
 
 		$min_topic_level = $this->config['rtng_min_topic_level'];
 
-		$this->sort_topics = $this->user_setting['user_rtng_sort_start_time'] ? 'topic_time' : 'topic_last_post_time';
-
-		$this->getforumlist();
+		$forum_id_list = $this->getforumlist();
 
 		// No forums to display
-		if (count($this->forum_ids) == 0)
+		if (count($forum_id_list) == 0)
 		{
 			return;
 		}
@@ -186,39 +165,44 @@ class rtng_functions
 		// compute as product of topics per page and max number of pages.
 		if ((int) $this->config['rtng_all_topics'] == 0)
 		{
-			$this->total_topics_limit = $this->topics_per_page * $this->topics_page_number;
+			$total_topics_limit = $this->topics_per_page * $this->topics_page_number;
 		}
 		else
 		{
-			$sql_array = $this->get_allowed_topics_sql($this->excluded_topics, $min_topic_level);
+			$sql_array = $this->get_allowed_topics_sql($excluded_topics, $min_topic_level, $forum_id_list);
 			$count_sql_array = $sql_array;
 			$count_sql_array['SELECT'] = 'COUNT(t.topic_id) as topic_count';
 			unset($count_sql_array['ORDER_BY']);
 			$sql = $this->db->sql_build_query('SELECT', $count_sql_array);
 
 			$result = $this->db->sql_query($sql);
-			$this->total_topics_limit = (int) $this->db->sql_fetchfield('topic_count');
+			$total_topics_limit = (int) $this->db->sql_fetchfield('topic_count');
 			$this->db->sql_freeresult($result);
 		}
 
-		$topics_count = $this->gettopiclist();
+		// These variables are defined in the gettopiclist() function.
+		$obtain_icons = false;
+		$forums		  = [];
+		$topic_list	  = [];
 
-		if (count($this->topic_list) == 0)
+		$topics_count = $this->gettopiclist($obtain_icons, $forums, $rtng_start, $total_topics_limit, $excluded_topics, $forum_id_list, $topic_list);
+
+		// Return if there are no topics available to display.
+		if (count($topic_list) == 0)
 		{
 			return;
 		}
-		// If topics to display
 
 		// Grab icons
-		$this->icons = [];
-		if ($this->obtain_icons)
+		$icons = [];
+		if ($obtain_icons)
 		{
-			$this->icons = $this->cache->obtain_icons();
+			$icons = $this->cache->obtain_icons();
 		}
 
 		// Borrowed from search.php
 		$topic_tracking_info = [];
-		foreach ($this->forums as $forum_id => $forum)
+		foreach ($forums as $forum_id => $forum)
 		{
 			if ($this->user->data['is_registered'] && $this->config['load_db_lastread'])
 			{
@@ -249,7 +233,7 @@ class rtng_functions
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 		$this->template->assign_vars([
 				'RTNG_TOPICS_COUNT'		 => $this->language->lang('RTNG_TOPICS_COUNT', (int) $topics_count),
-				'RTNG_SORT_START_TIME'	 => $this->sort_topics === 'topic_time',
+				'RTNG_SORT_START_TIME'	 => $this->user_setting['user_rtng_sort_start_time'],
 				'S_RTNG_LOCATION_TOP'	 => $this->user_setting['user_rtng_location'] == 'RTNG_TOP',
 				'S_RTNG_LOCATION_BOTTOM' => $this->user_setting['user_rtng_location'] == 'RTNG_BOTTOM',
 				'S_RTNG_LOCATION_SIDE'	 => $this->user_setting['user_rtng_location'] == 'RTNG_SIDE',
@@ -257,13 +241,13 @@ class rtng_functions
 			]
 		);
 
-		$this->fill_template($tpl_loopname, $topic_tracking_info, $topics_count);
+		$this->fill_template($icons, $tpl_loopname, $topic_tracking_info, $topics_count, $topic_list, $total_topics_limit, $rtng_start);
 	}
 
 	/**
 	 * Get the forums we take our topics from
 	 */
-	private function getforumlist(): void
+	private function getforumlist(): array
 	{
 		// Get the allowed forums
 		$forum_ary = [];
@@ -277,48 +261,46 @@ class rtng_functions
 			}
 		}
 
-		$this->forum_ids = array_unique($forum_ary);
+		$forum_ids = array_unique($forum_ary);
 
-		if (count($this->forum_ids) > 1)
+		if (count($forum_ids) > 1)
 		{
 			$sql_array = [
 				'SELECT'    => 'forum_id',
 				'FROM'      => [FORUMS_TABLE => '', ],
-				'WHERE'     =>  $this->db->sql_in_set('forum_id', $this->forum_ids) . '
+				'WHERE'     =>  $this->db->sql_in_set('forum_id', $forum_ids) . '
 							AND forum_rtng_disp = 1',
 			];
 
 			$sql    = $this->db->sql_build_query('SELECT', $sql_array);
 			$result = $this->db->sql_query($sql);
 
-			$this->forum_ids = [];
+			$forum_ids = [];
 
 			while ($row = $this->db->sql_fetchrow($result))
 			{
-				$this->forum_ids[] = $row['forum_id'];
+				$forum_ids[] = $row['forum_id'];
 			}
 
 			$this->db->sql_freeresult($result);
-			$this->forum_ids = array_unique($this->forum_ids);
 
+			return array_unique($forum_ids);
 		}
 	}
 
 	/**
 	 * Get the topic list
 	 */
-	private function gettopiclist(): int
+	private function gettopiclist(bool &$obtain_icons, array &$forums, int $rtng_start, int $total_topics_limit, array $excluded_topics, array $forum_id_list, array &$topic_list): int
 	{
-		$this->rtng_start = max(0, $this->rtng_start);
+		$rtng_start = max(0, $rtng_start);
 
-		if ($this->total_topics_limit > 0)
+		if ($total_topics_limit > 0)
 		{
-			$this->rtng_start = min((int) $this->rtng_start, $this->total_topics_limit);
+			$rtng_start = min((int) $rtng_start, $total_topics_limit);
 		}
 
-		$this->forums = $this->topic_list = [];
 		$topics_count = 0;
-		$this->obtain_icons = false;
 
 		$min_topic_level = $this->config['rtng_min_topic_level'];
 
@@ -326,25 +308,25 @@ class rtng_functions
 		if ($this->user_setting['user_rtng_unread_only'] && $this->user->data['user_id'] != ANONYMOUS)
 		{
 			// Get unread topics
-			$sql_extra	   = ' AND ' . $this->db->sql_in_set('t.topic_id', $this->excluded_topics, true);
-			$sql_extra	  .= ' AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $this->forum_ids, $table_alias = 't.');
-			$unread_topics = get_unread_topics(false, $sql_extra, '', $this->total_topics_limit);
-			$this->rtng_start = min(count($unread_topics) - 1 , (int) $this->rtng_start);
+			$sql_extra	   = ' AND ' . $this->db->sql_in_set('t.topic_id', $excluded_topics, true);
+			$sql_extra	  .= ' AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $forum_id_list, $table_alias = 't.');
+			$unread_topics = get_unread_topics(false, $sql_extra, '', $total_topics_limit);
+			$rtng_start = min(count($unread_topics) - 1 , (int) $rtng_start);
 
 			foreach ($unread_topics as $topic_id => $mark_time)
 			{
 				$topics_count++;
 
-				if (($topics_count > $this->rtng_start) && ($topics_count <= ($this->rtng_start + $this->topics_per_page)))
+				if (($topics_count > $rtng_start) && ($topics_count <= ($rtng_start + $this->topics_per_page)))
 				{
-					$this->topic_list[] = $topic_id;
+					$topic_list[] = $topic_id;
 				}
 			}
 		}
 		else
 		{
 			// Get allowed topics
-			$sql_array = $this->get_allowed_topics_sql($this->excluded_topics, $min_topic_level);
+			$sql_array = $this->get_allowed_topics_sql($excluded_topics, $min_topic_level, $forum_id_list);
 			$count_sql_array = $sql_array;
 			$count_sql_array['SELECT'] = 'COUNT(t.topic_id) as topic_count';
 			unset($count_sql_array['ORDER_BY']);
@@ -357,9 +339,9 @@ class rtng_functions
 			//load topics list
 			$sql = $this->db->sql_build_query('SELECT', $sql_array);
 
-			if ($this->total_topics_limit > 0)
+			if ($total_topics_limit > 0)
 			{
-				$result = $this->db->sql_query_limit($sql, $this->total_topics_limit);
+				$result = $this->db->sql_query_limit($sql, $total_topics_limit);
 			}
 			else
 			{
@@ -368,11 +350,11 @@ class rtng_functions
 
 			if ($result != null)
 			{
-				$this->rtng_start = min($num_rows - 1 , $this->rtng_start);
+				$rtng_start = min($num_rows - 1 , $rtng_start);
 			}
 			else
 			{
-				$this->rtng_start = 0;
+				$rtng_start = 0;
 			}
 
 			$rowset = [];
@@ -381,22 +363,22 @@ class rtng_functions
 			{
 				$topics_count++;
 
-				if (($topics_count > $this->rtng_start) && ($topics_count <= ($this->rtng_start + $this->topics_per_page)))
+				if (($topics_count > $rtng_start) && ($topics_count <= ($rtng_start + $this->topics_per_page)))
 				{
-					$this->topic_list[] = $row['topic_id'];
+					$topic_list[] = $row['topic_id'];
 
 					$rowset[$row['topic_id']] = $row;
 
-					if (!isset($this->forums[$row['forum_id']]) && $this->user->data['is_registered'] && $this->config['load_db_lastread'])
+					if (!isset($forums[$row['forum_id']]) && $this->user->data['is_registered'] && $this->config['load_db_lastread'])
 					{
-						$this->forums[$row['forum_id']]['mark_time'] = $row['f_mark_time'];
+						$forums[$row['forum_id']]['mark_time'] = $row['f_mark_time'];
 					}
-					$this->forums[$row['forum_id']]['topic_list'][] = $row['topic_id'];
-					$this->forums[$row['forum_id']]['rowset'][$row['topic_id']] = & $rowset[$row['topic_id']];
+					$forums[$row['forum_id']]['topic_list'][] = $row['topic_id'];
+					$forums[$row['forum_id']]['rowset'][$row['topic_id']] = & $rowset[$row['topic_id']];
 
 					if ($row['icon_id'])
 					{
-						$this->obtain_icons = true;
+						$obtain_icons = true;
 					}
 				}
 			}
@@ -409,11 +391,13 @@ class rtng_functions
 	 * Custom function to get allowed topics
 	 * Used for anon access or when unread topics is not requested
 	 */
-	private function get_allowed_topics_sql(array $excluded_topics, int $min_topic_level): array
+	private function get_allowed_topics_sql(array $excluded_topics, int $min_topic_level, array $forum_id_list): array
 	{
+		$sort_topics = $this->user_setting['user_rtng_sort_start_time'] ? 'topic_time' : 'topic_last_post_time';
+
 		// Get the allowed topics
 		$sql_array = [
-			'SELECT'    => 't.forum_id, t.topic_id, t.topic_type, t.icon_id, tp.topic_posted, tt.mark_time, ft.mark_time as f_mark_time, t.' . $this->sort_topics . ' as sortcr ',
+			'SELECT'    => 't.forum_id, t.topic_id, t.topic_type, t.icon_id, tp.topic_posted, tt.mark_time, ft.mark_time as f_mark_time, t.' . $sort_topics . ' as sortcr ',
 			'FROM'      => [TOPICS_TABLE => 't'],
 			'LEFT_JOIN' => [
 				[
@@ -431,8 +415,8 @@ class rtng_functions
 			],
 			'WHERE'     => $this->db->sql_in_set('t.topic_id', $excluded_topics, true) . '
 					AND t.topic_status <> ' . ITEM_MOVED . '
-					AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $this->forum_ids, $table_alias = 't.'),
-			'ORDER_BY'  => 't.' . $this->sort_topics . ' DESC',
+					AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $forum_id_list, $table_alias = 't.'),
+			'ORDER_BY'  => 't.' . $sort_topics . ' DESC',
 		];
 
 		// Check if we want all topics, or only stickies/announcements/globals
@@ -456,9 +440,6 @@ class rtng_functions
 
 	/**
 	 * Get username details for placing into templates.
-	 *
-	 * @param $row
-	 * @return array
 	 */
 	private function getusernamestrings(array $row): array
 	{
@@ -476,8 +457,10 @@ class rtng_functions
 	/**
 	 * Pull the data of the requested
 	 */
-	private function get_topics_sql(): array
+	private function get_topics_sql(array $topic_list): array
 	{
+		$sort_topics = $this->user_setting['user_rtng_sort_start_time'] ? 'topic_time' : 'topic_last_post_time';
+
 		$sql_array = [
 			'SELECT'    => 't.*, f.forum_name, tp.topic_posted',
 			'FROM'      => [TOPICS_TABLE => 't', ],
@@ -491,11 +474,11 @@ class rtng_functions
 					'ON' => 'tp.topic_id = t.topic_id AND tp.user_id = ' . (int) $this->user->data['user_id'],
 				],
 			],
-			'WHERE'     => $this->db->sql_in_set('t.topic_id', $this->topic_list),
-			'ORDER_BY'  => 't.' . $this->sort_topics . ' DESC',
+			'WHERE'     => $this->db->sql_in_set('t.topic_id', $topic_list),
+			'ORDER_BY'  => 't.' . $sort_topics . ' DESC',
 		];
 
-		if ($this->display_parent_forums)
+		if ($this->config['rtng_parents'])
 		{
 			$sql_array['SELECT'] .= ', f.parent_id, f.forum_parents, f.left_id, f.right_id';
 		}
@@ -526,17 +509,15 @@ class rtng_functions
 	/**
 	 * Set template vars
 	 */
-	private function fill_template(string $tpl_loopname, array $topic_tracking_info, int $topics_count): void
+	private function fill_template(array $icons, string $tpl_loopname, array $topic_tracking_info, int $topics_count, array $topic_list, int $total_topics_limit, int $rtng_start): void
 	{
 		// get topics from db
-		$rowset = $this->get_topics_sql();
+		$rowset = $this->get_topics_sql($topic_list);
 		$topic_icons = [];
 
 		// if topics returned by DB
 		if (count($rowset))
 		{
-			$topic_list = $this->topic_list;
-
 			/**
 			 * Event to modify the topics list data before we start the display loop
 			 *
@@ -547,8 +528,6 @@ class rtng_functions
 			 */
 			$vars = ['topic_list', 'rowset'];
 			extract($this->dispatcher->trigger_event('imcger.recenttopicsng.modify_topics_list', compact($vars)));
-
-			$this->topic_list = $topic_list;
 
 			foreach ($rowset as $row)
 			{
@@ -641,7 +620,7 @@ class rtng_functions
 				$u_mcp_queue				= ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$topic_id", true, $this->user->session_id) : '';
 				$s_type_switch				= ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
 
-				if (!empty($this->icons[$row['icon_id']]))
+				if (!empty($icons[$row['icon_id']]))
 				{
 					$topic_icons[] = $topic_id;
 				}
@@ -681,9 +660,9 @@ class rtng_functions
 					'TOPIC_IMG_STYLE'					=> $folder_img,
 					'TOPIC_FOLDER_IMG'			=> $this->user->img($folder_img, $folder_alt),
 					'TOPIC_FOLDER_IMG_ALT'		=> $this->language->lang($folder_alt),
-					'TOPIC_ICON_IMG'			=> (!empty($this->icons[$row['icon_id']])) ? $this->icons[$row['icon_id']]['img'] : '',
-					'TOPIC_ICON_IMG_WIDTH'		=> (!empty($this->icons[$row['icon_id']])) ? $this->icons[$row['icon_id']]['width'] : '',
-					'TOPIC_ICON_IMG_HEIGHT'		=> (!empty($this->icons[$row['icon_id']])) ? $this->icons[$row['icon_id']]['height'] : '',
+					'TOPIC_ICON_IMG'			=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
+					'TOPIC_ICON_IMG_WIDTH'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
+					'TOPIC_ICON_IMG_HEIGHT'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
 					'ATTACH_ICON_IMG'			=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->language->lang('TOTAL_ATTACHMENTS')) : '',
 					'UNAPPROVED_IMG'			=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', $topic_unapproved ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 					'REPORTED_IMG'				=> ($row['topic_reported'] && $this->auth->acl_get('m_report', $forum_id)) ? $this->user->img('icon_topic_reported', 'TOPIC_REPORTED') : '',
@@ -724,7 +703,7 @@ class rtng_functions
 				$this->template->assign_block_vars($tpl_loopname, $tpl_ary);
 				$this->pagination->generate_template_pagination($view_topic_url, $tpl_loopname . '.pagination', 'start', $replies + 1, $this->config['posts_per_page'], 1, true, true);
 
-				if ($this->display_parent_forums)
+				if ($this->config['rtng_parents'])
 				{
 					$forum_parents = get_forum_parents($row);
 					foreach ($forum_parents as $parent_id => $data)
@@ -768,7 +747,7 @@ class rtng_functions
 
 			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $append_params);
 			$this->pagination->generate_template_pagination($pagination_url, 'pagination',
-				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, max(0, min((int) $this->rtng_start, $this->total_topics_limit)));
+				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, max(0, min((int) $rtng_start, $total_topics_limit)));
 
 			$this->template->assign_vars([
 				'S_RTNG_TOPIC_ICONS' => count($topic_icons) ? true : false,
