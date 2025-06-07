@@ -43,4 +43,7 @@ $lang = array_merge($lang, [
 	'RTNG_DESIG'		=> 'Recent Topics',
 	'RTNG_NO_TOPICS'	=> 'There are no new topics to display.',
 	'RTNG_TOPICS_COUNT' => '%d Topics',
+
+	'RTNG_READ_SEPARATE' => 'Reading “Recent Topics”',
+	'RTNG_READ_SIMPLE'	 => 'Reading “Recent Topics” simplified page',
 ]);

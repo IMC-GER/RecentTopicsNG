@@ -57,14 +57,24 @@ class main_listener implements EventSubscriberInterface
 	public static function getSubscribedEvents(): array
 	{
 		return [
-			'core.page_header'				=> 'set_template_vars',
-			'core.index_modify_page_title'	=> 'display_rt',
-			'core.permissions'				=> 'add_permission',
+			'core.user_setup_after'				 => 'user_setup_after',
+			'core.page_header'					 => 'set_template_vars',
+			'core.index_modify_page_title'		 => 'display_rt',
+			'core.permissions'					 => 'add_permission',
+			'core.viewonline_overwrite_location' => 'viewonline_overwrite_location',
 		];
 	}
 
 	/**
-	 * Set template vars and load language
+	 * Load language vars
+	 */
+	public function user_setup_after(): void
+	{
+		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
+	}
+
+	/**
+	 * Set template vars
 	 */
 	public function set_template_vars(): void
 	{
@@ -72,8 +82,6 @@ class main_listener implements EventSubscriberInterface
 			'U_RTNG_PAGE_SEPARATE'  => $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
 			'S_RTNG_LINK_IN_NAVBAR' => $this->auth->acl_get('u_rtng_view') && $this->user_setting['user_rtng_enable'] && $this->user_setting['user_rtng_location'] == 'RTNG_SEPARATE',
 		]);
-
-		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 	}
 
 	/**
@@ -108,5 +116,19 @@ class main_listener implements EventSubscriberInterface
 		$permissions['u_rtng_separate_page_qty']	= ['lang' => 'ACL_U_RTNG_SEPARATE_PAGE_QTY',	'cat' => 'rtng'];
 		$event['permissions'] = $permissions;
 		$event['categories'] = $categories;
+	}
+
+	/**
+	 * Overwrite the location's name and URL, which are displayed in the list
+	 */
+	public function viewonline_overwrite_location(object $event): void
+	{
+		if (strpos($event['row']['session_page'], 'rtng/') !== false)
+		{
+			$site = end(explode('/', $event['row']['session_page']));
+
+			$event['location']		= $this->language->lang('RTNG_READ_' . strtoupper($site));
+			$event['location_url']	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => $site]);
+		}
 	}
 }
