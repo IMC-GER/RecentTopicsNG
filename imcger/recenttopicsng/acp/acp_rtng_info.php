@@ -13,16 +13,8 @@
 
 namespace imcger\recenttopicsng\acp;
 
-/**
- * Class acp_rtng_info
- *
- * @package imcger\recenttopicsng\acp
- */
 class acp_rtng_info
 {
-	/**
-	 * @return array
-	 */
 	public function module(): array
 	{
 		return [

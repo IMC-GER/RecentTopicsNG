@@ -15,9 +15,6 @@ namespace imcger\recenttopicsng\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Event listener
- */
 class main_listener implements EventSubscriberInterface
 {
 	protected object $rtng_functions;
@@ -28,9 +25,6 @@ class main_listener implements EventSubscriberInterface
 	protected object $ctrl_common;
 	private array $user_setting;
 
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\imcger\recenttopicsng\core\rtng_functions $rtng_functions,
@@ -51,9 +45,6 @@ class main_listener implements EventSubscriberInterface
 		$this->user_setting = $this->ctrl_common->get_user_setting();
 	}
 
-	/**
-	 * Get subscribed events
-	 */
 	public static function getSubscribedEvents(): array
 	{
 		return [
@@ -65,17 +56,11 @@ class main_listener implements EventSubscriberInterface
 		];
 	}
 
-	/**
-	 * Load language vars
-	 */
 	public function user_setup_after(): void
 	{
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 	}
 
-	/**
-	 * Set template vars
-	 */
 	public function set_template_vars(): void
 	{
 		$this->template->assign_vars([
@@ -84,9 +69,6 @@ class main_listener implements EventSubscriberInterface
 		]);
 	}
 
-	/**
-	 * The main magic
-	 */
 	public function display_rt(): void
 	{
 		if ($this->user_setting['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view'))
@@ -95,9 +77,6 @@ class main_listener implements EventSubscriberInterface
 		}
 	}
 
-	/**
-	 * Add permissions
-	 */
 	public function add_permission(object $event): void
 	{
 		$permissions = $event['permissions'];

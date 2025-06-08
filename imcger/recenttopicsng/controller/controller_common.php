@@ -13,11 +13,6 @@
 
 namespace imcger\recenttopicsng\controller;
 
-/**
- * Class controller_common
- *
- * @package imcger\recenttopicsng\controller
- */
 class controller_common
 {
 	protected object $user;

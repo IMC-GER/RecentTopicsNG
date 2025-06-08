@@ -15,9 +15,6 @@ namespace imcger\recenttopicsng\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Event listener
- */
 class ucp_listener implements EventSubscriberInterface
 {
 	protected object $auth;
@@ -28,9 +25,6 @@ class ucp_listener implements EventSubscriberInterface
 	protected object $db;
 	protected object $ctrl_common;
 
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\phpbb\auth\auth $auth,
@@ -51,9 +45,6 @@ class ucp_listener implements EventSubscriberInterface
 		$this->ctrl_common	= $controller_common;
 	}
 
-	/**
-	 * Get subscribed events
-	 */
 	public static function getSubscribedEvents(): array
 	{
 		return [

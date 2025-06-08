@@ -15,18 +15,12 @@ namespace imcger\recenttopicsng\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Event listener
- */
 class acp_listener implements EventSubscriberInterface
 {
 	protected object $template;
 	protected object $request;
 	protected object $ctrl_common;
 
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\phpbb\template\template $template,
@@ -39,9 +33,6 @@ class acp_listener implements EventSubscriberInterface
 		$this->ctrl_common	= $controller_common;
 	}
 
-	/**
-	 * Get subscribed events
-	 */
 	public static function getSubscribedEvents(): array
 	{
 		return [

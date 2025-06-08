@@ -25,9 +25,6 @@ class admin_controller
 	protected object $ctrl_common;
 	protected string $u_action;
 
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\phpbb\config\config $config,
@@ -82,8 +79,6 @@ class admin_controller
 
 	/**
 	 * Set page url
-	 *
-	 * @param string $u_action Custom form action
 	 */
 	public function set_page_url(string $u_action): void
 	{
@@ -156,8 +151,6 @@ class admin_controller
 
 	/**
 	 * Upate settings in user table
-	 *
-	 * @param  bool $all_user	Store data to all user when true
 	 */
 	protected function set_vars_usertable(bool $all_user): void
 	{

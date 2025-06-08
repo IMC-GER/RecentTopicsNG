@@ -13,9 +13,6 @@
 
 namespace imcger\recenttopicsng\core;
 
-/**
- * Class rtng_functions
- */
 class rtng_functions
 {
 	protected object $auth;
@@ -37,9 +34,6 @@ class rtng_functions
 	private int $topics_per_page;
 	private int $topics_page_number;
 
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\phpbb\auth\auth $auth,

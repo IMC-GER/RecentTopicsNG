@@ -7,7 +7,7 @@ Based on NV Recent Topics for phpBB 3.0, by Joas Schilling ([nickvergessen](http
 
 ### Requirements
 * phpBB 3.3.5 - 3.3.x
-* PHP 7.1.3 - 8.4.x
+* PHP 7.4.0 - 8.4.x
 
 ### Supported Style
 * Prosilver

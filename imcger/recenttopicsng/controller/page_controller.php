@@ -25,10 +25,6 @@ class page_controller
 	protected string $phpbb_root_path;
 	protected string $phpEx;
 
-
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\phpbb\config\config $config,
