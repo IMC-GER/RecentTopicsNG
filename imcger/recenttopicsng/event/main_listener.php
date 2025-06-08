@@ -119,7 +119,7 @@ class main_listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * Overwrite the location's name and URL, which are displayed in the list
+	 * Overwrite the location's name and URL, which are displayed in the "Who is Online" list
 	 */
 	public function viewonline_overwrite_location(object $event): void
 	{
