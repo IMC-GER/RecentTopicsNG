@@ -45,5 +45,5 @@ $lang = array_merge($lang, [
 	'RTNG_TOPICS_COUNT'	=> '%d Themen',
 
 	'RTNG_READ_SEPARATE' => 'Betrachtet „Aktuelle Themen“',
-	'RTNG_READ_SIMPLE'	 => 'Betrachtet „Aktuelle Themen“ vereinfachten Seite',
+	'RTNG_READ_SIMPLE'	 => 'Betrachtet „Aktuelle Themen“ (vereinfachte Seite)',
 ]);

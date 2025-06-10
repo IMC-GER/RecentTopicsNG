@@ -98,13 +98,14 @@ class main_listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * Overwrite the location's name and URL, which are displayed in the "Who is Online" list
+	 * Overwrite the location's name and URL, which are displayed in the "Who is online" list
 	 */
 	public function viewonline_overwrite_location(object $event): void
 	{
 		if (strpos($event['row']['session_page'], 'rtng/') !== false)
 		{
-			$site = end(explode('/', $event['row']['session_page']));
+			$session_page_parts = explode('/', $event['row']['session_page']);
+			$site = end($session_page_parts);
 
 			$event['location']		= $this->language->lang('RTNG_READ_' . strtoupper($site));
 			$event['location_url']	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => $site]);
