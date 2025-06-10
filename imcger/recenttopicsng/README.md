@@ -5,6 +5,8 @@ Extension for phpBB - Adds a list with a number of recent topics to the board in
 
 Based on NV Recent Topics for phpBB 3.0, by Joas Schilling ([nickvergessen](https://github.com/nickvergessen))
 
+[![Tests](https://github.com/IMC-GER/RecentTopicsNG/actions/workflows/tests.yml/badge.svg)](https://github.com/IMC-GER/RecentTopicsNG/actions/workflows/tests.yml)
+
 ### Requirements
 * phpBB 3.3.5 - 3.3.x
 * PHP 7.4.0 - 8.4.x
