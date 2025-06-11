@@ -1,6 +1,14 @@
-## Changelog Recent Topics NG V1.0.0-rc1
+## Changelog Recent Topics NG V1.0.0
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
+#### Changes since V1.0.0-rc1 (11/06/2025)
+  - [Change] The PHP code has been updated to include data types for the variables.
+  - [Change] The minimum version of PHP has been changed to 7.4.
+  - [Change] Update of the ConfirmBox to LukeWCSphpBBConfirmBox 1.5.1.
+  - [Change] Some of the class properties have been converted into function variables.
+  - [Feature] Overwrite the location's name and URL for "Who is online".
+  - [Fixed] The variable `$sort_topics` must not be accessed before it has been initialised.
+ 
 #### Changes since 2.2.15-pl18 (18/03/2025)
   - [Change] Changed ***Version changed to 1.0.*** Since RTNG is an independent project, there is no reason to continue the RT version number.
   - [Change] Changed vendor and package name to `ìmcger/recenttopcsng`.
