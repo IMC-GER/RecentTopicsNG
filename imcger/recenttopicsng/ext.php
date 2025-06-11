@@ -13,23 +13,12 @@
 
 namespace imcger\recenttopicsng;
 
-/**
- * Extension class for custom enable/disable/purge actions
- */
 class ext extends \phpbb\extension\base
 {
-	/**
-	 * Check whether or not the extension can be enabled.
-	 * The current phpBB version should meet or exceed
-	 * the minimum version required by this extension:
-	 *
-	 * @return bool
-	 * @access public
-	 */
 	public function is_enableable()
 	{
 		$valid_phpbb = phpbb_version_compare(PHPBB_VERSION, '3.3.5', '>=') && phpbb_version_compare(PHPBB_VERSION, '3.4.0-dev', '<');
-		$valid_php = phpbb_version_compare(PHP_VERSION, '7.1.3', '>=') && phpbb_version_compare(PHP_VERSION, '8.5.0-dev', '<');
+		$valid_php = phpbb_version_compare(PHP_VERSION, '7.4.0', '>=') && phpbb_version_compare(PHP_VERSION, '8.5.0-dev', '<');
 
 		return ($valid_phpbb && $valid_php);
 	}

@@ -15,36 +15,16 @@ namespace imcger\recenttopicsng\controller;
 
 class page_controller
 {
-	/** @var \phpbb\config\config */
-	protected $config;
+	protected object $config;
+	protected object $template;
+	protected object $helper;
+	protected object $language;
+	protected object $auth;
+	protected object $rtng_functions;
+	protected object $ctrl_common;
+	protected string $phpbb_root_path;
+	protected string $phpEx;
 
-	/** @var \phpbb\template\template */
-	protected $template;
-
-	/** @var \phpbb\controller\helper */
-	protected $helper;
-
-	/** @var \phpbb\language\language */
-	protected $language;
-
-	/** @var \phpbb\auth\auth */
-	protected $auth;
-
-	/** @var \imcger\recenttopicsng\core\rtng_functions */
-	protected $rtng_functions;
-
-	/** @var string phpBB root path	*/
-	protected $phpbb_root_path;
-
-	/** @var string PHP extension */
-	protected $phpEx;
-
-	protected $ctrl_common;
-
-
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\phpbb\config\config $config,
@@ -72,7 +52,7 @@ class page_controller
 	/**
 	 * Display the page app.php/rtng/{page}
 	 */
-	public function display($page)
+	public function display(string $page): object
 	{
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 		$title = $this->language->lang('RTNG_DESIG');

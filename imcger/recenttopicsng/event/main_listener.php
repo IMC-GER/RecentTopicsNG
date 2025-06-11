@@ -15,33 +15,16 @@ namespace imcger\recenttopicsng\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Event listener
- */
 class main_listener implements EventSubscriberInterface
 {
-	/** @var imcger\recenttopicsng\core\rtng_functions */
-	protected $rtng_functions;
+	protected object $rtng_functions;
+	protected object $template;
+	protected object $helper;
+	protected object $language;
+	protected object $auth;
+	protected object $ctrl_common;
+	private array $user_setting;
 
-	/** @var \phpbb\template\template */
-	protected $template;
-
-	/** @var \phpbb\controller\helper */
-	protected $helper;
-
-	/** @var \phpbb\language\language */
-	protected $language;
-
-	/** @var \phpbb\auth\auth */
-	protected $auth;
-
-	protected $ctrl_common;
-
-	private $user_setting;
-
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\imcger\recenttopicsng\core\rtng_functions $rtng_functions,
@@ -62,35 +45,31 @@ class main_listener implements EventSubscriberInterface
 		$this->user_setting = $this->ctrl_common->get_user_setting();
 	}
 
-	/**
-	 * Get subscribed events
-	 */
-	public static function getSubscribedEvents()
+	public static function getSubscribedEvents(): array
 	{
 		return [
-			'core.page_header'				=> 'set_template_vars',
-			'core.index_modify_page_title'	=> 'display_rt',
-			'core.permissions'				=> 'add_permission',
+			'core.user_setup_after'				 => 'user_setup_after',
+			'core.page_header'					 => 'set_template_vars',
+			'core.index_modify_page_title'		 => 'display_rt',
+			'core.permissions'					 => 'add_permission',
+			'core.viewonline_overwrite_location' => 'viewonline_overwrite_location',
 		];
 	}
 
-	/**
-	 * Set template vars and load language
-	 */
-	public function set_template_vars()
+	public function user_setup_after(): void
+	{
+		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
+	}
+
+	public function set_template_vars(): void
 	{
 		$this->template->assign_vars([
 			'U_RTNG_PAGE_SEPARATE'  => $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
 			'S_RTNG_LINK_IN_NAVBAR' => $this->auth->acl_get('u_rtng_view') && $this->user_setting['user_rtng_enable'] && $this->user_setting['user_rtng_location'] == 'RTNG_SEPARATE',
 		]);
-
-		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 	}
 
-	/**
-	 * The main magic
-	 */
-	public function display_rt()
+	public function display_rt(): void
 	{
 		if ($this->user_setting['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view'))
 		{
@@ -98,10 +77,7 @@ class main_listener implements EventSubscriberInterface
 		}
 	}
 
-	/**
-	 * Add permissions
-	 */
-	public function add_permission($event)
+	public function add_permission(object $event): void
 	{
 		$permissions = $event['permissions'];
 		$categories = $event['categories'];
@@ -119,5 +95,20 @@ class main_listener implements EventSubscriberInterface
 		$permissions['u_rtng_separate_page_qty']	= ['lang' => 'ACL_U_RTNG_SEPARATE_PAGE_QTY',	'cat' => 'rtng'];
 		$event['permissions'] = $permissions;
 		$event['categories'] = $categories;
+	}
+
+	/**
+	 * Overwrite the location's name and URL, which are displayed in the "Who is online" list
+	 */
+	public function viewonline_overwrite_location(object $event): void
+	{
+		if (strpos($event['row']['session_page'], 'rtng/') !== false)
+		{
+			$session_page_parts = explode('/', $event['row']['session_page']);
+			$site = end($session_page_parts);
+
+			$event['location']		= $this->language->lang('RTNG_READ_' . strtoupper($site));
+			$event['location_url']	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => $site]);
+		}
 	}
 }

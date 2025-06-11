@@ -15,35 +15,16 @@ namespace imcger\recenttopicsng\controller;
 
 class admin_controller
 {
-	/** @var \phpbb\config\config */
-	protected $config;
+	protected object $config;
+	protected object $template;
+	protected object $language;
+	protected object $request;
+	protected object $db;
+	protected object $ext_manager;
+	protected object $helper;
+	protected object $ctrl_common;
+	protected string $u_action;
 
-	/** @var \phpbb\template\template */
-	protected $template;
-
-	/** @var \phpbb\template\template */
-	protected $language;
-
-	/** @var \phpbb\request\request */
-	protected $request;
-
-	/** @var string Custom form action */
-	protected $u_action;
-
-	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
-
-	/** @var \phpbb\extension\manager */
-	protected $ext_manager;
-
-	/** @var \phpbb\controller\helper */
-	protected $helper;
-
-	protected $ctrl_common;
-
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\phpbb\config\config $config,
@@ -69,7 +50,7 @@ class admin_controller
 	/**
 	 * Display the options a user can configure for this extension
 	 */
-	public function display_options()
+	public function display_options(): void
 	{
 		$this->language->add_lang(['viewforum', 'ucp']);
 
@@ -98,10 +79,8 @@ class admin_controller
 
 	/**
 	 * Set page url
-	 *
-	 * @param string $u_action Custom form action
 	 */
-	public function set_page_url($u_action)
+	public function set_page_url(string $u_action): void
 	{
 		$this->u_action = $u_action;
 	}
@@ -109,7 +88,7 @@ class admin_controller
 	/**
 	 * Set template variables
 	 */
-	protected function set_template_vars()
+	protected function set_template_vars(): void
 	{
 		$metadata_manager = $this->ext_manager->create_extension_metadata_manager('imcger/recenttopicsng');
 
@@ -147,7 +126,7 @@ class admin_controller
 	/**
 	 * Store vars to config table
 	 */
-	protected function set_vars_config()
+	protected function set_vars_config(): void
 	{
 		$this->config->set('rtng_all_topics', $this->request->variable('rtng_all_topics', 0));
 		$this->config->set('rtng_min_topic_level', $this->request->variable('rtng_min_topic_level', 0));
@@ -172,10 +151,8 @@ class admin_controller
 
 	/**
 	 * Upate settings in user table
-	 *
-	 * @param  bool $all_user	Store data to all user when true
 	 */
-	protected function set_vars_usertable($all_user)
+	protected function set_vars_usertable(bool $all_user): void
 	{
 		$sql_ary = [
 			'user_rtng_enable'		 		 => (int) $this->request->variable('user_rtng_enable', 0),

@@ -15,22 +15,12 @@ namespace imcger\recenttopicsng\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Event listener
- */
 class acp_listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\template\template */
-	protected $template;
+	protected object $template;
+	protected object $request;
+	protected object $ctrl_common;
 
-	/** @var \phpbb\request\request */
-	protected $request;
-
-	protected $ctrl_common;
-
-	/**
-	 * Constructor
-	 */
 	public function __construct
 	(
 		\phpbb\template\template $template,
@@ -43,10 +33,7 @@ class acp_listener implements EventSubscriberInterface
 		$this->ctrl_common	= $controller_common;
 	}
 
-	/**
-	 * Get subscribed events
-	 */
-	public static function getSubscribedEvents()
+	public static function getSubscribedEvents(): array
 	{
 		return [
 			'core.acp_manage_forums_request_data'		=> 'acp_manage_forums_request_data',
@@ -62,7 +49,7 @@ class acp_listener implements EventSubscriberInterface
 	 * Request forum data and operate on it
 	 * Submit form (add/update)
 	 */
-	public function acp_manage_forums_request_data($event)
+	public function acp_manage_forums_request_data(object $event): void
 	{
 		$array = $event['forum_data'];
 		$array['forum_rtng_disp'] = $this->request->variable('forum_rtng_disp', true);
@@ -72,7 +59,7 @@ class acp_listener implements EventSubscriberInterface
 	/**
 	 * Default settings for new forums
 	 */
-	public function acp_manage_forums_initialise_data($event)
+	public function acp_manage_forums_initialise_data(object $event): void
 	{
 		if ($event['action'] == 'add')
 		{
@@ -85,7 +72,7 @@ class acp_listener implements EventSubscriberInterface
 	/**
 	 * ACP forums template output
 	 */
-	public function acp_manage_forums_display_form($event)
+	public function acp_manage_forums_display_form(object $event): void
 	{
 		$array = $event['template_data'];
 		$array['RTNG_DISP_FORUM'] = $event['forum_data']['forum_rtng_disp'];
@@ -95,7 +82,7 @@ class acp_listener implements EventSubscriberInterface
 	/**
 	 * Modify users preferences data
 	 */
-	public function acp_users_prefs_modify_data($event)
+	public function acp_users_prefs_modify_data(object $event): void
 	{
 		$event['user_row'] = array_merge($event['user_row'], [
 			'user_rtng_enable'				 => $this->request->variable('user_rtng_enable', $event['user_row']['user_rtng_enable']),
@@ -114,7 +101,7 @@ class acp_listener implements EventSubscriberInterface
 	/**
 	 * Modify SQL query before users preferences are updated
 	 */
-	public function acp_users_prefs_modify_sql($event)
+	public function acp_users_prefs_modify_sql(object $event): void
 	{
 		$event['sql_ary'] = array_merge($event['sql_ary'], [
 			'user_rtng_enable'				=> $event['user_row']['user_rtng_enable'],
@@ -133,7 +120,7 @@ class acp_listener implements EventSubscriberInterface
 	/**
 	 * Modify users preferences data before assigning it to the template
 	 */
-	public function acp_users_prefs_modify_template_data($event)
+	public function acp_users_prefs_modify_template_data(object $event): void
 	{
 		$template_vars = $this->ctrl_common->get_user_set_template_vars($event['user_row']['user_id'], $event['user_row']);
 
