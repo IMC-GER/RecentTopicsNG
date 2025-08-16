@@ -102,8 +102,11 @@ class page_controller
 					'U_BREADCRUMB'		=> $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
 				]);
 
-				$this->rtng_functions->display_recent_topics();
+				$this->template->assign_vars([
+					'U_CANONICAL'		=> $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate'], true, false, \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL),
+				]);
 
+				$this->rtng_functions->display_recent_topics();
 			break;
 
 			// Displays the start page of phpBB
