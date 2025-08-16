@@ -335,7 +335,7 @@ class rtng_functions
 
 			if ($total_topics_limit > 0)
 			{
-				$result = $this->db->sql_query_limit($sql, $total_topics_limit);
+				$result = $this->db->sql_query_limit($sql, $this->topics_per_page, $rtng_start);
 			}
 			else
 			{
@@ -355,30 +355,27 @@ class rtng_functions
 
 			while ($row = $this->db->sql_fetchrow($result))
 			{
-				$topics_count++;
+				$topic_list[] = $row['topic_id'];
 
-				if (($topics_count > $rtng_start) && ($topics_count <= ($rtng_start + $this->topics_per_page)))
+				$rowset[$row['topic_id']] = $row;
+
+				if (!isset($forums[$row['forum_id']]) && $this->user->data['is_registered'] && $this->config['load_db_lastread'])
 				{
-					$topic_list[] = $row['topic_id'];
+					$forums[$row['forum_id']]['mark_time'] = $row['f_mark_time'];
+				}
+				$forums[$row['forum_id']]['topic_list'][] = $row['topic_id'];
+				$forums[$row['forum_id']]['rowset'][$row['topic_id']] = & $rowset[$row['topic_id']];
 
-					$rowset[$row['topic_id']] = $row;
-
-					if (!isset($forums[$row['forum_id']]) && $this->user->data['is_registered'] && $this->config['load_db_lastread'])
-					{
-						$forums[$row['forum_id']]['mark_time'] = $row['f_mark_time'];
-					}
-					$forums[$row['forum_id']]['topic_list'][] = $row['topic_id'];
-					$forums[$row['forum_id']]['rowset'][$row['topic_id']] = & $rowset[$row['topic_id']];
-
-					if ($row['icon_id'])
-					{
-						$obtain_icons = true;
-					}
+				if ($row['icon_id'])
+				{
+					$obtain_icons = true;
 				}
 			}
+
 			$this->db->sql_freeresult($result);
 		}
-		return $topics_count;
+
+		return min($num_rows, $total_topics_limit);
 	}
 
 	/**
