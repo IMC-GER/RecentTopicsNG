@@ -179,6 +179,12 @@ class rtng_functions
 		$forums		  = [];
 		$topic_list	  = [];
 
+		// When 0 there are no topics to display
+		if ($total_topics_limit < 1)
+		{
+			return;
+		}
+
 		$topics_count = $this->gettopiclist($obtain_icons, $forums, $rtng_start, $total_topics_limit, $excluded_topics, $forum_id_list, $topic_list);
 
 		// Return if there are no topics available to display.
@@ -287,15 +293,8 @@ class rtng_functions
 	 */
 	private function gettopiclist(bool &$obtain_icons, array &$forums, int $rtng_start, int $total_topics_limit, array $excluded_topics, array $forum_id_list, array &$topic_list): int
 	{
-		$rtng_start = max(0, $rtng_start);
-
-		if ($total_topics_limit > 0)
-		{
-			$rtng_start = min((int) $rtng_start, $total_topics_limit);
-		}
-
-		$topics_count = 0;
-
+		$rtng_start		 = max(0, $rtng_start);
+		$topics_count	 = 0;
 		$min_topic_level = $this->config['rtng_min_topic_level'];
 
 		// Either use the phpBB core function to get unread topics, or the custom function for default behavior
@@ -327,28 +326,20 @@ class rtng_functions
 			$sql = $this->db->sql_build_query('SELECT', $count_sql_array);
 
 			$result = $this->db->sql_query($sql);
-			$num_rows = (int) $this->db->sql_fetchfield('topic_count');
+			$topics_count = (int) $this->db->sql_fetchfield('topic_count');
 			$this->db->sql_freeresult($result);
 
 			//load topics list
 			$sql = $this->db->sql_build_query('SELECT', $sql_array);
 
-			if ($total_topics_limit > 0)
-			{
-				$result = $this->db->sql_query_limit($sql, $this->topics_per_page, $rtng_start);
-			}
-			else
-			{
-				$result = $this->db->sql_query($sql);
-			}
+			$rtng_start	  = min($total_topics_limit - 1, $rtng_start);
+			$total_select = ($rtng_start + $this->topics_per_page) > $total_topics_limit ? ($this->topics_per_page - ($rtng_start % $this->topics_per_page)) : $this->topics_per_page;
+			$result = $this->db->sql_query_limit($sql, $total_select, $rtng_start);
 
-			if ($result != null)
+			// Return 0 topics to display
+			if ($result == false)
 			{
-				$rtng_start = min($num_rows - 1 , $rtng_start);
-			}
-			else
-			{
-				$rtng_start = 0;
+				return 0;
 			}
 
 			$rowset = [];
@@ -375,7 +366,8 @@ class rtng_functions
 			$this->db->sql_freeresult($result);
 		}
 
-		return min($num_rows, $total_topics_limit);
+		// Return number of total topics counts to display
+		return min($topics_count, $total_topics_limit);
 	}
 
 	/**

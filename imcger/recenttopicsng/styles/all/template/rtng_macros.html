@@ -39,7 +39,7 @@
 		(max !== null ? ' max="' ~ max ~ '"') ~
 		(step !== null ? ' step="' ~ step ~ '"') ~
 		(placeholder !== null ? ' placeholder="' ~ placeholder ~ '"')
-	}}>
+	}} required>
 {%- endmacro %}
 
 {% macro text(name, value, size = null, placeholder = null, pattern = null) -%}
