@@ -275,16 +275,12 @@ class rtng_functions
 			$sql    = $this->db->sql_build_query('SELECT', $sql_array);
 			$result = $this->db->sql_query($sql);
 
-			$forum_ids = [];
-
-			while ($row = $this->db->sql_fetchrow($result))
-			{
-				$forum_ids[] = $row['forum_id'];
-			}
+			$rows = $this->db->sql_fetchrowset($result);
+			$forum_ids_disp = array_column($rows, 'forum_id');
 
 			$this->db->sql_freeresult($result);
 
-			return array_unique($forum_ids);
+			return array_unique($forum_ids_disp);
 		}
 	}
 
@@ -304,17 +300,11 @@ class rtng_functions
 			$sql_extra	   = ' AND ' . $this->db->sql_in_set('t.topic_id', $excluded_topics, true);
 			$sql_extra	  .= ' AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $forum_id_list, $table_alias = 't.');
 			$unread_topics = get_unread_topics(false, $sql_extra, '', $total_topics_limit);
-			$rtng_start = min(count($unread_topics) - 1 , (int) $rtng_start);
 
-			foreach ($unread_topics as $topic_id => $mark_time)
-			{
-				$topics_count++;
+			$topics_count = count($unread_topics);
+			$rtng_start	  = min($topics_count - 1 , $rtng_start);
 
-				if (($topics_count > $rtng_start) && ($topics_count <= ($rtng_start + $this->topics_per_page)))
-				{
-					$topic_list[] = $topic_id;
-				}
-			}
+			$topic_list = array_slice(array_keys($unread_topics), $rtng_start, $this->topics_per_page);
 		}
 		else
 		{
@@ -478,12 +468,8 @@ class rtng_functions
 
 		$sql    = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, $this->topics_per_page);
-		$rowset = [];
 
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$rowset[] = $row;
-		}
+		$rowset = $this->db->sql_fetchrowset($result);
 
 		$this->db->sql_freeresult($result);
 		return $rowset;
