@@ -48,7 +48,6 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%'
             - '@imcger.recenttopicsng.controller_common'
-            - '@?phpbb.collapsiblecategories.operator'
 
     imcger.recenttopicsng.main_listener:
         class: imcger\recenttopicsng\event\main_listener
@@ -59,6 +58,7 @@ services:
             - '@language'
             - '@auth'
             - '@imcger.recenttopicsng.controller_common'
+            - '@?phpbb.collapsiblecategories.operator'
         tags:
             - { name: event.listener }
 

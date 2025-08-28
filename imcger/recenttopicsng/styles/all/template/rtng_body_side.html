@@ -16,15 +16,19 @@
 	<div class="inner">
 		<ul class="topiclist">
 			<li class="header">
+				{% EVENT forumlist_body_category_header_row_prepend %}
 				<dl class="row-item">
 					<dt>
 						<a href="{{ U_RTNG_PAGE_SEPARATE }}" title="{{ lang('RTNG_DESIG') }}">{{ lang('RTNG_DESIG') }}</a>
 					</dt>
 					<dd></dd>
 				</dl>
-				{% set S_CC_FORUM_HIDDEN = S_EXT_COLCAT_HIDDEN %}
-				{% set U_CC_COLLAPSE_URL = U_EXT_COLCAT_COLLAPSE_URL %}
-				{% include '@phpbb_collapsiblecategories/collapsible_categories_button.html' ignore missing %}
+				{# Loop is for better compatibility with Collapse Category, runs only one time -#}
+				{%- for forumrow in rtng_cc -%}
+					{% EVENT forumlist_body_category_header_row_append %}
+				{%- else -%}
+					{% EVENT forumlist_body_category_header_row_append %}
+				{%- endfor %}
 			</li>
 		</ul>
 	</div>

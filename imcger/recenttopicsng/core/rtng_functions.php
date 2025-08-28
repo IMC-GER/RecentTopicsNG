@@ -29,7 +29,6 @@ class rtng_functions
 	protected string $root_path;
 	protected string $phpEx;
 	protected object $ctrl_common;
-	private ?object $collapsable_categories; // var support extension "Collapsible Forum Categories"
 	private array $user_setting;
 	private int $topics_per_page;
 	private int $topics_page_number;
@@ -49,8 +48,7 @@ class rtng_functions
 		\phpbb\user $user,
 		$root_path,
 		$phpEx,
-		\imcger\recenttopicsng\controller\controller_common $controller_common,
-		?\phpbb\collapsiblecategories\operator\operator $collapsable_categories = null
+		\imcger\recenttopicsng\controller\controller_common $controller_common
 	)
 	{
 		$this->auth					= $auth;
@@ -67,7 +65,6 @@ class rtng_functions
 		$this->root_path			= $root_path;
 		$this->phpEx				= $phpEx;
 		$this->ctrl_common			= $controller_common;
-		$this->collapsable_categories = $collapsable_categories;
 
 		$this->topics_per_page		= 0;
 		$this->topics_page_number	= 0;
@@ -117,16 +114,6 @@ class rtng_functions
 		if (!function_exists('topic_status'))
 		{
 			include($this->root_path . 'includes/functions_display.' . $this->phpEx);
-		}
-
-		// support for phpbb collapsable categories extension
-		if (isset($this->collapsable_categories))
-		{
-			$fid = 'fid_rtng'; // can be any unique string to identify the collapsible element of your extension.
-			$this->template->assign_vars([
-				'S_EXT_COLCAT_HIDDEN'       => $this->collapsable_categories->is_collapsed($fid),
-				'U_EXT_COLCAT_COLLAPSE_URL' => $this->collapsable_categories->get_collapsible_link($fid),
-			]);
 		}
 
 		$rtng_start = $this->request->variable($tpl_loopname . '_start', 0);

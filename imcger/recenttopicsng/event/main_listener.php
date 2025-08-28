@@ -23,6 +23,7 @@ class main_listener implements EventSubscriberInterface
 	protected object $language;
 	protected object $auth;
 	protected object $ctrl_common;
+	private ?object $collapsable_categories; // var support extension "Collapsible Forum Categories"
 	private array $user_setting;
 
 	public function __construct
@@ -32,7 +33,8 @@ class main_listener implements EventSubscriberInterface
 		\phpbb\controller\helper $helper,
 		\phpbb\language\language $language,
 		\phpbb\auth\auth $auth,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		\imcger\recenttopicsng\controller\controller_common $controller_common,
+		?\phpbb\collapsiblecategories\operator\operator $collapsable_categories = null
 	)
 	{
 		$this->rtng_functions	= $rtng_functions;
@@ -41,6 +43,7 @@ class main_listener implements EventSubscriberInterface
 		$this->language			= $language;
 		$this->auth				= $auth;
 		$this->ctrl_common		= $controller_common;
+		$this->collapsable_categories = $collapsable_categories;
 
 		$this->user_setting = $this->ctrl_common->get_user_setting();
 	}
@@ -53,12 +56,26 @@ class main_listener implements EventSubscriberInterface
 			'core.index_modify_page_title'		 => 'display_rt',
 			'core.permissions'					 => 'add_permission',
 			'core.viewonline_overwrite_location' => 'viewonline_overwrite_location',
+			'core.display_forums_before'		 => 'display_forums_before',
 		];
 	}
 
 	public function user_setup_after(): void
 	{
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
+	}
+
+	public function display_forums_before(): void
+	{
+		// support for phpbb collapsable categories extension
+		if (isset($this->collapsable_categories))
+		{
+			$fid = 'fid_rtng'; // can be any unique string to identify the collapsible element of your extension.
+			$this->template->assign_block_vars('rtng_cc', [
+				'S_FORUM_HIDDEN' => $this->collapsable_categories->is_collapsed($fid),
+				'U_COLLAPSE_URL' => $this->collapsable_categories->get_collapsible_link($fid),
+			]);
+		}
 	}
 
 	public function set_template_vars(): void
