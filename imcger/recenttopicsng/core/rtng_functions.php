@@ -269,6 +269,10 @@ class rtng_functions
 
 			return array_unique($forum_ids_disp);
 		}
+		else
+		{
+			return [];
+		}
 	}
 
 	/**
@@ -508,7 +512,7 @@ class rtng_functions
 				if ($this->user_setting['user_rtng_unread_only'])
 				{
 					topic_status($row, $replies, true, $folder_img, $folder_alt, $topic_type);
-					$unread_topic = ($this->user->data['user_id'] != ANONYMOUS) ?? false;
+					$unread_topic = $this->user->data['user_id'] != ANONYMOUS;
 				}
 				else
 				{
