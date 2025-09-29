@@ -125,7 +125,7 @@ class rtng_functions
 		$forum_id_list = $this->getforumlist();
 
 		// No forums to display
-		if (empty($forum_id_list))
+		if (count($forum_id_list) == 0)
 		{
 			return;
 		}
@@ -234,7 +234,7 @@ class rtng_functions
 	/**
 	 * Get the forums we take our topics from
 	 */
-	private function getforumlist(): ?array
+	private function getforumlist(): array
 	{
 		// Get the allowed forums
 		$forum_ary = [];
@@ -508,7 +508,7 @@ class rtng_functions
 				if ($this->user_setting['user_rtng_unread_only'])
 				{
 					topic_status($row, $replies, true, $folder_img, $folder_alt, $topic_type);
-					$unread_topic = $this->user->data['user_id'] != ANONYMOUS;
+					$unread_topic = ($this->user->data['user_id'] != ANONYMOUS) ?? false;
 				}
 				else
 				{
