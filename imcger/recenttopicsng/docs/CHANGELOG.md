@@ -1,6 +1,18 @@
-## Changelog Recent Topics NG V1.0.1
+## Changelog Recent Topics NG V1.1.0
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
+#### Changes since V1.0.1 (xx/xx/2025)
+  - [Changed] Optimization of loops that adjust arrays in `rtng_functions`.
+  - [Changed] Only reads the topics that are necessary to load the page.
+  - [Changed] Required tag in number macro in `rtng_macros.html` added.
+  - [Changed] Var name $num_rows to $topics_count.
+  - [Changed] Improved vars for `sql_query_limit()`.
+  - [Changed] Better support for phpBB Collapsed Categories.
+  - [Feature] Added events to `rtng_body_site`
+  - [Feature] Added events to `rtng_body_topbottom`
+  - [Feature] Added canonical link to separate page.
+  - [Feature] Added vars in event `modify_tpl_ary`. `$disp_topic_title` and properties of the first unread post to `$row`.
+ 
 #### Changes since V1.0.0 (27/09/2025)
   - [Change] Removed unnecessary NCO.
   - [Fixed] Ensured that the correct variable type is always returned.

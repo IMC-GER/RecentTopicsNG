@@ -570,6 +570,26 @@ class rtng_functions
 					$u_first_unread_post_author		= get_username_string('profile', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
 				}
 
+				if (!empty($first_unread['post_id']) && $this->user_setting['user_rtng_disp_first_unrd_post'])
+				{
+					$disp_topic_title = 'first_unread_post';
+				}
+				else if ($this->user_setting['user_rtng_disp_last_post'])
+				{
+					$disp_topic_title = 'last_post';
+				}
+				else
+				{
+					$disp_topic_title = 'first_post';
+				}
+
+				$row['topic_first_unread_post_id']		 = $first_unread['post_id'] ?? '';
+				$row['topic_first_unread_poster_id']	 = $first_unread['poster_id'] ?? '';
+				$row['topic_first_unread_poster_name']	 = $first_unread['username'] ?? '';
+				$row['topic_first_unread_poster_colour'] = $first_unread['user_colour'] ?? '';
+				$row['topic_first_unread_post_subject']	 = $first_unread['post_subject'] ?? '';
+				$row['topic_first_unread_post_time']	 = $first_unread['post_time'] ?? '';
+
 				$view_topic_url				= append_sid("{$this->root_path}viewtopic.$this->phpEx", 't=' . $topic_id);
 				$view_last_post_url			= append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $row['topic_last_post_id'] . '#p' . $row['topic_last_post_id']);
 				$view_first_unread_post_url	= !empty($first_unread['post_id']) ? append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $first_unread['post_id'] . '#p' . $first_unread['post_id']) : '';
@@ -631,6 +651,7 @@ class rtng_functions
 					'S_UNREAD_TOPIC'			=> $unread_topic,
 					'S_DISP_FIRST_UNREAD_POST'	=> $this->user_setting['user_rtng_disp_first_unrd_post'] && $unread_topic,
 					'S_DISP_LAST_POST'			=> $this->user_setting['user_rtng_disp_last_post'],
+					'S_DISP_TOPIC_TITLE'		=> $disp_topic_title,
 					'S_TOPIC_REPORTED'			=> $row['topic_reported'] && $this->auth->acl_get('m_report', $forum_id),
 					'S_TOPIC_UNAPPROVED'		=> $topic_unapproved,
 					'S_POSTS_UNAPPROVED'		=> $posts_unapproved,
@@ -653,11 +674,13 @@ class rtng_functions
 				 * Modify the topic data before it is assigned to the template
 				 *
 				 * @event imcger.recenttopicsng.modify_tpl_ary
-				 * @var	array	row		Array with topic data
-				 * @var	array	tpl_ary	Template block array with topic data
+				 * @var	string  disp_topic_title	Post in Topic title. first, last or first unread post
+				 * @var	array	row					Array with topic data
+				 * @var	array	tpl_ary				Template block array with topic data
 				 * @since 1.0.0
+				 * @changed 1.1.0 Variables added. $disp_topic_title and properties of the first unread post in $row
 				 */
-				$vars = ['row', 'tpl_ary'];
+				$vars = ['disp_topic_title', 'row', 'tpl_ary'];
 				extract($this->dispatcher->trigger_event('imcger.recenttopicsng.modify_tpl_ary', compact($vars)));
 
 				$this->template->assign_block_vars($tpl_loopname, $tpl_ary);
