@@ -590,6 +590,8 @@ class rtng_functions
 				$row['topic_first_unread_post_subject']	 = $first_unread['post_subject'] ?? '';
 				$row['topic_first_unread_post_time']	 = $first_unread['post_time'] ?? '';
 
+				$disp_unread_topic_post = $this->user_setting['user_rtng_disp_first_unrd_post'] && $unread_topic;
+
 				$view_topic_url				= append_sid("{$this->root_path}viewtopic.$this->phpEx", 't=' . $topic_id);
 				$view_last_post_url			= append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $row['topic_last_post_id'] . '#p' . $row['topic_last_post_id']);
 				$view_first_unread_post_url	= !empty($first_unread['post_id']) ? append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $first_unread['post_id'] . '#p' . $first_unread['post_id']) : '';
@@ -649,9 +651,9 @@ class rtng_functions
 					'S_HAS_POLL'				=> $row['poll_start'] ? true : false,
 					'S_TOPIC_TYPE'				=> $row['topic_type'],
 					'S_UNREAD_TOPIC'			=> $unread_topic,
-					'S_DISP_FIRST_UNREAD_POST'	=> $this->user_setting['user_rtng_disp_first_unrd_post'] && $unread_topic,
-					'S_DISP_LAST_POST'			=> $this->user_setting['user_rtng_disp_last_post'],
-					'S_DISP_TOPIC_TITLE'		=> $disp_topic_title,
+					'S_DISP_FIRST_UNREAD_POST'	=> $disp_unread_topic_post,
+					'S_DISP_LAST_POST'			=> $this->user_setting['user_rtng_disp_last_post'] && !$disp_unread_topic_post,
+					'S_DISP_FIRST_POST'			=> !$this->user_setting['user_rtng_disp_last_post'] && !$disp_unread_topic_post,
 					'S_TOPIC_REPORTED'			=> $row['topic_reported'] && $this->auth->acl_get('m_report', $forum_id),
 					'S_TOPIC_UNAPPROVED'		=> $topic_unapproved,
 					'S_POSTS_UNAPPROVED'		=> $posts_unapproved,
