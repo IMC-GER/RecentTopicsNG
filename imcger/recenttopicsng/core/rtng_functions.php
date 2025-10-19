@@ -501,6 +501,10 @@ class rtng_functions
 				{
 					$topic_id = $row['topic_moved_id'];
 				}
+				else if ($this->user_setting['user_rtng_unread_only'])
+				{
+					$unread_topic = $this->user->data['user_id'] != ANONYMOUS;
+				}
 				else
 				{
 					$unread_topic = isset($topic_tracking_info[$forum_id][$row['topic_id']]) && ($row['topic_last_post_time'] > $topic_tracking_info[$forum_id][$row['topic_id']]);
