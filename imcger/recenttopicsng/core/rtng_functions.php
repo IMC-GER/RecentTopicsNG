@@ -514,7 +514,7 @@ class rtng_functions
 
 				$first_unread = [];
 
-				if ($unread_topic && $this->user_setting['user_rtng_disp_first_unrd_post'])
+				if ($unread_topic)
 				{
 					// Get author, posttime, id and title of first unread post in topic
 					$sql_array = [
@@ -540,7 +540,11 @@ class rtng_functions
 					$first_unread = $this->db->sql_fetchrow($result);
 					$this->db->sql_freeresult($result);
 
-					$disp_topic_title				= 'first_unread_post';
+					if ($this->user_setting['user_rtng_disp_first_unrd_post'])
+					{
+						$disp_topic_title = 'first_unread_post';
+					}
+
 					$first_unread_post_author		= get_username_string('username', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
 					$first_unread_post_author_color	= get_username_string('colour', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
 					$first_unread_post_author_full	= get_username_string('full', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
@@ -586,12 +590,12 @@ class rtng_functions
 					'TOPIC_AUTHOR_FULL'					=> $topic_author_full,
 					'U_TOPIC_AUTHOR'					=> $u_topic_author,
 					'FIRST_POST_TIME'					=> $this->user->format_date($row['topic_time']),
-					'FIRST_UNREAD_POST_AUTHOR'			=> !empty($first_unread_post_author) ? $first_unread_post_author : '',
-					'FIRST_UNREAD_POST_AUTHOR_COLOUR'	=> !empty($first_unread_post_author_color) ? $first_unread_post_author_color : '',
-					'FIRST_UNREAD_POST_AUTHOR_FULL'		=> !empty($first_unread_post_author_full) ? $first_unread_post_author_full : '',
-					'U_FIRST_UNREAD_POST_AUTHOR'		=> !empty($u_first_unread_post_author) ? $u_first_unread_post_author : '',
-					'FIRST_UNREAD_POST_SUBJECT'			=> censor_text(!empty($first_unread['post_subject']) ? $first_unread['post_subject'] : ''),
-					'FIRST_UNREAD_POST_TIME'			=> !empty($first_unread_post_time) ? $first_unread_post_time : '',
+					'FIRST_UNREAD_POST_AUTHOR'			=> $first_unread_post_author ?? '',
+					'FIRST_UNREAD_POST_AUTHOR_COLOUR'	=> $first_unread_post_author_color ?? '',
+					'FIRST_UNREAD_POST_AUTHOR_FULL'		=> $first_unread_post_author_full ?? '',
+					'U_FIRST_UNREAD_POST_AUTHOR'		=> $u_first_unread_post_author ?? '',
+					'FIRST_UNREAD_POST_SUBJECT'			=> censor_text($row['topic_first_unread_post_subject']),
+					'FIRST_UNREAD_POST_TIME'			=> $first_unread_post_time ?? '',
 					'LAST_POST_SUBJECT'					=> censor_text($row['topic_last_post_subject']),
 					'LAST_POST_TIME'					=> $this->user->format_date($row['topic_last_post_time']),
 					'LAST_VIEW_TIME'					=> $this->user->format_date($row['topic_last_view_time']),
@@ -613,7 +617,7 @@ class rtng_functions
 					'ATTACH_ICON_IMG'			=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->language->lang('TOTAL_ATTACHMENTS')) : '',
 					'UNAPPROVED_IMG'			=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', $topic_unapproved ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 					'REPORTED_IMG'				=> ($row['topic_reported'] && $this->auth->acl_get('m_report', $forum_id)) ? $this->user->img('icon_topic_reported', 'TOPIC_REPORTED') : '',
-					'S_HAS_POLL'				=> $row['poll_start'] ? true : false,
+					'S_HAS_POLL'				=> (bool) $row['poll_start'],
 					'S_TOPIC_TYPE'				=> $row['topic_type'],
 					'S_UNREAD_TOPIC'			=> $unread_topic,
 					'S_DISP_FIRST_UNREAD_POST'	=> $disp_topic_title == 'first_unread_post',
@@ -700,7 +704,7 @@ class rtng_functions
 				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, max(0, min((int) $rtng_start, $total_topics_limit)));
 
 			$this->template->assign_vars([
-				'S_RTNG_TOPIC_ICONS' => count($topic_icons) ? true : false,
+				'S_RTNG_TOPIC_ICONS' => (bool) $topic_icons,
 			]);
 		} // topics found
 	}
