@@ -41,7 +41,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, [
 	// Language pack author
 	'RTNG_LANG_DESC'				=> 'English',
-	'RTNG_LANG_EXT_VER' 			=> '1.0.0',
+	'RTNG_LANG_EXT_VER' 			=> '1.1.0',
 	'RTNG_LANG_AUTHOR' 				=> 'IMC-GER / LukeWCS',
 
 	//forum acp
@@ -53,6 +53,11 @@ $lang = array_merge($lang, [
 	'RTNG_DESIG'					=> 'Recent Topics',
 	'RTNG_EXPLAIN'					=> 'On this page you can change the settings specific for the Recent Topics extension.<br><br>Specific forums can be included or excluded by editing the respective forums in your ACP.<br>Also be sure to check your user permissions, which allow users to change some of the settings found below for themselves.',
 	'RTNG_CONFIG'					=> 'Configuration',
+
+	// acp load
+	'RTNG_LOAD_OPTIONS'					=> '“Recent Topics NG” options',
+	'RTNG_LOAD_FIRST_UNRD_POST'			=> 'Allows access to the first unread post',
+	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'If this option is enabled, the data of the first unread post is read and made available for further processing.',
 
 	//global settings
 	'RTNG_GLOBAL_SETTINGS'			=> 'Global Settings',

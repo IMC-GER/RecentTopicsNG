@@ -30,6 +30,7 @@ services:
             - '@user'
             - '@auth'
             - '@dbal.conn'
+            - '@config'
 
     imcger.recenttopicsng.functions:
         class: imcger\recenttopicsng\core\rtng_functions

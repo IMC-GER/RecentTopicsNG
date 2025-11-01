@@ -18,17 +18,20 @@ class controller_common
 	protected object $user;
 	protected object $auth;
 	protected object $db;
+	protected object $config;
 
 	public function __construct
 	(
 		\phpbb\user $user,
 		\phpbb\auth\auth $auth,
-		\phpbb\db\driver\driver_interface $db
+		\phpbb\db\driver\driver_interface $db,
+		\phpbb\config\config $config
 	)
 	{
-		$this->user = $user;
-		$this->auth = $auth;
-		$this->db	= $db;
+		$this->user   = $user;
+		$this->auth   = $auth;
+		$this->db	  = $db;
+		$this->config = $config;
 	}
 
 	/*
@@ -113,7 +116,7 @@ class controller_common
 				]);
 		}
 
-		if ($user_auth->acl_get('u_rtng_disp_first_unrd_post') || $uaec)
+		if (($user_auth->acl_get('u_rtng_disp_first_unrd_post') || $uaec) && ($this->config['rtng_load_first_unrd_post'] && $this->config['load_db_lastread']))
 		{
 			$template_vars['RTNG_DISP_FIRST_UNRD_POST'] = $template_setting['user_rtng_disp_first_unrd_post'];
 		}

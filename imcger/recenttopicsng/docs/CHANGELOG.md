@@ -8,8 +8,10 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Changed] Var name $num_rows to $topics_count.
   - [Changed] Improved vars for `sql_query_limit()`.
   - [Changed] Better support for phpBB Collapsed Categories.
-  - [Feature] Added events to `rtng_body_site`
-  - [Feature] Added events to `rtng_body_topbottom`
+  - [Changed] Improved sql query for first unread post.
+  - [Feature] Added switch in load settings to disable sql request for first unread post in RTNG.
+  - [Feature] Added events to `rtng_body_site`.
+  - [Feature] Added events to `rtng_body_topbottom`.
   - [Feature] Added canonical link to separate page.
   - [Feature] Added vars in event `modify_tpl_ary`. `$disp_topic_title` and properties of the first unread post to `$row`.
  

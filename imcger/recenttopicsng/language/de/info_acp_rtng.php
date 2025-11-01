@@ -41,7 +41,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, [
 	// Language pack author
 	'RTNG_LANG_DESC'				=> 'Deutsch (Du)',
-	'RTNG_LANG_EXT_VER' 			=> '1.0.0',
+	'RTNG_LANG_EXT_VER' 			=> '1.1.0',
 	'RTNG_LANG_AUTHOR' 				=> 'IMC-GER / LukeWCS',
 
 	//forum acp
@@ -53,6 +53,11 @@ $lang = array_merge($lang, [
 	'RTNG_DESIG'					=> 'Aktuelle Themen',
 	'RTNG_EXPLAIN'					=> 'Auf dieser Seite kannst du die Einstellungen der Erweiterung „Recent Topics NG“ anpassen.<br><br>Spezifische Foren können eingeschlossen oder ausgeschlossen werden.<br>Überprüfe auch die Benutzerberechtigungen, welche Benutzern erlauben, einige der Parameter für sich selbst zu verändern. Diese haben dann Vorrang vor den Einstellungen des Admin-Panels.',
 	'RTNG_CONFIG'					=> 'Einstellungen',
+
+	// acp load
+	'RTNG_LOAD_OPTIONS'					=> '„Recent Topics NG“ Optionen',
+	'RTNG_LOAD_FIRST_UNRD_POST'			=> 'Ermöglicht den Zugriff auf den ersten ungelesenen Beitrag',
+	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'Wenn diese Option aktiviert ist, werden die Daten des ersten ungelesenen Beitrags ausgelesen und zur weiteren Verarbeitung bereitgestellt.',
 
 	//allgemeine Einstellungen
 	'RTNG_GLOBAL_SETTINGS'			=> 'Globale Einstellungen',

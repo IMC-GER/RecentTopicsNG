@@ -187,32 +187,17 @@ class rtng_functions
 			$icons = $this->cache->obtain_icons();
 		}
 
-		// Borrowed from search.php
+		// Get the topic tracking data
 		$topic_tracking_info = [];
 		foreach ($forums as $forum_id => $forum)
 		{
-			if ($this->user->data['is_registered'] && $this->config['load_db_lastread'])
+			if ($this->config['load_db_lastread'] && $this->user->data['is_registered'] && !$this->config['rtng_load_first_unrd_post'])
 			{
-				$topic_tracking_info[$forum_id] = get_topic_tracking($forum_id, $forum['topic_list'], $forum['rowset'], [$forum_id => $forum['mark_time']], $forum_id ? false : $forum['topic_list']);
+				$topic_tracking_info[$forum_id] = get_topic_tracking($forum_id, $forum['topic_list'], $forum['rowset'], [$forum_id => $forum['mark_time']]);
 			}
-			else if ($this->config['load_anon_lastread'] || $this->user->data['is_registered'])
+			else if ($this->config['load_anon_lastread'] || ($this->user->data['is_registered'] && !$this->config['load_db_lastread']))
 			{
-				$tracking_topics = $this->request->variable($this->config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
-				$tracking_topics = $tracking_topics ? tracking_unserialize($tracking_topics) : [];
-
-				$topic_tracking_info[$forum_id] = get_complete_topic_tracking($forum_id, $forum['topic_list'], $forum_id ? false : $forum['topic_list']);
-
-				if (!$this->user->data['is_registered'])
-				{
-					if (isset($tracking_topics['l']))
-					{
-						$this->user->data['user_lastmark'] =  ( (int) base_convert($tracking_topics['l'], 36, 10) + (int) $this->config['board_startdate']);
-					}
-					else
-					{
-						$this->user->data['user_lastmark'] = 0;
-					}
-				}
+				$topic_tracking_info[$forum_id] = get_complete_topic_tracking($forum_id, $forum['topic_list']);
 			}
 		}
 
@@ -491,30 +476,19 @@ class rtng_functions
 
 			foreach ($rowset as $row)
 			{
+				$first_unread	= [];
 				$topic_id		= $row['topic_id'];
 				$forum_id		= $row['forum_id'];
 				$unread_topic	= false;
 				$replies		= $this->content_visibility->get_count('topic_posts', $row, $forum_id) - 1;
 				$s_type_switch_test = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
+				$disp_topic_title	= $this->user_setting['user_rtng_disp_last_post'] ? 'last_post' : 'first_post';
 
 				if ($row['topic_status'] == ITEM_MOVED)
 				{
 					$topic_id = $row['topic_moved_id'];
 				}
-				else if ($this->user_setting['user_rtng_unread_only'])
-				{
-					$unread_topic = $this->user->data['user_id'] != ANONYMOUS;
-				}
-				else
-				{
-					$unread_topic = isset($topic_tracking_info[$forum_id][$row['topic_id']]) && ($row['topic_last_post_time'] > $topic_tracking_info[$forum_id][$row['topic_id']]);
-				}
-
-				$disp_topic_title = $this->user_setting['user_rtng_disp_last_post'] ? 'last_post' : 'first_post';
-
-				$first_unread = [];
-
-				if ($unread_topic)
+				else if ($this->user->data['is_registered'] && $this->config['load_db_lastread'] && $this->config['rtng_load_first_unrd_post'])
 				{
 					// Get author, posttime, id and title of first unread post in topic
 					$sql_array = [
@@ -522,9 +496,18 @@ class rtng_functions
 						'FROM'		=> [POSTS_TABLE => 'p',	],
 						'LEFT_JOIN' => [
 							[
+								'FROM' => [TOPICS_TABLE => 't', ],
+								'ON'   => "t.topic_id = p.topic_id",
+							],
+							[
 								'FROM' => [TOPICS_TRACK_TABLE => 'tt', ],
 								'ON'   => "tt.user_id = {$this->user->data['user_id']}
-										AND tt.topic_id = $topic_id",
+										AND tt.topic_id = p.topic_id",
+							],
+							[
+								'FROM' => [FORUMS_TRACK_TABLE => 'ft', ],
+								'ON'   => "ft.user_id = {$this->user->data['user_id']}
+										AND ft.forum_id = t.forum_id",
 							],
 							[
 								'FROM' => [USERS_TABLE => 'u', ],
@@ -532,24 +515,32 @@ class rtng_functions
 							],
 						],
 						'WHERE'		=> "p.topic_id = $topic_id
-									AND p.post_time > COALESCE(tt.mark_time, 0)",
+									AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)
+									AND p.forum_id = $forum_id",
 						'ORDER_BY'	=> 'p.post_time ASC, p.post_id ASC',
 					];
+
 					$sql = $this->db->sql_build_query('SELECT', $sql_array);
 					$result = $this->db->sql_query_limit($sql, 1);
 					$first_unread = $this->db->sql_fetchrow($result);
 					$this->db->sql_freeresult($result);
 
-					if ($this->user_setting['user_rtng_disp_first_unrd_post'])
+					$unread_topic = !empty($first_unread['post_id']);
+
+					if ($this->user_setting['user_rtng_disp_first_unrd_post'] && $unread_topic)
 					{
 						$disp_topic_title = 'first_unread_post';
-					}
 
-					$first_unread_post_author		= get_username_string('username', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
-					$first_unread_post_author_color	= get_username_string('colour', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
-					$first_unread_post_author_full	= get_username_string('full', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
-					$first_unread_post_time			= $this->user->format_date($first_unread['post_time']);
-					$u_first_unread_post_author		= get_username_string('profile', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+						$first_unread_post_author		= get_username_string('username', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+						$first_unread_post_author_color	= get_username_string('colour', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+						$first_unread_post_author_full	= get_username_string('full', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+						$first_unread_post_time			= $this->user->format_date($first_unread['post_time']);
+						$u_first_unread_post_author		= get_username_string('profile', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+					}
+				}
+				else
+				{
+					$unread_topic = isset($topic_tracking_info[$forum_id][$row['topic_id']]) && ($row['topic_last_post_time'] > $topic_tracking_info[$forum_id][$row['topic_id']]);
 				}
 
 				$row['topic_first_unread_post_id']		 = $first_unread['post_id'] ?? '';
@@ -572,6 +563,11 @@ class rtng_functions
 				if (!empty($icons[$row['icon_id']]))
 				{
 					$topic_icons[] = $topic_id;
+				}
+
+				if ($this->user_setting['user_rtng_unread_only'] && $this->user->data['is_registered'])
+				{
+					$unread_topic = true;
 				}
 
 				// Get folder img, topic status/type related information
