@@ -30,6 +30,23 @@ class v_1_1_0 extends \phpbb\db\migration\migration
 		return [
 			// Add new config vars
 			['config.add', ['rtng_load_first_unrd_post', 0]],
+
+			// Set rtng_load_first_unrd_post to true when
+			// user_rtng_disp_first_unrd_post is set in one or more columm
+			['custom', [[$this, 'isset_first_unrd_post']]],
 		];
+	}
+
+	public function isset_first_unrd_post()
+	{
+		$sql = 'SELECT COUNT(*) AS unrd_post
+				FROM ' . USERS_TABLE . '
+				WHERE user_rtng_disp_first_unrd_post = 1';
+
+		$result = $this->db->sql_query($sql);
+		$unrd_post = $this->db->sql_fetchfield('unrd_post');
+		$this->db->sql_freeresult($result);
+
+		$this->config->set('rtng_load_first_unrd_post', (bool) $unrd_post);
 	}
 }

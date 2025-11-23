@@ -270,11 +270,12 @@ class rtng_functions
 		$min_topic_level = $this->config['rtng_min_topic_level'];
 
 		// Either use the phpBB core function to get unread topics, or the custom function for default behavior
-		if ($this->user_setting['user_rtng_unread_only'] && $this->user->data['user_id'] != ANONYMOUS)
+		if ($this->user_setting['user_rtng_unread_only'] && $this->user->data['is_registered'])
 		{
 			// Get unread topics
 			$sql_extra	   = ' AND ' . $this->db->sql_in_set('t.topic_id', $excluded_topics, true);
 			$sql_extra	  .= ' AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $forum_id_list, $table_alias = 't.');
+			$sql_extra	  .= ' AND t.topic_status <> ' . ITEM_MOVED;
 			$unread_topics = get_unread_topics(false, $sql_extra, '', $total_topics_limit);
 
 			$topics_count = count($unread_topics);
@@ -484,11 +485,7 @@ class rtng_functions
 				$s_type_switch_test = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
 				$disp_topic_title	= $this->user_setting['user_rtng_disp_last_post'] ? 'last_post' : 'first_post';
 
-				if ($row['topic_status'] == ITEM_MOVED)
-				{
-					$topic_id = $row['topic_moved_id'];
-				}
-				else if ($this->user->data['is_registered'] && $this->config['load_db_lastread'] && $this->config['rtng_load_first_unrd_post'])
+				if ($this->user->data['is_registered'] && $this->config['load_db_lastread'] && $this->config['rtng_load_first_unrd_post'])
 				{
 					// Get author, posttime, id and title of first unread post in topic
 					$sql_array = [

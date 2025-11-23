@@ -29,8 +29,7 @@
 {% endif %}
 
 {% if rtng.S_FIRST_ROW || !rtng.S_TOPIC_TYPE_SWITCH %}
-<a class="category{% if S_EXT_COLCAT_HIDDEN %} hidden-category{% endif %}" style="display: none; height: 0"></a>
-	{% EVENT forumlist_body_category_header_before %}
+{% EVENT forumlist_body_category_header_before %}
 <div id="rtng-box" class="forabg rtng">
 	<div class="inner">
 		<ul class="topiclist">
