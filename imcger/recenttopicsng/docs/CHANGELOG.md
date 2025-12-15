@@ -1,6 +1,10 @@
-## Changelog Recent Topics NG V1.0.0
+## Changelog Recent Topics NG V1.0.1
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
+#### Changes since V1.0.0 (27/09/2025)
+  - [Change] Removed unnecessary NCO.
+  - [Fixed] Ensured that the correct variable type is always returned.
+ 
 #### Changes since V1.0.0-rc1 (11/06/2025)
   - [Change] The PHP code has been updated to include data types for the variables.
   - [Change] The minimum version of PHP has been changed to 7.4.
