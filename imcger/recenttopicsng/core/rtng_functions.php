@@ -68,8 +68,6 @@ class rtng_functions
 
 		$this->topics_per_page		= 0;
 		$this->topics_page_number	= 0;
-
-		$this->user_setting = $this->ctrl_common->get_user_setting();
 	}
 
 	/**
@@ -103,8 +101,10 @@ class rtng_functions
 	/**
 	 * Display recent topics
 	 */
-	public function display_recent_topics(string $tpl_loopname = 'rtng'): void
+	public function display_recent_topics(string $tpl_loopname = 'rtng_topics'): void
 	{
+		$this->user_setting = $this->ctrl_common->get_user_setting();
+
 		// can view rtng ?
 		if (!($this->user_setting['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view')))
 		{
@@ -154,6 +154,7 @@ class rtng_functions
 			$count_sql_array = $sql_array;
 			$count_sql_array['SELECT'] = 'COUNT(t.topic_id) as topic_count';
 			unset($count_sql_array['ORDER_BY']);
+			unset($count_sql_array['LEFT_JOIN']);
 			$sql = $this->db->sql_build_query('SELECT', $count_sql_array);
 
 			$result = $this->db->sql_query($sql);
@@ -290,6 +291,7 @@ class rtng_functions
 			$count_sql_array = $sql_array;
 			$count_sql_array['SELECT'] = 'COUNT(t.topic_id) as topic_count';
 			unset($count_sql_array['ORDER_BY']);
+			unset($count_sql_array['LEFT_JOIN']);
 			$sql = $this->db->sql_build_query('SELECT', $count_sql_array);
 
 			$result = $this->db->sql_query($sql);

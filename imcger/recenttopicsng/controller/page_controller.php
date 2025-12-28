@@ -97,12 +97,14 @@ class page_controller
 				make_jumpbox(append_sid($this->phpbb_root_path . 'viewforum.' . $this->phpEx));
 
 				// Generate link in NavBar
-				$this->template->assign_block_vars('navlinks', [
+				$navlinks	= [];
+				$navlinks[] = [
 					'BREADCRUMB_NAME'	=> $this->language->lang('RTNG_DESIG'),
 					'U_BREADCRUMB'		=> $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
-				]);
+				];
 
 				$this->template->assign_vars([
+					'navlinks'			=> $navlinks,
 					'U_CANONICAL'		=> $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate'], true, false, \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL),
 				]);
 

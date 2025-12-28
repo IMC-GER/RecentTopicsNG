@@ -2,13 +2,18 @@
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
 #### Changes since V1.0.1 (xx/xx/2025)
-  - [Changed] Optimization of loops that adjust arrays in `rtng_functions`.
-  - [Changed] Only reads the topics that are necessary to load the page.
-  - [Changed] Required tag in number macro in `rtng_macros.html` added.
-  - [Changed] Var name $num_rows to $topics_count.
-  - [Changed] Improved vars for `sql_query_limit()`.
-  - [Changed] Better support for phpBB Collapsed Categories.
-  - [Changed] Improved sql query for first unread post.
+  - [Change] php min to v8.0.
+  - [Change] Cached “rtng_user_data” reduces DB queries.
+  - [Change] Improved SQL query for topic counting for better performance.
+  - [Change] assign_block_vars() replaced in page_controller.
+  - [Change] phpBB template code replaced with Twig syntax.
+  - [Change] Optimization of loops that adjust arrays in `rtng_functions`.
+  - [Change] Only reads the topics that are necessary to load the page.
+  - [Change] Required tag in number macro in `rtng_macros.html` added.
+  - [Change] Var name $num_rows to $topics_count.
+  - [Change] Improved vars for `sql_query_limit()`.
+  - [Change] Better support for phpBB Collapsed Categories.
+  - [Change] Improved sql query for first unread post.
   - [Feature] Added switch in load settings to disable sql request for first unread post in RTNG.
   - [Feature] Added events to `rtng_body_site`.
   - [Feature] Added events to `rtng_body_topbottom`.

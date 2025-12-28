@@ -33,15 +33,15 @@
 	</div>
 	<div id="rtng" class="inner collapsible">
 
-{% for rtng in loops.rtng %}
-	{% if !rtng.S_TOPIC_TYPE_SWITCH && !rtng.S_FIRST_ROW %}
+{% for rtng in rtng_topics %}
+	{% if !rtng.S_TOPIC_TYPE_SWITCH && !loop.first %}
 	</ul>
 	{% endif %}
 
-	{% if rtng.S_FIRST_ROW || !rtng.S_TOPIC_TYPE_SWITCH %}
+	{% if loop.first || !rtng.S_TOPIC_TYPE_SWITCH %}
 	<ul>
 	{% endif %}
-		<li class="row{% if rtng.S_ROW_COUNT is even %} bg1{% else %} bg2{% endif %}
+		<li class="row{% if loop.index is even %} bg1{% else %} bg2{% endif %}
 		{% if rtng.S_POST_GLOBAL %} global-announce{% endif %}
 		{% if rtng.S_POST_ANNOUNCE %} announce{% endif %}
 		{% if rtng.S_POST_STICKY %} sticky{% endif %}
@@ -109,7 +109,7 @@
 
 			</dl>
 		</li>
-	{% if rtng.S_LAST_ROW %}
+	{% if loop.last %}
 	</ul>
 	{% endif %}
 {% else %}
@@ -122,7 +122,7 @@
 
 	</div>
 </div>
-{% if loops.pagination|length %}
+{% if pagination is defined %}
 <div class="action-bar bar-bottom">
 	<div class="pagination">
 		{{ RTNG_TOPICS_COUNT }}

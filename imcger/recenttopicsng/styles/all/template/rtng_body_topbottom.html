@@ -12,7 +12,7 @@
 
 {% if S_RTNG_LOCATION_BOTTOM || S_RTNG_LOCATION_TOP -%}
 
-{% if loops.pagination|length && (S_RTNG_LOCATION_TOP) %}
+{% if pagination is defined && S_RTNG_LOCATION_TOP %}
 <div class="action-bar bar-top">
 	<div class="pagination">
 		{{ RTNG_TOPICS_COUNT }}
@@ -21,14 +21,14 @@
 </div>
 {% endif %}
 
-{% for rtng in loops.rtng %}
-{% if !rtng.S_TOPIC_TYPE_SWITCH && !rtng.S_FIRST_ROW %}
+{% for rtng in rtng_topics %}
+{% if !rtng.S_TOPIC_TYPE_SWITCH && !loop.first %}
 </ul>
 </div>
 </div>
 {% endif %}
 
-{% if rtng.S_FIRST_ROW || !rtng.S_TOPIC_TYPE_SWITCH %}
+{% if loop.first || !rtng.S_TOPIC_TYPE_SWITCH %}
 {% EVENT forumlist_body_category_header_before %}
 <div id="rtng-box" class="forabg rtng">
 	<div class="inner">
@@ -54,7 +54,7 @@
 		<ul class="topiclist topics{% if !S_RTNG_LOCATION_BOTTOM || !S_RTNG_LOCATION_TOP %} collapsible{% endif %}">
 			{% endif %}
 			{% EVENT viewforum_body_topicrow_row_before %}
-			<li class="row{% if rtng.S_ROW_COUNT is even %} bg1{% else %} bg2{% endif %}{% if rtng.S_POST_GLOBAL %} global-announce{% endif %}{% if rtng.S_POST_ANNOUNCE %} announce{% endif %}{% if rtng.S_POST_STICKY %} sticky{% endif %}{% if rtng.S_TOPIC_REPORTED %} reported{% endif %}">
+			<li class="row{% if loop.index is even %} bg1{% else %} bg2{% endif %}{% if rtng.S_POST_GLOBAL %} global-announce{% endif %}{% if rtng.S_POST_ANNOUNCE %} announce{% endif %}{% if rtng.S_POST_STICKY %} sticky{% endif %}{% if rtng.S_TOPIC_REPORTED %} reported{% endif %}">
 			{% EVENT viewforum_body_topic_row_prepend %}
 
 				<dl class="row-item {{ rtng.TOPIC_IMG_STYLE }}">
@@ -97,7 +97,7 @@
 						{% if rtng.REPLIES %}<span class="responsive-show left-box" style="display: none;">{{ lang('REPLIES') }}{{ lang('COLON') }} <strong>{{ rtng.REPLIES }}</strong></span>{% endif %}
 						{% endif %}
 
-						{% if rtng.pagination|length %}
+						{% if rtng.pagination is defined %}
 						<div class="pagination">
 							<span>
 							<i class="icon fa-clone fa-fw" aria-hidden="true">	</i>
@@ -154,7 +154,7 @@
 			{% EVENT viewforum_body_topic_row_append %}
 			</li>
 		{% EVENT viewforum_body_topic_row_after %}
-			{% if rtng.S_LAST_ROW %}
+			{% if loop.last %}
 		</ul>
 	</div>
 </div>
@@ -168,7 +168,7 @@
 </div>
 {% endfor %}
 
-{% if loops.pagination|length && (S_RTNG_LOCATION_BOTTOM) %}
+{% if pagination is defined && S_RTNG_LOCATION_BOTTOM %}
 <div class="action-bar bar-bottom">
 	<div class="pagination">
 		{{ RTNG_TOPICS_COUNT }}

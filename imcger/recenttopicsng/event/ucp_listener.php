@@ -115,7 +115,7 @@ class ucp_listener implements EventSubscriberInterface
 	public function ucp_register_set_data(object $event): void
 	{
 		// Read guest account settings as default
-		$user_data = $this->ctrl_common->get_rtng_user_data();
+		$user_data = $this->ctrl_common->get_rtng_user_data(ANONYMOUS);
 
 		$sql = 'UPDATE ' . USERS_TABLE . '
                 SET ' . $this->db->sql_build_array('UPDATE', $user_data) . '
