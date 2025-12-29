@@ -17,32 +17,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ucp_listener implements EventSubscriberInterface
 {
-	protected object $auth;
-	protected object $request;
-	protected object $template;
-	protected object $user;
-	protected object $language;
-	protected object $db;
-	protected object $ctrl_common;
-
 	public function __construct
 	(
-		\phpbb\auth\auth $auth,
-		\phpbb\request\request $request,
-		\phpbb\template\template $template,
-		\phpbb\user $user,
-		\phpbb\language\language $language,
-		\phpbb\db\driver\driver_interface $db,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \phpbb\auth\auth $auth,
+		protected \phpbb\request\request $request,
+		protected \phpbb\template\template $template,
+		protected \phpbb\user $user,
+		protected \phpbb\language\language $language,
+		protected \phpbb\db\driver\driver_interface $db,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
 	)
 	{
-		$this->auth			= $auth;
-		$this->request		= $request;
-		$this->template 	= $template;
-		$this->user			= $user;
-		$this->language		= $language;
-		$this->db			= $db;
-		$this->ctrl_common	= $controller_common;
 	}
 
 	public static function getSubscribedEvents(): array

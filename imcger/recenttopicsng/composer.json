@@ -3,8 +3,8 @@
     "type": "phpbb-extension",
     "description": "Adds a list with a number of recent topics to the board index.",
     "homepage": "https://github.com/IMC-GER/RecentTopicsNG",
-    "version": "1.1.0-dev",
-    "time": "2025-12-27",
+    "version": "1.1.0-dev9",
+    "time": "2025-12-29",
     "license": "GPL-2.0-only",
     "authors": [
         {

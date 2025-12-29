@@ -17,34 +17,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class main_listener implements EventSubscriberInterface
 {
-	protected object $rtng_functions;
-	protected object $template;
-	protected object $helper;
-	protected object $language;
-	protected object $auth;
-	protected object $ctrl_common;
-	private ?object $collapsable_categories; // var support extension "Collapsible Forum Categories"
 	private array $user_setting;
 
 	public function __construct
 	(
-		\imcger\recenttopicsng\core\rtng_functions $rtng_functions,
-		\phpbb\template\template $template,
-		\phpbb\controller\helper $helper,
-		\phpbb\language\language $language,
-		\phpbb\auth\auth $auth,
-		\imcger\recenttopicsng\controller\controller_common $controller_common,
-		?\phpbb\collapsiblecategories\operator\operator $collapsable_categories = null
+		protected \imcger\recenttopicsng\core\rtng_functions $rtng_functions,
+		protected \phpbb\template\template $template,
+		protected \phpbb\controller\helper $helper,
+		protected \phpbb\language\language $language,
+		protected \phpbb\auth\auth $auth,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
+		private \phpbb\collapsiblecategories\operator\operator|null $collapsable_categories = null,
 	)
 	{
-		$this->rtng_functions	= $rtng_functions;
-		$this->template			= $template;
-		$this->helper			= $helper;
-		$this->language			= $language;
-		$this->auth				= $auth;
-		$this->ctrl_common		= $controller_common;
-		$this->collapsable_categories = $collapsable_categories;
-
 		$this->user_setting = $this->ctrl_common->get_user_setting();
 	}
 

@@ -15,38 +15,19 @@ namespace imcger\recenttopicsng\controller;
 
 class page_controller
 {
-	protected object $config;
-	protected object $template;
-	protected object $helper;
-	protected object $language;
-	protected object $auth;
-	protected object $rtng_functions;
-	protected object $ctrl_common;
-	protected string $phpbb_root_path;
-	protected string $phpEx;
-
 	public function __construct
 	(
-		\phpbb\config\config $config,
-		\phpbb\template\template $template,
-		\phpbb\controller\helper $helper,
-		\phpbb\language\language $language,
-		\phpbb\auth\auth $auth,
-		\imcger\recenttopicsng\core\rtng_functions $rtng_functions,
-		$phpbb_root_path,
-		$phpEx,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \phpbb\config\config $config,
+		protected \phpbb\template\template $template,
+		protected \phpbb\controller\helper $helper,
+		protected \phpbb\language\language $language,
+		protected \phpbb\auth\auth $auth,
+		protected \imcger\recenttopicsng\core\rtng_functions $rtng_functions,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
+		protected $phpbb_root_path,
+		protected $phpEx,
 	)
 	{
-		$this->config			= $config;
-		$this->template			= $template;
-		$this->helper			= $helper;
-		$this->language			= $language;
-		$this->auth				= $auth;
-		$this->rtng_functions	= $rtng_functions;
-		$this->phpbb_root_path	= $phpbb_root_path;
-		$this->phpEx			= $phpEx;
-		$this->ctrl_common		= $controller_common;
 	}
 
 	/**

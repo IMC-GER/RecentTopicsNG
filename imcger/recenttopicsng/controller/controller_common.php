@@ -15,25 +15,16 @@ namespace imcger\recenttopicsng\controller;
 
 class controller_common
 {
-	protected object $user;
-	protected object $auth;
-	protected object $db;
-	protected object $config;
-	protected array	 $rtng_user_data;
+	protected array $rtng_user_data;
 
 	public function __construct
 	(
-		\phpbb\user $user,
-		\phpbb\auth\auth $auth,
-		\phpbb\db\driver\driver_interface $db,
-		\phpbb\config\config $config
+		protected \phpbb\user $user,
+		protected \phpbb\auth\auth $auth,
+		protected \phpbb\db\driver\driver_interface $db,
+		protected \phpbb\config\config $config,
 	)
 	{
-		$this->user   = $user;
-		$this->auth   = $auth;
-		$this->db	  = $db;
-		$this->config = $config;
-
 		$this->set_rtng_user_data($user->data);
 	}
 

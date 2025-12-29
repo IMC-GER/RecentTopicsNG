@@ -15,57 +15,28 @@ namespace imcger\recenttopicsng\core;
 
 class rtng_functions
 {
-	protected object $auth;
-	protected object $config;
-	protected object $language;
-	protected object $cache;
-	protected object $content_visibility;
-	protected object $db;
-	protected object $dispatcher;
-	protected object $pagination;
-	protected object $request;
-	protected object $template;
-	protected object $user;
-	protected string $root_path;
-	protected string $phpEx;
-	protected object $ctrl_common;
 	private array $user_setting;
 	private int $topics_per_page;
 	private int $topics_page_number;
 
 	public function __construct
 	(
-		\phpbb\auth\auth $auth,
-		\phpbb\cache\service $cache,
-		\phpbb\config\config $config,
-		\phpbb\language\language $language,
-		\phpbb\content_visibility $content_visibility,
-		\phpbb\db\driver\driver_interface $db,
-		\phpbb\event\dispatcher_interface $dispatcher,
-		\phpbb\pagination $pagination,
-		\phpbb\request\request_interface $request,
-		\phpbb\template\template $template,
-		\phpbb\user $user,
-		$root_path,
-		$phpEx,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \phpbb\auth\auth $auth,
+		protected \phpbb\cache\service $cache,
+		protected \phpbb\config\config $config,
+		protected \phpbb\language\language $language,
+		protected \phpbb\content_visibility $content_visibility,
+		protected \phpbb\db\driver\driver_interface $db,
+		protected \phpbb\event\dispatcher_interface $dispatcher,
+		protected \phpbb\pagination $pagination,
+		protected \phpbb\request\request_interface $request,
+		protected \phpbb\template\template $template,
+		protected \phpbb\user $user,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
+		protected $root_path,
+		protected $phpEx,
 	)
 	{
-		$this->auth					= $auth;
-		$this->cache				= $cache;
-		$this->config				= $config;
-		$this->language				= $language;
-		$this->content_visibility	= $content_visibility;
-		$this->db					= $db;
-		$this->dispatcher			= $dispatcher;
-		$this->pagination			= $pagination;
-		$this->request				= $request;
-		$this->template				= $template;
-		$this->user					= $user;
-		$this->root_path			= $root_path;
-		$this->phpEx				= $phpEx;
-		$this->ctrl_common			= $controller_common;
-
 		$this->topics_per_page		= 0;
 		$this->topics_page_number	= 0;
 	}

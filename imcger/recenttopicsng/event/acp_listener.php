@@ -17,20 +17,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class acp_listener implements EventSubscriberInterface
 {
-	protected object $template;
-	protected object $request;
-	protected object $ctrl_common;
-
 	public function __construct
 	(
-		\phpbb\template\template $template,
-		\phpbb\request\request $request,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \phpbb\template\template $template,
+		protected \phpbb\request\request $request,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
 	)
 	{
-		$this->template 	= $template;
-		$this->request		= $request;
-		$this->ctrl_common	= $controller_common;
 	}
 
 	public static function getSubscribedEvents(): array

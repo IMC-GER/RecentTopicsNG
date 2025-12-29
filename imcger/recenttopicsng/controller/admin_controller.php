@@ -15,36 +15,20 @@ namespace imcger\recenttopicsng\controller;
 
 class admin_controller
 {
-	protected object $config;
-	protected object $template;
-	protected object $language;
-	protected object $request;
-	protected object $db;
-	protected object $ext_manager;
-	protected object $helper;
-	protected object $ctrl_common;
 	protected string $u_action;
 
 	public function __construct
 	(
-		\phpbb\config\config $config,
-		\phpbb\template\template $template,
-		\phpbb\language\language $language,
-		\phpbb\request\request $request,
-		\phpbb\db\driver\driver_interface $db,
-		\phpbb\extension\manager $ext_manager,
-		\phpbb\controller\helper $helper,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \phpbb\config\config $config,
+		protected \phpbb\template\template $template,
+		protected \phpbb\language\language $language,
+		protected \phpbb\request\request $request,
+		protected \phpbb\db\driver\driver_interface $db,
+		protected \phpbb\extension\manager $ext_manager,
+		protected \phpbb\controller\helper $helper,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
 	)
 	{
-		$this->config		= $config;
-		$this->template		= $template;
-		$this->language		= $language;
-		$this->request		= $request;
-		$this->db			= $db;
-		$this->ext_manager	= $ext_manager;
-		$this->helper		= $helper;
-		$this->ctrl_common	= $controller_common;
 	}
 
 	/**

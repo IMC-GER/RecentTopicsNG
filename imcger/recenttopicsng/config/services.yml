@@ -8,9 +8,9 @@ services:
             - '@language'
             - '@auth'
             - '@imcger.recenttopicsng.functions'
+            - '@imcger.recenttopicsng.controller_common'
             - '%core.root_path%'
             - '%core.php_ext%'
-            - '@imcger.recenttopicsng.controller_common'
 
     imcger.recenttopicsng.admin.controller:
         class: imcger\recenttopicsng\controller\admin_controller
@@ -46,9 +46,9 @@ services:
             - '@request'
             - '@template'
             - '@user'
+            - '@imcger.recenttopicsng.controller_common'
             - '%core.root_path%'
             - '%core.php_ext%'
-            - '@imcger.recenttopicsng.controller_common'
 
     imcger.recenttopicsng.main_listener:
         class: imcger\recenttopicsng\event\main_listener
