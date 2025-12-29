@@ -41,7 +41,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, [
 	// Language pack author
 	'RTNG_LANG_DESC'				=> 'English',
-	'RTNG_LANG_EXT_VER' 			=> '1.1.0',
+	'RTNG_LANG_VER' 				=> '1.1.0',
 	'RTNG_LANG_AUTHOR' 				=> 'IMC-GER / LukeWCS',
 
 	//forum acp
@@ -49,9 +49,9 @@ $lang = array_merge($lang, [
 	'RTNG_FORUMS_EXPLAIN'			=> 'Enable this checkbox to display topics from this forum in the list of recent topics.',
 
 	//acp title
-	'RTNG_NAME'						=> 'Recent Topics NG', // Please do not translate the name of the extension
+	'RTNG_NAME'						=> 'Recent Topics NG',
 	'RTNG_DESIG'					=> 'Recent Topics',
-	'RTNG_EXPLAIN'					=> 'On this page you can change the settings specific for the Recent Topics extension.<br><br>Specific forums can be included or excluded by editing the respective forums in your ACP.<br>Also be sure to check your user permissions, which allow users to change some of the settings found below for themselves.',
+	'RTNG_EXPLAIN'					=> 'On this page you can change the settings specific for the <strong>“%s”</strong> extension.<br><br>Specific forums can be included or excluded by editing the respective forums in your ACP.<br>Also be sure to check your user permissions, which allow users to change some of the settings found below for themselves.',
 	'RTNG_CONFIG'					=> 'Configuration',
 
 	// acp load

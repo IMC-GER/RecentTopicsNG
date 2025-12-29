@@ -23,6 +23,7 @@ class controller_common
 		protected \phpbb\auth\auth $auth,
 		protected \phpbb\db\driver\driver_interface $db,
 		protected \phpbb\config\config $config,
+		protected \phpbb\extension\manager $ext_manager,
 	)
 	{
 		$this->set_rtng_user_data($user->data);
@@ -239,5 +240,13 @@ class controller_common
 		unset($user_auth);
 
 		return $default_data;
+	}
+
+	/**
+	 * Returns the RTNG composer data.
+	 */
+	public function get_rtng_composer_data(): array
+	{
+		return $this->ext_manager->create_extension_metadata_manager('imcger/recenttopicsng')->get_metadata('all');
 	}
 }

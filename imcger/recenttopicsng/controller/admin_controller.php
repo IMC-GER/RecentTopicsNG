@@ -74,18 +74,17 @@ class admin_controller
 	 */
 	protected function set_template_vars(): void
 	{
-		$metadata_manager = $this->ext_manager->create_extension_metadata_manager('imcger/recenttopicsng');
-
-		$board_url		  = generate_board_url(true);
-		$simple_page_path = $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'simple']);
-		$simple_page_url  = $board_url . explode('?', $simple_page_path)[0];
+		$metadata			= $this->ctrl_common->get_rtng_composer_data();
+		$board_url			= generate_board_url(true);
+		$simple_page_path	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'simple']);
+		$simple_page_url	= $board_url . explode('?', $simple_page_path)[0];
 
 		$this->template->assign_vars([
 			'U_ACTION'						=> $this->u_action,
 			'U_RTNG_PAGE_SIMPLE'			=> $simple_page_url,
 
-			'RTNG_NAME'						=> $metadata_manager->get_metadata('display-name'),
-			'RTNG_EXT_VER'					=> $metadata_manager->get_metadata('version'),
+			'RTNG_EXT_NAME'					=> $metadata['extra']['display-name'],
+			'RTNG_EXT_VER'					=> $metadata['version'],
 
 			'RTNG_ANTI_TOPICS'				=> $this->config['rtng_anti_topics'],
 			'RTNG_PARENTS'					=> (int) $this->config['rtng_parents'],

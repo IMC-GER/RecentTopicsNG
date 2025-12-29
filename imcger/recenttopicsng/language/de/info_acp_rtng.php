@@ -41,7 +41,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, [
 	// Language pack author
 	'RTNG_LANG_DESC'				=> 'Deutsch (Du)',
-	'RTNG_LANG_EXT_VER' 			=> '1.1.0',
+	'RTNG_LANG_VER' 				=> '1.1.0',
 	'RTNG_LANG_AUTHOR' 				=> 'IMC-GER / LukeWCS',
 
 	//forum acp
@@ -49,9 +49,9 @@ $lang = array_merge($lang, [
 	'RTNG_FORUMS_EXPLAIN'			=> 'Aktiviere dieses Kontrollkästchen, um Themen dieses Forum in den Aktuelle Themen anzuzeigen.',
 
 	//acp title
-	'RTNG_NAME'						=> 'Recent Topics NG', // Please do not translate the name of the extension
+	'RTNG_NAME'						=> 'Recent Topics NG',
 	'RTNG_DESIG'					=> 'Aktuelle Themen',
-	'RTNG_EXPLAIN'					=> 'Auf dieser Seite kannst du die Einstellungen der Erweiterung „Recent Topics NG“ anpassen.<br><br>Spezifische Foren können eingeschlossen oder ausgeschlossen werden.<br>Überprüfe auch die Benutzerberechtigungen, welche Benutzern erlauben, einige der Parameter für sich selbst zu verändern. Diese haben dann Vorrang vor den Einstellungen des Admin-Panels.',
+	'RTNG_EXPLAIN'					=> 'Auf dieser Seite kannst du die Einstellungen der Erweiterung <strong>„%s“</strong> anpassen.<br><br>Spezifische Foren können eingeschlossen oder ausgeschlossen werden.<br>Überprüfe auch die Benutzerberechtigungen, welche Benutzern erlauben, einige der Parameter für sich selbst zu verändern. Diese haben dann Vorrang vor den Einstellungen des Admin-Panels.',
 	'RTNG_CONFIG'					=> 'Einstellungen',
 
 	// acp load

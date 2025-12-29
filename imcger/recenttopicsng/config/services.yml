@@ -31,6 +31,7 @@ services:
             - '@auth'
             - '@dbal.conn'
             - '@config'
+            - '@ext.manager' 
 
     imcger.recenttopicsng.functions:
         class: imcger\recenttopicsng\core\rtng_functions
