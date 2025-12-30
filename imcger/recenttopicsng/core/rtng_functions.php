@@ -16,6 +16,7 @@ namespace imcger\recenttopicsng\core;
 class rtng_functions
 {
 	private array $user_setting;
+	private int $topics_start;
 	private int $topics_per_page;
 	private int $topics_page_number;
 
@@ -37,6 +38,7 @@ class rtng_functions
 		protected $phpEx,
 	)
 	{
+		$this->topics_start			= 0;
 		$this->topics_per_page		= 0;
 		$this->topics_page_number	= 0;
 	}
@@ -185,7 +187,7 @@ class rtng_functions
 			]
 		);
 
-		$this->fill_template($icons, $tpl_loopname, $topic_tracking_info, $topics_count, $topic_list, $total_topics_limit, $rtng_start);
+		$this->fill_template($icons, $tpl_loopname, $topic_tracking_info, $topics_count, $topic_list, $total_topics_limit);
 	}
 
 	/**
@@ -237,7 +239,6 @@ class rtng_functions
 	 */
 	private function gettopiclist(bool &$obtain_icons, array &$forums, int $rtng_start, int $total_topics_limit, array $excluded_topics, array $forum_id_list, array &$topic_list): int
 	{
-		$rtng_start		 = max(0, $rtng_start);
 		$topics_count	 = 0;
 		$min_topic_level = $this->config['rtng_min_topic_level'];
 
@@ -250,8 +251,8 @@ class rtng_functions
 			$sql_extra	  .= ' AND t.topic_status <> ' . ITEM_MOVED;
 			$unread_topics = get_unread_topics(false, $sql_extra, '', $total_topics_limit);
 
-			$topics_count = count($unread_topics);
-			$rtng_start	  = min($topics_count - 1 , $rtng_start);
+			$total_topics_limit = min($total_topics_limit, count($unread_topics));
+			$rtng_start = $this->validate_start($rtng_start, $this->topics_per_page, $total_topics_limit);
 
 			$topic_list = array_slice(array_keys($unread_topics), $rtng_start, $this->topics_per_page);
 		}
@@ -272,9 +273,9 @@ class rtng_functions
 			//load topics list
 			$sql = $this->db->sql_build_query('SELECT', $sql_array);
 
-			$rtng_start	  = min($total_topics_limit - 1, $rtng_start);
-			$total_select = ($rtng_start + $this->topics_per_page) > $total_topics_limit ? ($this->topics_per_page - ($rtng_start % $this->topics_per_page)) : $this->topics_per_page;
-			$result = $this->db->sql_query_limit($sql, $total_select, $rtng_start);
+			$total_topics_limit = min($total_topics_limit, $topics_count);
+			$rtng_start			= $this->validate_start($rtng_start, $this->topics_per_page, $total_topics_limit);
+			$result = $this->db->sql_query_limit($sql, $this->topics_per_page, $rtng_start);
 
 			// Return 0 topics to display
 			if ($result == false)
@@ -306,8 +307,11 @@ class rtng_functions
 			$this->db->sql_freeresult($result);
 		}
 
+		// Set start of pagination
+		$this->topics_start = $rtng_start;
+
 		// Return number of total topics counts to display
-		return min($topics_count, $total_topics_limit);
+		return $total_topics_limit;
 	}
 
 	/**
@@ -428,7 +432,7 @@ class rtng_functions
 	/**
 	 * Set template vars
 	 */
-	private function fill_template(array $icons, string $tpl_loopname, array $topic_tracking_info, int $topics_count, array $topic_list, int $total_topics_limit, int $rtng_start): void
+	private function fill_template(array $icons, string $tpl_loopname, array $topic_tracking_info, int $topics_count, array $topic_list, int $total_topics_limit): void
 	{
 		// get topics from db
 		$rowset = $this->get_topics_sql($topic_list);
@@ -667,11 +671,20 @@ class rtng_functions
 
 			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $append_params);
 			$this->pagination->generate_template_pagination($pagination_url, 'pagination',
-				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, max(0, min((int) $rtng_start, $total_topics_limit)));
+				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, $this->topics_start);
 
 			$this->template->assign_vars([
 				'S_RTNG_TOPIC_ICONS' => (bool) $topic_icons,
 			]);
 		} // topics found
+	}
+
+	public function validate_start($start, $per_page, $num_items)
+	{
+		$start = max(0, $start);
+		$start = $start >= $num_items ?  $num_items -1 : $start;
+		$start = intdiv($start, $per_page) * $per_page;
+
+		return $start;
 	}
 }

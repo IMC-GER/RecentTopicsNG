@@ -2,6 +2,9 @@
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
 #### Changes since V1.0.1 (xx/xx/2025)
+  - [Change] Classes have been switched to constructor property promotion.
+  - [Change] Minor changes have been made to the language files.
+  - [Change] The metadata is used to display the extension name..
   - [Change] php min to v8.0.
   - [Change] Cached “rtng_user_data” reduces DB queries.
   - [Change] Improved SQL query for topic counting for better performance.
@@ -14,12 +17,14 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Change] Improved vars for `sql_query_limit()`.
   - [Change] Better support for phpBB Collapsed Categories.
   - [Change] Improved sql query for first unread post.
+  - [Feature] A function for reading metadata (`composer.json`) has been added to the Common class.
   - [Feature] Added switch in load settings to disable sql request for first unread post in RTNG.
   - [Feature] Added events to `rtng_body_site`.
   - [Feature] Added events to `rtng_body_topbottom`.
   - [Feature] Added canonical link to separate page.
   - [Feature] Added vars in event `modify_tpl_ary`. `$disp_topic_title` and properties of the first unread post to `$row`.
- 
+  - [Fixed] Pagination generates an incorrect list if the start value is outside the range.
+
 #### Changes since V1.0.0 (27/09/2025)
   - [Change] Removed unnecessary NCO.
   - [Fixed] Ensured that the correct variable type is always returned.
