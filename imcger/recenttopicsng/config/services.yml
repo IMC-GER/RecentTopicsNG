@@ -20,7 +20,6 @@ services:
             - '@language'
             - '@request'
             - '@dbal.conn'
-            - '@ext.manager'
             - '@controller.helper'
             - '@imcger.recenttopicsng.controller_common'
 

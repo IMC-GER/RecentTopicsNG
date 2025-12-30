@@ -24,7 +24,6 @@ class admin_controller
 		protected \phpbb\language\language $language,
 		protected \phpbb\request\request $request,
 		protected \phpbb\db\driver\driver_interface $db,
-		protected \phpbb\extension\manager $ext_manager,
 		protected \phpbb\controller\helper $helper,
 		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
 	)
