@@ -113,9 +113,9 @@
 	</ul>
 	{% endif %}
 {% else %}
-	<div class="panel">
+	<div class="panel{% if !S_RTNG_LOCATION_BOTTOM || !S_RTNG_LOCATION_TOP %} collapsible{% endif %}">
 		<div class="inner" style="padding: 10px;" >
-		<strong>{{ lang('RTNG_NO_TOPICS') }}</strong>
+			<strong>{{ lang('RTNG_NO_TOPICS') }}</strong>
 		</div>
 	</div>
 {% endfor %}

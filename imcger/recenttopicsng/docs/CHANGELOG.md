@@ -24,6 +24,8 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Feature] Added canonical link to separate page.
   - [Feature] Added vars in event `modify_tpl_ary`. `$disp_topic_title` and properties of the first unread post to `$row`.
   - [Fixed] Pagination generates an incorrect list if the start value is outside the range.
+  - [Fixed] Message `RTNG_NO_TOPICS` don't display on index.
+
 
 #### Changes since V1.0.0 (27/09/2025)
   - [Change] Removed unnecessary NCO.

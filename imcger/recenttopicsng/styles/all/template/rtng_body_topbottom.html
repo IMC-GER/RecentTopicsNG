@@ -161,9 +161,33 @@
 {% endif %}
 
 {% else %}
-<div class="panel">
-	<div class="inner" style="padding: 10px;" >
-		<strong>{{ lang('RTNG_NO_TOPICS') }}</strong>
+{% EVENT forumlist_body_category_header_before %}
+<div id="rtng-box" class="forabg rtng">
+	<div class="inner">
+		<ul class="topiclist">
+			<li class="header">
+				{% EVENT forumlist_body_category_header_row_prepend %}
+				<dl class="row-item">
+					<dt><div class="list-inner">
+						<a href="{{ U_RTNG_PAGE_SEPARATE }}" title="{{ lang('RTNG_DESIG') }}">{{ lang('RTNG_DESIG') }}</a></div>
+					</dt>
+					<dd class="posts">{{ lang('REPLIES') }}</dd>
+					<dd class="views">{{ lang('VIEWS') }}</dd>
+					<dd class="lastpost"><span>{{ lang('LAST_POST') }}</span></dd>
+				</dl>
+				{# Loop is for better compatibility with Collapse Category, runs only one time -#}
+				{%- for forumrow in rtng_cc -%}
+					{% EVENT forumlist_body_category_header_row_append %}
+				{%- else -%}
+					{% EVENT forumlist_body_category_header_row_append %}
+				{%- endfor %}
+			</li>
+		</ul>
+		<div class="panel{% if !S_RTNG_LOCATION_BOTTOM || !S_RTNG_LOCATION_TOP %} collapsible{% endif %}">
+			<div class="inner" style="padding: 10px;" >
+				<strong>{{ lang('RTNG_NO_TOPICS') }}</strong>
+			</div>
+		</div>
 	</div>
 </div>
 {% endfor %}

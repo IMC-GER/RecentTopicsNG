@@ -95,6 +95,15 @@ class rtng_functions
 
 		$min_topic_level = $this->config['rtng_min_topic_level'];
 
+		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
+		$this->template->assign_vars([
+				'S_RTNG_LOCATION_TOP'	 => $this->user_setting['user_rtng_location'] == 'RTNG_TOP',
+				'S_RTNG_LOCATION_BOTTOM' => $this->user_setting['user_rtng_location'] == 'RTNG_BOTTOM',
+				'S_RTNG_LOCATION_SIDE'	 => $this->user_setting['user_rtng_location'] == 'RTNG_SIDE',
+				strtoupper($tpl_loopname) . '_DISPLAY' => true,
+			]
+		);
+
 		$forum_id_list = $this->getforumlist();
 
 		// No forums to display
@@ -175,15 +184,9 @@ class rtng_functions
 			}
 		}
 
-		//load language
-		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 		$this->template->assign_vars([
 				'RTNG_TOPICS_COUNT'		 => $this->language->lang('RTNG_TOPICS_COUNT', (int) $topics_count),
 				'RTNG_SORT_START_TIME'	 => $this->user_setting['user_rtng_sort_start_time'],
-				'S_RTNG_LOCATION_TOP'	 => $this->user_setting['user_rtng_location'] == 'RTNG_TOP',
-				'S_RTNG_LOCATION_BOTTOM' => $this->user_setting['user_rtng_location'] == 'RTNG_BOTTOM',
-				'S_RTNG_LOCATION_SIDE'	 => $this->user_setting['user_rtng_location'] == 'RTNG_SIDE',
-				strtoupper($tpl_loopname) . '_DISPLAY' => true,
 			]
 		);
 
@@ -421,7 +424,7 @@ class rtng_functions
 		extract($this->dispatcher->trigger_event('imcger.recenttopicsng.sql_pull_topics_data', compact($vars)));
 
 		$sql    = $this->db->sql_build_query('SELECT', $sql_array);
-		$result = $this->db->sql_query_limit($sql, $this->topics_per_page);
+		$result = $this->db->sql_query($sql);
 
 		$rowset = $this->db->sql_fetchrowset($result);
 
@@ -681,9 +684,9 @@ class rtng_functions
 
 	public function validate_start($start, $per_page, $num_items)
 	{
-		$start = max(0, $start);
-		$start = $start >= $num_items ?  $num_items -1 : $start;
+		$start = $start >= $num_items ? $num_items - 1 : $start;
 		$start = intdiv($start, $per_page) * $per_page;
+		$start = max(0, $start);
 
 		return $start;
 	}
