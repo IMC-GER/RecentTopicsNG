@@ -25,6 +25,7 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Feature] Added vars in event `modify_tpl_ary`. `$disp_topic_title` and properties of the first unread post to `$row`.
   - [Fixed] Pagination generates an incorrect list if the start value is outside the range.
   - [Fixed] Message `RTNG_NO_TOPICS` don't display on index.
+  - [Fixed] The red fa-file icon is not removed when topics are marked as unread.
 
 
 #### Changes since V1.0.0 (27/09/2025)

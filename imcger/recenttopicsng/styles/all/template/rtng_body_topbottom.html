@@ -63,20 +63,20 @@
 					<div class="list-inner">
 						{% EVENT topiclist_row_prepend %}
 						{% if rtng.S_UNREAD_TOPIC && !S_IS_BOT %}
-						<a href="{{ rtng.U_NEWEST_POST }}">
+						<a class="unread" href="{{ rtng.U_NEWEST_POST }}">
 						<i class="icon fa-file fa-fw icon-red icon-md" aria-hidden="true"></i><span class="sr-only"></span>
 						</a> {% endif %}<a href="
-							{% if rtng.S_DISP_FIRST_UNREAD_POST %}
+							{%- if rtng.S_DISP_FIRST_UNREAD_POST -%}
 								{{ rtng.U_FIRST_UNREAD_POST }}
-							{% else %}
+							{%- else -%}
 								{{ rtng.S_DISP_LAST_POST ? rtng.U_LAST_POST : rtng.U_VIEW_TOPIC }}
-							{% endif %}
+							{%- endif -%}
 						" class="topictitle">
-							{% if rtng.S_DISP_FIRST_UNREAD_POST %}
+							{%- if rtng.S_DISP_FIRST_UNREAD_POST -%}
 								{{ rtng.FIRST_UNREAD_POST_SUBJECT }}
-							{% else %}
+							{%- else -%}
 								{{ rtng.S_DISP_LAST_POST ? rtng.LAST_POST_SUBJECT : rtng.TOPIC_TITLE }}
-							{% endif %}
+							{%- endif -%}
 						</a>
 
 						{% if rtng.ATTACH_ICON_IMG %}<i class="icon fa-paperclip fa-fw" aria-hidden="true"></i>{% endif %}
