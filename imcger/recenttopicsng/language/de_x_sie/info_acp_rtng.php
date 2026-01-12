@@ -44,22 +44,23 @@ $lang = array_merge($lang, [
 	'RTNG_LANG_VER' 				=> '1.1.0',
 	'RTNG_LANG_AUTHOR' 				=> 'IMC-GER / LukeWCS',
 
-	//forum acp
+	// ACP forums
 	'RTNG_FORUMS'					=> 'In „Recent Topics NG“ anzeigen',
 	'RTNG_FORUMS_EXPLAIN'			=> 'Aktiviere dieses Kontrollkästchen, um Themen dieses Forum in den Aktuelle Themen anzuzeigen.',
 
-	//acp title
-	'RTNG_NAME'						=> 'Recent Topics NG',
-	'RTNG_DESIG'					=> 'Aktuelle Themen',
-	'RTNG_EXPLAIN'					=> 'Auf dieser Seite können Sie die Einstellungen der Erweiterung <strong>„%s“</strong> anpassen.<br><br>Spezifische Foren können eingeschlossen oder ausgeschlossen werden.<br>Überprüfe auch die Benutzerberechtigungen, welche Benutzern erlauben, einige der Parameter für sich selbst zu verändern. Diese haben dann Vorrang vor den Einstellungen des Admin-Panels.',
+	// ACP nav
+	'RTNG_NAME'						=> 'Aktuelle Themen',
 	'RTNG_CONFIG'					=> 'Einstellungen',
 
-	// acp load
+	// ACP module
+	'RTNG_EXPLAIN'					=> 'Auf dieser Seite können Sie die Einstellungen der Erweiterung <strong>„%s“</strong> anpassen.<br><br>Spezifische Foren können eingeschlossen oder ausgeschlossen werden.<br>Überprüfe auch die Benutzerberechtigungen, welche Benutzern erlauben, einige der Parameter für sich selbst zu verändern. Diese haben dann Vorrang vor den Einstellungen des Admin-Panels.',
+
+	// ACP load
 	'RTNG_LOAD_OPTIONS'					=> '„Recent Topics NG“ Optionen',
 	'RTNG_LOAD_FIRST_UNRD_POST'			=> 'Ermöglicht den Zugriff auf den ersten ungelesenen Beitrag',
 	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'Wenn diese Option aktiviert ist, werden die Daten des ersten ungelesenen Beitrags ausgelesen und zur weiteren Verarbeitung bereitgestellt.',
 
-	//allgemeine Einstellungen
+	// Global settings
 	'RTNG_GLOBAL_SETTINGS'			=> 'Globale Einstellungen',
 	'RTNG_INDEX_DISPLAY_EXP'		=> 'Anzeigen auf der Index-Seite.',
 	'RTNG_ALL_TOPICS'				=> 'Alle Seiten anzeigen',
@@ -76,7 +77,7 @@ $lang = array_merge($lang, [
 	'RTNG_SIMPLE_PAGE_QTY'			=> 'Anzahl der Seiten in der vereinfachten Anzeige',
 	'RTNG_SIMPLE_PAGE_QTY_EXP'		=> 'Damit können Sie für die vereinfachte Anzeige festlegen, wie viele Listen-Seiten maximal angezeigt werden sollen.',
 
-	//Benutzereinstellungen
+	// User Overridable settings. these apply for anon users and can be overridden by UCP
 	'RTNG_OVERRIDABLE'				=> 'Einstellungen, die im Benutzerkontrollzentrum geändert werden können',
 	'RTNG_ENABLE'					=> 'Aktuelle Themen anzeigen',
 	'RTNG_LOCATION'					=> 'Anzeigeort',

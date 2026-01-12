@@ -44,22 +44,23 @@ $lang = array_merge($lang, [
 	'RTNG_LANG_VER' 				=> '1.1.0',
 	'RTNG_LANG_AUTHOR' 				=> 'IMC-GER / LukeWCS',
 
-	//forum acp
+	// ACP forums
 	'RTNG_FORUMS'					=> 'Display on “Recent Topics NG”',
 	'RTNG_FORUMS_EXPLAIN'			=> 'Enable this checkbox to display topics from this forum in the list of recent topics.',
 
-	//acp title
-	'RTNG_NAME'						=> 'Recent Topics NG',
-	'RTNG_DESIG'					=> 'Recent Topics',
-	'RTNG_EXPLAIN'					=> 'On this page you can change the settings specific for the <strong>“%s”</strong> extension.<br><br>Specific forums can be included or excluded by editing the respective forums in your ACP.<br>Also be sure to check your user permissions, which allow users to change some of the settings found below for themselves.',
+	// ACP nav
+	'RTNG_NAME'						=> 'Recent Topics',
 	'RTNG_CONFIG'					=> 'Configuration',
 
-	// acp load
+	// ACP module
+	'RTNG_EXPLAIN'					=> 'On this page you can change the settings specific for the <strong>“%s”</strong> extension.<br><br>Specific forums can be included or excluded by editing the respective forums in your ACP.<br>Also be sure to check your user permissions, which allow users to change some of the settings found below for themselves.',
+
+	// ACP load
 	'RTNG_LOAD_OPTIONS'					=> '“Recent Topics NG” options',
 	'RTNG_LOAD_FIRST_UNRD_POST'			=> 'Allows access to the first unread post',
 	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'If this option is enabled, the data of the first unread post is read and made available for further processing.',
 
-	//global settings
+	// Global settings
 	'RTNG_GLOBAL_SETTINGS'			=> 'Global Settings',
 	'RTNG_INDEX_DISPLAY_EXP'		=> 'Display on Index page',
 	'RTNG_ALL_TOPICS'				=> 'Show all recent topic pages',

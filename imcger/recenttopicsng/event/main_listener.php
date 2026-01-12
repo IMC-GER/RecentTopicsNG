@@ -71,6 +71,7 @@ class main_listener implements EventSubscriberInterface
 		$this->template->assign_vars([
 			'U_RTNG_PAGE_SEPARATE'  => $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
 			'S_RTNG_LINK_IN_NAVBAR' => $this->auth->acl_get('u_rtng_view') && $this->user_setting['user_rtng_enable'] && $this->user_setting['user_rtng_location'] == 'RTNG_SEPARATE',
+			'RTNG_TITLE_DYN'		=> $this->language->lang('RTNG' . ($this->user_setting['user_rtng_unread_only'] ? '_UNREAD' : '') . '_TITLE'),
 		]);
 	}
 
@@ -111,8 +112,10 @@ class main_listener implements EventSubscriberInterface
 		{
 			$session_page_parts = explode('/', $event['row']['session_page']);
 			$site = end($session_page_parts);
+			$user_setting = $this->ctrl_common->get_user_setting($event['row']['user_id']);
+			$title = $this->language->lang('RTNG' . ($user_setting['user_rtng_unread_only'] ? '_UNREAD' : '') . '_TITLE');
 
-			$event['location']		= $this->language->lang('RTNG_READ_' . strtoupper($site));
+			$event['location']		= $this->language->lang('RTNG_READ_' . strtoupper($site), $title);
 			$event['location_url']	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => $site]);
 		}
 	}

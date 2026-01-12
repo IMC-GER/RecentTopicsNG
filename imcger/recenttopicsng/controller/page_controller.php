@@ -36,9 +36,8 @@ class page_controller
 	public function display(string $page): object
 	{
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
-		$title = $this->language->lang('RTNG_DESIG');
-
 		$user_setting = $this->ctrl_common->get_user_setting();
+		$title = $this->language->lang('RTNG' . ($user_setting['user_rtng_unread_only'] ? '_UNREAD' : '') . '_TITLE');
 
 		// Redirect to index site when user has no permisson
 		if (!($user_setting['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view')))
@@ -80,7 +79,7 @@ class page_controller
 				// Generate link in NavBar
 				$navlinks	= [];
 				$navlinks[] = [
-					'BREADCRUMB_NAME'	=> $this->language->lang('RTNG_DESIG'),
+					'BREADCRUMB_NAME'	=> $title,
 					'U_BREADCRUMB'		=> $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
 				];
 
