@@ -195,8 +195,9 @@ class controller_common
 			'WHERE'     => 'user_id = ' . (int) $user_id,
 		];
 
-		$sql    = $this->db->sql_build_query('SELECT', $sql_array);
-		$result	= $this->db->sql_query_limit($sql, 1);
+		$sql		= $this->db->sql_build_query('SELECT', $sql_array);
+		$cache_time = $user_id == ANONYMOUS ? 3600 : 0;
+		$result		= $this->db->sql_query($sql, $cache_time);
 		$this->rtng_user_data[$user_id] = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 

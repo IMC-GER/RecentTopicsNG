@@ -115,3 +115,7 @@
 #rtng-separate .forabg + .action-bar {
 	margin-top: 4px;
 }
+
+#rtng-side a.topictitle {
+	font-size: 1.3em;
+}
