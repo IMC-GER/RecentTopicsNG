@@ -41,6 +41,10 @@
 	border-radius: unset;
 }
 
+#rtng-side a.topictitle {
+	font-size: 1.32em;
+} 
+
 #rtng ul {
 	list-style: none;
 }
@@ -76,7 +80,7 @@
 
 #rtng a.forum-link {
 	color: #877b69;
-	font-size: 10px;
+	font-size: 1.1em;
 }
 
 #rtng dd.lastpost {
@@ -114,8 +118,4 @@
 #rtng-bottom .forabg + .action-bar,
 #rtng-separate .forabg + .action-bar {
 	margin-top: 4px;
-}
-
-#rtng-side a.topictitle {
-	font-size: 1.3em;
 }
