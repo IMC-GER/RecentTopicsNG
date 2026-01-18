@@ -24,6 +24,7 @@ class admin_controller
 		protected \phpbb\language\language $language,
 		protected \phpbb\request\request $request,
 		protected \phpbb\db\driver\driver_interface $db,
+		protected \phpbb\cache\driver\driver_interface $cache,
 		protected \phpbb\controller\helper $helper,
 		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
 	)
@@ -154,5 +155,7 @@ class admin_controller
 				SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . $sql_where;
 
 		$this->db->sql_query($sql);
+
+		$this->cache->destroy('sql', USERS_TABLE);
 	}
 }

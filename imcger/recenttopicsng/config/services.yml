@@ -19,7 +19,8 @@ services:
             - '@template'
             - '@language'
             - '@request'
-            - '@dbal.conn'
+            - '@dbal.conn' 
+            - '@cache.driver'
             - '@controller.helper'
             - '@imcger.recenttopicsng.controller_common'
 
