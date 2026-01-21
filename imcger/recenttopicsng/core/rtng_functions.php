@@ -103,7 +103,7 @@ class rtng_functions
 				strtoupper($tpl_loopname) . '_DISPLAY' => true,
 			]
 		);
-
+		
 		$forum_id_list = $this->getforumlist();
 
 		// No forums to display
@@ -210,8 +210,8 @@ class rtng_functions
 			}
 		}
 
-		$forum_ids = array_unique($forum_ary);
-
+		$forum_ids = array_diff($forum_ary, $this->user->get_passworded_forums());
+		
 		if (count($forum_ids) > 1)
 		{
 			$sql_array = [
@@ -229,7 +229,7 @@ class rtng_functions
 
 			$this->db->sql_freeresult($result);
 
-			return array_unique($forum_ids_disp);
+			return $forum_ids_disp;
 		}
 		else
 		{

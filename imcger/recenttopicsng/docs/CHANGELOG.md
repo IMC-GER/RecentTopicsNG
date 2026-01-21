@@ -1,7 +1,7 @@
 ## Changelog Recent Topics NG V1.1.0
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
-#### Changes since V1.0.1 (xx/xx/2025)
+#### Changes since V1.0.1 (xx/xx/2026)
   - [Change] Classes have been switched to constructor property promotion.
   - [Change] Minor changes have been made to the language files.
   - [Change] The metadata is used to display the extension name..
@@ -26,6 +26,7 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Fixed] Pagination generates an incorrect list if the start value is outside the range.
   - [Fixed] Message `RTNG_NO_TOPICS` don't display on index.
   - [Fixed] The red fa-file icon is not removed when topics are marked as unread.
+  - [Fixed] Displays locked passworded forums.
 
 
 #### Changes since V1.0.0 (27/09/2025)
