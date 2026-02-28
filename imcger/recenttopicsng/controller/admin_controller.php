@@ -27,6 +27,8 @@ class admin_controller
 		protected \phpbb\cache\driver\driver_interface $cache,
 		protected \phpbb\controller\helper $helper,
 		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
+		protected $phpbb_root_path,
+		protected $phpEx,
 	)
 	{
 	}
@@ -78,10 +80,12 @@ class admin_controller
 		$board_url			= generate_board_url(true);
 		$simple_page_path	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'simple']);
 		$simple_page_url	= $board_url . explode('?', $simple_page_path)[0];
+		$server_load_url	= append_sid("{$this->phpbb_root_path}adm/index.{$this->phpEx}", 'i=acp_board&mode=load');
 
 		$this->template->assign_vars([
 			'U_ACTION'						=> $this->u_action,
 			'U_RTNG_PAGE_SIMPLE'			=> $simple_page_url,
+			'U_SERVER_LOAD'					=> $server_load_url,
 
 			'RTNG_EXT_NAME'					=> $metadata['extra']['display-name'],
 			'RTNG_EXT_VER'					=> $metadata['version'],

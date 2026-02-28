@@ -103,7 +103,7 @@ class rtng_functions
 				strtoupper($tpl_loopname) . '_DISPLAY' => true,
 			]
 		);
-		
+
 		$forum_id_list = $this->getforumlist();
 
 		// No forums to display
@@ -190,7 +190,7 @@ class rtng_functions
 			]
 		);
 
-		$this->fill_template($icons, $tpl_loopname, $topic_tracking_info, $topics_count, $topic_list, $total_topics_limit);
+		$this->fill_template($icons, $tpl_loopname, $topic_tracking_info, $topics_count, $topic_list);
 	}
 
 	/**
@@ -211,7 +211,7 @@ class rtng_functions
 		}
 
 		$forum_ids = array_diff($forum_ary, $this->user->get_passworded_forums());
-		
+
 		if (count($forum_ids) > 1)
 		{
 			$sql_array = [
@@ -435,7 +435,7 @@ class rtng_functions
 	/**
 	 * Set template vars
 	 */
-	private function fill_template(array $icons, string $tpl_loopname, array $topic_tracking_info, int $topics_count, array $topic_list, int $total_topics_limit): void
+	private function fill_template(array $icons, string $tpl_loopname, array $topic_tracking_info, int $topics_count, array $topic_list): void
 	{
 		// get topics from db
 		$rowset = $this->get_topics_sql($topic_list);

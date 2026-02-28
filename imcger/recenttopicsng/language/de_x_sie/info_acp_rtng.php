@@ -79,6 +79,7 @@ $lang = array_merge($lang, [
 
 	// User Overridable settings. these apply for anon users and can be overridden by UCP
 	'RTNG_OVERRIDABLE'				=> 'Einstellungen, die im Benutzerkontrollzentrum geändert werden können',
+	'RTNG_OVERRIDABLE_EXPLAIN'		=> 'Damit der Benutzer diese Einstellungen im Benutzerkontrollzentrum verändern kann, muss ihm in der Rechteverwaltung das entsprechende Benutzerrecht zugewiesen werden. Hat er dieses Recht nicht, werden für ihn diese Standardeinstellungen angewendet. Diese Werte werden auch für neue Benutzer und Gäste gesetzt.<br><br>Damit der Titel, Autor und das Beitragsdatum des ersten ungelesenen Beitrags als Anzeige im Thementitel ausgewählt werden kann, muss diese Option in den Einstellungen der <a href="%s">Serverlast</a> aktiviert werden.',
 	'RTNG_ENABLE'					=> 'Aktuelle Themen anzeigen',
 	'RTNG_LOCATION'					=> 'Anzeigeort',
 	'RTNG_LOCATION_EXP'				=> 'Wähle den Anzeigeort der aktuellen Themen.',

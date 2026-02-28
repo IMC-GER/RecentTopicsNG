@@ -23,6 +23,8 @@ services:
             - '@cache.driver'
             - '@controller.helper'
             - '@imcger.recenttopicsng.controller_common'
+            - '%core.root_path%'
+            - '%core.php_ext%'
 
     imcger.recenttopicsng.controller_common:
         class: imcger\recenttopicsng\controller\controller_common

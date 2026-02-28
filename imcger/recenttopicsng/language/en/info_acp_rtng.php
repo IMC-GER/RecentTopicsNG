@@ -77,8 +77,9 @@ $lang = array_merge($lang, [
 	'RTNG_SIMPLE_PAGE_QTY'			=> 'Number of pages in the simplified display',
 	'RTNG_SIMPLE_PAGE_QTY_EXP'		=> 'This allows you to specify the maximum number of list pages to be displayed for the simplified display.',
 
-	//User Overridable settings. these apply for anon users and can be overridden by UCP
+	// User Overridable settings. these apply for anon users and can be overridden by UCP
 	'RTNG_OVERRIDABLE'				=> 'UCP overridable Settings',
+	'RTNG_OVERRIDABLE_EXPLAIN'		=> 'In order for the user to be able to change these settings in the user control center, the corresponding user permission must be assigned to them in the permission management. If they do not have this permission, these default settings will be applied for them. These values are also set for new users and guests.<br><br>In order for the title, author, and date of the first unread post to be selected for display in the topic title, this option must be enabled in the <a href="%s">server load</a> settings.',
 	'RTNG_ENABLE'					=> 'Display recent topics',
 	'RTNG_LOCATION'					=> 'Display location',
 	'RTNG_LOCATION_EXP'				=> 'Select location to display recent topics.',
