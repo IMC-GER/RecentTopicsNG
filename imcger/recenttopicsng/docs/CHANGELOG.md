@@ -1,5 +1,34 @@
-## Changelog Recent Topics NG V1.0.1
+## Changelog Recent Topics NG V1.1.0
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
+
+#### Changes since V1.0.1 (08/03/2026)
+  - [Change] Classes have been switched to constructor property promotion.
+  - [Change] Minor changes have been made to the language files.
+  - [Change] The metadata is used to display the extension name..
+  - [Change] php min to v8.0.
+  - [Change] Cached “rtng_user_data” reduces DB queries.
+  - [Change] Improved SQL query for topic counting for better performance.
+  - [Change] assign_block_vars() replaced in page_controller.
+  - [Change] phpBB template code replaced with Twig syntax.
+  - [Change] Optimization of loops that adjust arrays in `rtng_functions`.
+  - [Change] Only reads the topics that are necessary to load the page.
+  - [Change] Required tag in number macro in `rtng_macros.html` added.
+  - [Change] Var name $num_rows to $topics_count.
+  - [Change] Improved vars for `sql_query_limit()`.
+  - [Change] Better support for phpBB Collapsed Categories.
+  - [Change] Improved sql query for first unread post.
+  - [Change] Improved explanation of user settings in the ACP.
+  - [Feature] A function for reading metadata (`composer.json`) has been added to the Common class.
+  - [Feature] Added switch in load settings to disable sql request for first unread post in RTNG.
+  - [Feature] Added events to `rtng_body_site`.
+  - [Feature] Added events to `rtng_body_topbottom`.
+  - [Feature] Added canonical link to separate page.
+  - [Feature] Added vars in event `modify_tpl_ary`. `$disp_topic_title` and properties of the first unread post to `$row`.
+  - [Fixed] Pagination generates an incorrect list if the start value is outside the range.
+  - [Fixed] Message `RTNG_NO_TOPICS` don't display on index.
+  - [Fixed] The red fa-file icon is not removed when topics are marked as unread.
+  - [Fixed] Displays locked passworded forums.
+
 
 #### Changes since V1.0.0 (27/09/2025)
   - [Change] Removed unnecessary NCO.

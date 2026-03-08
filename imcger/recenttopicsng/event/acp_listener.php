@@ -17,20 +17,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class acp_listener implements EventSubscriberInterface
 {
-	protected object $template;
-	protected object $request;
-	protected object $ctrl_common;
-
 	public function __construct
 	(
-		\phpbb\template\template $template,
-		\phpbb\request\request $request,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \phpbb\template\template $template,
+		protected \phpbb\request\request $request,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
 	)
 	{
-		$this->template 	= $template;
-		$this->request		= $request;
-		$this->ctrl_common	= $controller_common;
 	}
 
 	public static function getSubscribedEvents(): array
@@ -42,6 +35,7 @@ class acp_listener implements EventSubscriberInterface
 			'core.acp_users_prefs_modify_data'			=> 'acp_users_prefs_modify_data',
 			'core.acp_users_prefs_modify_sql'			=> 'acp_users_prefs_modify_sql',
 			'core.acp_users_prefs_modify_template_data' => 'acp_users_prefs_modify_template_data',
+			'core.acp_board_config_edit_add'			=> 'acp_board_config_edit_add',
 		];
 	}
 
@@ -134,6 +128,24 @@ class acp_listener implements EventSubscriberInterface
 			}
 
 			$event['user_prefs_data'] = array_merge($event['user_prefs_data'], $template_vars);
+		}
+	}
+
+	/**
+	 * Event to add and/or modify acp_board configurations
+	 */
+	public function acp_board_config_edit_add(object $event): void
+	{
+		$display_vars = $event['display_vars'];
+		if (isset($display_vars['title']) && $display_vars['title'] == 'ACP_LOAD_SETTINGS')
+		{
+			$rtng_vars = [
+					'rtng_options_legend'		=> 'RTNG_LOAD_OPTIONS',
+					'rtng_load_first_unrd_post' => ['lang' => 'RTNG_LOAD_FIRST_UNRD_POST',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true],
+				];
+
+			$display_vars['vars']  = phpbb_insert_config_array($display_vars['vars'], $rtng_vars, ['before' => 'legend3']);
+			$event['display_vars'] = $display_vars;
 		}
 	}
 }

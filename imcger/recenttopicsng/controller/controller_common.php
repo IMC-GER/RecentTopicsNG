@@ -15,20 +15,18 @@ namespace imcger\recenttopicsng\controller;
 
 class controller_common
 {
-	protected object $user;
-	protected object $auth;
-	protected object $db;
+	protected array $rtng_user_data;
 
 	public function __construct
 	(
-		\phpbb\user $user,
-		\phpbb\auth\auth $auth,
-		\phpbb\db\driver\driver_interface $db
+		protected \phpbb\user $user,
+		protected \phpbb\auth\auth $auth,
+		protected \phpbb\db\driver\driver_interface $db,
+		protected \phpbb\config\config $config,
+		protected \phpbb\extension\manager $ext_manager,
 	)
 	{
-		$this->user = $user;
-		$this->auth = $auth;
-		$this->db	= $db;
+		$this->set_rtng_user_data($user->data);
 	}
 
 	/*
@@ -65,9 +63,9 @@ class controller_common
 	{
 		if ($user_id != $this->user->data['user_id'])
 		{
-			$user_auth	= new \phpbb\auth\auth();
-			$userdata	= $user_auth->obtain_user_data($user_id);
-			$user_auth->acl($userdata);
+			$user_auth		= new \phpbb\auth\auth();
+			$auth_userdata	= $user_auth->obtain_user_data($user_id);
+			$user_auth->acl($auth_userdata);
 		}
 		else
 		{
@@ -108,12 +106,12 @@ class controller_common
 		if ($user_auth->acl_get('u_rtng_disp_last_post') || $uaec)
 		{
 			$template_vars['RTNG_DISP_LAST_POST_OPTIONS'] = $this->select_struct((int) $template_setting['user_rtng_disp_last_post'], [
-					'RTNG_FIRST_POST'			=> 0,
-					'RTNG_LAST_POST'			=> 1,
+					'RTNG_FIRST_POST'	=> 0,
+					'RTNG_LAST_POST'	=> 1,
 				]);
 		}
 
-		if ($user_auth->acl_get('u_rtng_disp_first_unrd_post') || $uaec)
+		if (($user_auth->acl_get('u_rtng_disp_first_unrd_post') || $uaec) && ($this->config['rtng_load_first_unrd_post'] && $this->config['load_db_lastread']))
 		{
 			$template_vars['RTNG_DISP_FIRST_UNRD_POST'] = $template_setting['user_rtng_disp_first_unrd_post'];
 		}
@@ -155,10 +153,39 @@ class controller_common
 	}
 
 	/**
+	 * Store user data in cache array
+	 */
+	public function set_rtng_user_data(array $user_data): bool
+	{
+		if (empty($user_data['user_id']))
+		{
+			return false;
+		}
+
+		$this->rtng_user_data[$user_data['user_id']] = [];
+
+		foreach ($user_data as $key => $value)
+		{
+			if (str_starts_with($key, 'user_rtng'))
+			{
+				$this->rtng_user_data[$user_data['user_id']][$key] = $value;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Returns the RTNG user data.
+	 * Cache user data in an array
 	 */
 	public function get_rtng_user_data(int $user_id = ANONYMOUS): array
 	{
+		if (isset($this->rtng_user_data[$user_id]))
+		{
+			return $this->rtng_user_data[$user_id];
+		}
+
 		$sql_array = [
 			'SELECT'    => 'user_rtng_enable, user_rtng_sort_start_time, user_rtng_unread_only,
 							user_rtng_location, user_rtng_disp_last_post, user_rtng_disp_first_unrd_post,
@@ -168,99 +195,59 @@ class controller_common
 			'WHERE'     => 'user_id = ' . (int) $user_id,
 		];
 
-		$sql    = $this->db->sql_build_query('SELECT', $sql_array);
-		$result	= $this->db->sql_query_limit($sql, 1);
-		$data	= $this->db->sql_fetchrow($result);
+		$sql		= $this->db->sql_build_query('SELECT', $sql_array);
+		$cache_time = $user_id == ANONYMOUS ? 3600 : 0;
+		$result		= $this->db->sql_query($sql, $cache_time);
+		$this->rtng_user_data[$user_id] = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		return $data;
+		return $this->rtng_user_data[$user_id];
 	}
 
 	/**
-	 * Returns the RTNG user settings depending on the user authorizations.
+	 * Returns the RTNG user settings depending on the user permission.
 	 */
-	public function get_user_setting(?int $user_id = null): array
+	public function get_user_setting(int $user_id = 0): array
 	{
-		$default_data = $this->get_rtng_user_data();
-
-		if (isset($user_id))
-		{
-			$user_data = $this->get_rtng_user_data($user_id);
-		}
-		else
-		{
-			$user_id	= $this->user->data['user_id'];
-			$user_data	= $this->user->data;
-		}
+		$user_id	  = $user_id ?: $this->user->data['user_id'];
+		$default_data = $this->get_rtng_user_data(ANONYMOUS);
 
 		if ($user_id == ANONYMOUS)
 		{
 			return $default_data;
 		}
 
+		$user_data = $this->get_rtng_user_data($user_id);
+
 		if ($user_id != $this->user->data['user_id'])
 		{
-			$user_auth	= new \phpbb\auth\auth();
-			$userdata	= $user_auth->obtain_user_data($user_id);
-			$user_auth->acl($userdata);
+			$user_auth		= new \phpbb\auth\auth();
+			$auth_userdata	= $user_auth->obtain_user_data($user_id);
+			$user_auth->acl($auth_userdata);
 		}
 		else
 		{
 			$user_auth = $this->auth;
 		}
 
-		if ($user_auth->acl_get('u_rtng_enable'))
+		foreach ($default_data as $key => $value)
 		{
-			$default_data['user_rtng_enable'] = $user_data['user_rtng_enable'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_sort_start_time'))
-		{
-			$default_data['user_rtng_sort_start_time'] = $user_data['user_rtng_sort_start_time'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_unread_only'))
-		{
-			$default_data['user_rtng_unread_only'] = $user_data['user_rtng_unread_only'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_location'))
-		{
-			$default_data['user_rtng_location'] = $user_data['user_rtng_location'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_disp_last_post'))
-		{
-			$default_data['user_rtng_disp_last_post'] = $user_data['user_rtng_disp_last_post'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_disp_first_unrd_post'))
-		{
-			$default_data['user_rtng_disp_first_unrd_post'] = $user_data['user_rtng_disp_first_unrd_post'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_index_topics_qty'))
-		{
-			$default_data['user_rtng_index_topics_qty'] = $user_data['user_rtng_index_topics_qty'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_index_page_qty'))
-		{
-			$default_data['user_rtng_index_page_qty'] = $user_data['user_rtng_index_page_qty'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_separate_topics_qty'))
-		{
-			$default_data['user_rtng_separate_topics_qty'] = $user_data['user_rtng_separate_topics_qty'];
-		}
-
-		if ($user_auth->acl_get('u_rtng_separate_page_qty'))
-		{
-			$default_data['user_rtng_separate_page_qty'] = $user_data['user_rtng_separate_page_qty'];
+			if ($user_auth->acl_get('u_' . substr($key, 5)))
+			{
+				$default_data[$key] = $user_data[$key];
+			}
 		}
 
 		unset($user_auth);
 
 		return $default_data;
+	}
+
+	/**
+	 * Returns the RTNG composer data.
+	 */
+	public function get_rtng_composer_data(): array
+	{
+		return $this->ext_manager->create_extension_metadata_manager('imcger/recenttopicsng')->get_metadata('all');
 	}
 }

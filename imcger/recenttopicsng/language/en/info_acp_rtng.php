@@ -41,20 +41,26 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, [
 	// Language pack author
 	'RTNG_LANG_DESC'				=> 'English',
-	'RTNG_LANG_EXT_VER' 			=> '1.0.0',
+	'RTNG_LANG_VER' 				=> '1.1.0',
 	'RTNG_LANG_AUTHOR' 				=> 'IMC-GER / LukeWCS',
 
-	//forum acp
+	// ACP forums
 	'RTNG_FORUMS'					=> 'Display on “Recent Topics NG”',
 	'RTNG_FORUMS_EXPLAIN'			=> 'Enable this checkbox to display topics from this forum in the list of recent topics.',
 
-	//acp title
-	'RTNG_NAME'						=> 'Recent Topics NG', // Please do not translate the name of the extension
-	'RTNG_DESIG'					=> 'Recent Topics',
-	'RTNG_EXPLAIN'					=> 'On this page you can change the settings specific for the Recent Topics extension.<br><br>Specific forums can be included or excluded by editing the respective forums in your ACP.<br>Also be sure to check your user permissions, which allow users to change some of the settings found below for themselves.',
+	// ACP nav
+	'RTNG_NAME'						=> 'Recent Topics',
 	'RTNG_CONFIG'					=> 'Configuration',
 
-	//global settings
+	// ACP module
+	'RTNG_EXPLAIN'					=> 'On this page you can change the settings specific for the <strong>“%s”</strong> extension.<br><br>Specific forums can be included or excluded by editing the respective forums in your ACP.<br>Also be sure to check your user permissions, which allow users to change some of the settings found below for themselves.',
+
+	// ACP load
+	'RTNG_LOAD_OPTIONS'					=> '“Recent Topics NG” options',
+	'RTNG_LOAD_FIRST_UNRD_POST'			=> 'Allows access to the first unread post',
+	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'If this option is enabled, the data of the first unread post is read and made available for further processing.<br>“<u><a href="#load_db_lastread">Enable server-side topic marking</a></u>” must be enabled.',
+
+	// Global settings
 	'RTNG_GLOBAL_SETTINGS'			=> 'Global Settings',
 	'RTNG_INDEX_DISPLAY_EXP'		=> 'Display on Index page',
 	'RTNG_ALL_TOPICS'				=> 'Show all recent topic pages',
@@ -71,8 +77,9 @@ $lang = array_merge($lang, [
 	'RTNG_SIMPLE_PAGE_QTY'			=> 'Number of pages in the simplified display',
 	'RTNG_SIMPLE_PAGE_QTY_EXP'		=> 'This allows you to specify the maximum number of list pages to be displayed for the simplified display.',
 
-	//User Overridable settings. these apply for anon users and can be overridden by UCP
+	// User Overridable settings. these apply for anon users and can be overridden by UCP
 	'RTNG_OVERRIDABLE'				=> 'UCP overridable Settings',
+	'RTNG_OVERRIDABLE_EXPLAIN'		=> 'In order for the user to be able to change these settings in the user control center, the corresponding user permission must be assigned to them in the permission management. If they do not have this permission, these default settings will be applied for them. These values are also set for new users and guests.<br><br>In order for the title, author, and date of the first unread post to be selected for display in the topic title, this option must be enabled in the <u><a href="%s">server load</a></u> settings.',
 	'RTNG_ENABLE'					=> 'Display recent topics',
 	'RTNG_LOCATION'					=> 'Display location',
 	'RTNG_LOCATION_EXP'				=> 'Select location to display recent topics.',

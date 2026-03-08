@@ -15,10 +15,10 @@
 
 {% include 'overall_header.html' %}
 
-<h1>{{ lang('RTNG_NAME') }}</h1>
-<p>{{ lang('RTNG_EXPLAIN') }}</p>
+<h1>{{ lang('RTNG_TITLE') }}</h1>
+<p>{{ lang('RTNG_EXPLAIN', RTNG_EXT_NAME) }}</p>
 
-<form id="acp_board" method="post" action="{{ U_ACTION }}">
+<form id="rtng_settings" method="post" action="{{ U_ACTION }}">
 
 	<fieldset>
 		<legend>{{ lang('RTNG_GLOBAL_SETTINGS') }}</legend>
@@ -89,6 +89,9 @@
 
 	<fieldset>
 		<legend>{{ lang('RTNG_OVERRIDABLE') }}</legend>
+		<p>{{ lang('RTNG_OVERRIDABLE_EXPLAIN', U_SERVER_LOAD) }}</p>
+		
+		<hr>
 
 		{% include '@imcger_recenttopicsng/rtng_user_settings.html' %}
 
@@ -119,8 +122,8 @@
 </form>
 
 <p class="rtng-copyright">
-	{{ RTNG_NAME }} v{{ RTNG_EXT_VER }} &copy; IMC-GER / LukeWCS<br>
-	{{ lang('RTNG_LANG_DESC') }} v{{ lang('RTNG_LANG_EXT_VER') }} &bull; {{ lang('RTNG_LANG_AUTHOR') }}
+	{{ RTNG_EXT_NAME }} v{{ RTNG_EXT_VER }} &copy; IMC-GER / LukeWCS<br>
+	{{ lang('RTNG_LANG_DESC') }} v{{ lang('RTNG_LANG_VER') }} &copy; {{ lang('RTNG_LANG_AUTHOR') }}
 </p>
 
 {% include 'overall_footer.html' %}

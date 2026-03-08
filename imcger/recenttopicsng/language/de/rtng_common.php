@@ -39,11 +39,11 @@ if (empty($lang) || !is_array($lang))
 // ‚ ‘ ’ « » “ ” … „ “
 //
 $lang = array_merge($lang, [
-	'RTNG_NAME'			=> 'Recent Topics NG',
-	'RTNG_DESIG'		=> 'Aktuelle Themen',
-	'RTNG_NO_TOPICS'	=> 'Es sind keine neuen Themen vorhanden.',
-	'RTNG_TOPICS_COUNT'	=> '%d Themen',
+	'RTNG_NO_TOPICS'		=> 'Es sind keine neuen Themen vorhanden.',
+	'RTNG_TOPICS_COUNT'		=> '%d Themen',
 
-	'RTNG_READ_SEPARATE' => 'Betrachtet „Aktuelle Themen“',
-	'RTNG_READ_SIMPLE'	 => 'Betrachtet „Aktuelle Themen“ (vereinfachte Seite)',
+	'RTNG_TITLE'			=> 'Aktuelle Themen',
+	'RTNG_UNREAD_TITLE'		=> 'Ungelesene Themen',
+	'RTNG_READ_SEPARATE'	=> 'Betrachtet „%s“',
+	'RTNG_READ_SIMPLE'		=> 'Betrachtet „%s“ (vereinfachte Seite)',
 ]);

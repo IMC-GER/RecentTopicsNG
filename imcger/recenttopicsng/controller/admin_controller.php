@@ -15,36 +15,22 @@ namespace imcger\recenttopicsng\controller;
 
 class admin_controller
 {
-	protected object $config;
-	protected object $template;
-	protected object $language;
-	protected object $request;
-	protected object $db;
-	protected object $ext_manager;
-	protected object $helper;
-	protected object $ctrl_common;
 	protected string $u_action;
 
 	public function __construct
 	(
-		\phpbb\config\config $config,
-		\phpbb\template\template $template,
-		\phpbb\language\language $language,
-		\phpbb\request\request $request,
-		\phpbb\db\driver\driver_interface $db,
-		\phpbb\extension\manager $ext_manager,
-		\phpbb\controller\helper $helper,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \phpbb\config\config $config,
+		protected \phpbb\template\template $template,
+		protected \phpbb\language\language $language,
+		protected \phpbb\request\request $request,
+		protected \phpbb\db\driver\driver_interface $db,
+		protected \phpbb\cache\driver\driver_interface $cache,
+		protected \phpbb\controller\helper $helper,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
+		protected $phpbb_root_path,
+		protected $phpEx,
 	)
 	{
-		$this->config		= $config;
-		$this->template		= $template;
-		$this->language		= $language;
-		$this->request		= $request;
-		$this->db			= $db;
-		$this->ext_manager	= $ext_manager;
-		$this->helper		= $helper;
-		$this->ctrl_common	= $controller_common;
 	}
 
 	/**
@@ -90,18 +76,19 @@ class admin_controller
 	 */
 	protected function set_template_vars(): void
 	{
-		$metadata_manager = $this->ext_manager->create_extension_metadata_manager('imcger/recenttopicsng');
-
-		$board_url		  = generate_board_url(true);
-		$simple_page_path = $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'simple']);
-		$simple_page_url  = $board_url . explode('?', $simple_page_path)[0];
+		$metadata			= $this->ctrl_common->get_rtng_composer_data();
+		$board_url			= generate_board_url(true);
+		$simple_page_path	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'simple']);
+		$simple_page_url	= $board_url . explode('?', $simple_page_path)[0];
+		$server_load_url	= append_sid("{$this->phpbb_root_path}adm/index.{$this->phpEx}", 'i=acp_board&mode=load') . '#rtng_load_first_unrd_post';
 
 		$this->template->assign_vars([
 			'U_ACTION'						=> $this->u_action,
 			'U_RTNG_PAGE_SIMPLE'			=> $simple_page_url,
+			'U_SERVER_LOAD'					=> $server_load_url,
 
-			'RTNG_NAME'						=> $metadata_manager->get_metadata('display-name'),
-			'RTNG_EXT_VER'					=> $metadata_manager->get_metadata('version'),
+			'RTNG_EXT_NAME'					=> $metadata['extra']['display-name'],
+			'RTNG_EXT_VER'					=> $metadata['version'],
 
 			'RTNG_ANTI_TOPICS'				=> $this->config['rtng_anti_topics'],
 			'RTNG_PARENTS'					=> (int) $this->config['rtng_parents'],
@@ -172,5 +159,7 @@ class admin_controller
 				SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . $sql_where;
 
 		$this->db->sql_query($sql);
+
+		$this->cache->destroy('sql', USERS_TABLE);
 	}
 }

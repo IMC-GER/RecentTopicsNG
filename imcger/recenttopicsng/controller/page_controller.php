@@ -15,38 +15,19 @@ namespace imcger\recenttopicsng\controller;
 
 class page_controller
 {
-	protected object $config;
-	protected object $template;
-	protected object $helper;
-	protected object $language;
-	protected object $auth;
-	protected object $rtng_functions;
-	protected object $ctrl_common;
-	protected string $phpbb_root_path;
-	protected string $phpEx;
-
 	public function __construct
 	(
-		\phpbb\config\config $config,
-		\phpbb\template\template $template,
-		\phpbb\controller\helper $helper,
-		\phpbb\language\language $language,
-		\phpbb\auth\auth $auth,
-		\imcger\recenttopicsng\core\rtng_functions $rtng_functions,
-		$phpbb_root_path,
-		$phpEx,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \phpbb\config\config $config,
+		protected \phpbb\template\template $template,
+		protected \phpbb\controller\helper $helper,
+		protected \phpbb\language\language $language,
+		protected \phpbb\auth\auth $auth,
+		protected \imcger\recenttopicsng\core\rtng_functions $rtng_functions,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
+		protected $phpbb_root_path,
+		protected $phpEx,
 	)
 	{
-		$this->config			= $config;
-		$this->template			= $template;
-		$this->helper			= $helper;
-		$this->language			= $language;
-		$this->auth				= $auth;
-		$this->rtng_functions	= $rtng_functions;
-		$this->phpbb_root_path	= $phpbb_root_path;
-		$this->phpEx			= $phpEx;
-		$this->ctrl_common		= $controller_common;
 	}
 
 	/**
@@ -55,9 +36,8 @@ class page_controller
 	public function display(string $page): object
 	{
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
-		$title = $this->language->lang('RTNG_DESIG');
-
 		$user_setting = $this->ctrl_common->get_user_setting();
+		$title = $this->language->lang('RTNG' . ($user_setting['user_rtng_unread_only'] ? '_UNREAD' : '') . '_TITLE');
 
 		// Redirect to index site when user has no permisson
 		if (!($user_setting['user_rtng_enable'] && $this->auth->acl_get('u_rtng_view')))
@@ -97,13 +77,18 @@ class page_controller
 				make_jumpbox(append_sid($this->phpbb_root_path . 'viewforum.' . $this->phpEx));
 
 				// Generate link in NavBar
-				$this->template->assign_block_vars('navlinks', [
-					'BREADCRUMB_NAME'	=> $this->language->lang('RTNG_DESIG'),
+				$navlinks	= [];
+				$navlinks[] = [
+					'BREADCRUMB_NAME'	=> $title,
 					'U_BREADCRUMB'		=> $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
+				];
+
+				$this->template->assign_vars([
+					'navlinks'			=> $navlinks,
+					'U_CANONICAL'		=> $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate'], true, false, \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL),
 				]);
 
 				$this->rtng_functions->display_recent_topics();
-
 			break;
 
 			// Displays the start page of phpBB

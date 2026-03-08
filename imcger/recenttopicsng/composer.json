@@ -3,20 +3,20 @@
     "type": "phpbb-extension",
     "description": "Adds a list with a number of recent topics to the board index.",
     "homepage": "https://github.com/IMC-GER/RecentTopicsNG",
-    "version": "1.0.1",
-    "time": "2025-09-27",
+    "version": "1.1.0",
+    "time": "2026-03-08",
     "license": "GPL-2.0-only",
     "authors": [
-		{
-			"name": "Thorsten Ahlers",
-			"homepage": "https://github.com/IMC-GER",
-			"role": "Developer"
-		},
-		{
-			"name": "LukeWCS",
-			"homepage": "https://github.com/LukeWCS",
-			"role": "Developer"
-		},
+        {
+            "name": "Thorsten Ahlers",
+            "homepage": "https://github.com/IMC-GER",
+            "role": "Developer"
+        },
+        {
+            "name": "LukeWCS",
+            "homepage": "https://github.com/LukeWCS",
+            "role": "Developer"
+        },
         {
             "name": "Andreas Vandenberghe",
             "homepage": "https://www.avathar.be",
@@ -32,7 +32,7 @@
         }
     ],
     "require": {
-        "php": ">=7.4,<8.5.0@dev",
+        "php": ">=8.0,<8.6.0@dev",
         "composer/installers": "~1.0"
     },
     "extra": {

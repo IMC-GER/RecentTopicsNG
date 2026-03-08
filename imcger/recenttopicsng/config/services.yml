@@ -8,9 +8,9 @@ services:
             - '@language'
             - '@auth'
             - '@imcger.recenttopicsng.functions'
+            - '@imcger.recenttopicsng.controller_common'
             - '%core.root_path%'
             - '%core.php_ext%'
-            - '@imcger.recenttopicsng.controller_common'
 
     imcger.recenttopicsng.admin.controller:
         class: imcger\recenttopicsng\controller\admin_controller
@@ -19,10 +19,12 @@ services:
             - '@template'
             - '@language'
             - '@request'
-            - '@dbal.conn'
-            - '@ext.manager'
+            - '@dbal.conn' 
+            - '@cache.driver'
             - '@controller.helper'
             - '@imcger.recenttopicsng.controller_common'
+            - '%core.root_path%'
+            - '%core.php_ext%'
 
     imcger.recenttopicsng.controller_common:
         class: imcger\recenttopicsng\controller\controller_common
@@ -30,6 +32,8 @@ services:
             - '@user'
             - '@auth'
             - '@dbal.conn'
+            - '@config'
+            - '@ext.manager' 
 
     imcger.recenttopicsng.functions:
         class: imcger\recenttopicsng\core\rtng_functions
@@ -45,10 +49,9 @@ services:
             - '@request'
             - '@template'
             - '@user'
+            - '@imcger.recenttopicsng.controller_common'
             - '%core.root_path%'
             - '%core.php_ext%'
-            - '@imcger.recenttopicsng.controller_common'
-            - '@?phpbb.collapsiblecategories.operator'
 
     imcger.recenttopicsng.main_listener:
         class: imcger\recenttopicsng\event\main_listener
@@ -59,6 +62,7 @@ services:
             - '@language'
             - '@auth'
             - '@imcger.recenttopicsng.controller_common'
+            - '@?phpbb.collapsiblecategories.operator'
         tags:
             - { name: event.listener }
 

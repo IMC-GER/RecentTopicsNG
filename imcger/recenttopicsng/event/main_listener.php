@@ -17,31 +17,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class main_listener implements EventSubscriberInterface
 {
-	protected object $rtng_functions;
-	protected object $template;
-	protected object $helper;
-	protected object $language;
-	protected object $auth;
-	protected object $ctrl_common;
 	private array $user_setting;
 
 	public function __construct
 	(
-		\imcger\recenttopicsng\core\rtng_functions $rtng_functions,
-		\phpbb\template\template $template,
-		\phpbb\controller\helper $helper,
-		\phpbb\language\language $language,
-		\phpbb\auth\auth $auth,
-		\imcger\recenttopicsng\controller\controller_common $controller_common
+		protected \imcger\recenttopicsng\core\rtng_functions $rtng_functions,
+		protected \phpbb\template\template $template,
+		protected \phpbb\controller\helper $helper,
+		protected \phpbb\language\language $language,
+		protected \phpbb\auth\auth $auth,
+		protected \imcger\recenttopicsng\controller\controller_common $ctrl_common,
+		private \phpbb\collapsiblecategories\operator\operator|null $collapsable_categories = null,
 	)
 	{
-		$this->rtng_functions	= $rtng_functions;
-		$this->template			= $template;
-		$this->helper			= $helper;
-		$this->language			= $language;
-		$this->auth				= $auth;
-		$this->ctrl_common		= $controller_common;
-
 		$this->user_setting = $this->ctrl_common->get_user_setting();
 	}
 
@@ -53,6 +41,7 @@ class main_listener implements EventSubscriberInterface
 			'core.index_modify_page_title'		 => 'display_rt',
 			'core.permissions'					 => 'add_permission',
 			'core.viewonline_overwrite_location' => 'viewonline_overwrite_location',
+			'core.display_forums_before'		 => 'display_forums_before',
 		];
 	}
 
@@ -61,11 +50,28 @@ class main_listener implements EventSubscriberInterface
 		$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 	}
 
+	public function display_forums_before(): void
+	{
+		// support for phpbb collapsable categories extension
+		if (isset($this->collapsable_categories))
+		{
+			$rtng_cc	= [];
+			$fid		= 'fid_rtng'; // can be any unique string to identify the collapsible element of your extension.
+			$rtng_cc[]	= [
+				'S_FORUM_HIDDEN' => $this->collapsable_categories->is_collapsed($fid),
+				'U_COLLAPSE_URL' => $this->collapsable_categories->get_collapsible_link($fid),
+			];
+
+			$this->template->assign_vars(['rtng_cc' => $rtng_cc]);
+		}
+	}
+
 	public function set_template_vars(): void
 	{
 		$this->template->assign_vars([
 			'U_RTNG_PAGE_SEPARATE'  => $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'separate']),
 			'S_RTNG_LINK_IN_NAVBAR' => $this->auth->acl_get('u_rtng_view') && $this->user_setting['user_rtng_enable'] && $this->user_setting['user_rtng_location'] == 'RTNG_SEPARATE',
+			'RTNG_TITLE_DYN'		=> $this->language->lang('RTNG' . ($this->user_setting['user_rtng_unread_only'] ? '_UNREAD' : '') . '_TITLE'),
 		]);
 	}
 
@@ -106,8 +112,10 @@ class main_listener implements EventSubscriberInterface
 		{
 			$session_page_parts = explode('/', $event['row']['session_page']);
 			$site = end($session_page_parts);
+			$user_setting = $this->ctrl_common->get_user_setting($event['row']['user_id']);
+			$title = $this->language->lang('RTNG' . ($user_setting['user_rtng_unread_only'] ? '_UNREAD' : '') . '_TITLE');
 
-			$event['location']		= $this->language->lang('RTNG_READ_' . strtoupper($site));
+			$event['location']		= $this->language->lang('RTNG_READ_' . strtoupper($site), $title);
 			$event['location_url']	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => $site]);
 		}
 	}
