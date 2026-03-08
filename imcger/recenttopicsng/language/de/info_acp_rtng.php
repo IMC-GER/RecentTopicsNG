@@ -58,7 +58,7 @@ $lang = array_merge($lang, [
 	// ACP load
 	'RTNG_LOAD_OPTIONS'					=> '„Recent Topics NG“ Optionen',
 	'RTNG_LOAD_FIRST_UNRD_POST'			=> 'Ermöglicht den Zugriff auf den ersten ungelesenen Beitrag',
-	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'Wenn diese Option aktiviert ist, werden die Daten des ersten ungelesenen Beitrags ausgelesen und zur weiteren Verarbeitung bereitgestellt.',
+	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'Wenn diese Option aktiviert ist, werden die Daten des ersten ungelesenen Beitrags ausgelesen und zur weiteren Verarbeitung bereitgestellt.<br>„<u><a href="#load_db_lastread">Serverseitige Gelesen-Markierung aktivieren</a></u>“ muss aktiviert sein.',
 
 	// Global settings
 	'RTNG_GLOBAL_SETTINGS'			=> 'Globale Einstellungen',
@@ -79,7 +79,7 @@ $lang = array_merge($lang, [
 
 	// User Overridable settings. these apply for anon users and can be overridden by UCP
 	'RTNG_OVERRIDABLE'				=> 'Einstellungen, die im Benutzerkontrollzentrum geändert werden können',
-	'RTNG_OVERRIDABLE_EXPLAIN'		=> 'Damit der Benutzer diese Einstellungen im Benutzerkontrollzentrum verändern kann, muss ihm in der Rechteverwaltung das entsprechende Benutzerrecht zugewiesen werden. Hat er dieses Recht nicht, werden für ihn diese Standardeinstellungen angewendet. Diese Werte werden auch für neue Benutzer und Gäste gesetzt.<br><br>Damit der Titel, Autor und das Beitragsdatum des ersten ungelesenen Beitrags als Anzeige im Thementitel ausgewählt werden kann, muss diese Option in den Einstellungen der <a href="%s">Serverlast</a> aktiviert werden.',
+	'RTNG_OVERRIDABLE_EXPLAIN'		=> 'Damit der Benutzer diese Einstellungen im Benutzerkontrollzentrum verändern kann, muss ihm in der Rechteverwaltung das entsprechende Benutzerrecht zugewiesen werden. Hat er dieses Recht nicht, werden für ihn diese Standardeinstellungen angewendet. Diese Werte werden auch für neue Benutzer und Gäste gesetzt.<br><br>Damit der Titel, Autor und das Beitragsdatum des ersten ungelesenen Beitrags als Anzeige im Thementitel ausgewählt werden kann, muss diese Option in den Einstellungen der <u><a href="%s">Serverlast</a></u> aktiviert werden.',
 	'RTNG_ENABLE'					=> 'Aktuelle Themen anzeigen',
 	'RTNG_LOCATION'					=> 'Anzeigeort',
 	'RTNG_LOCATION_EXP'				=> 'Wähle den Anzeigeort der aktuellen Themen.',

@@ -1,7 +1,7 @@
 ## Changelog Recent Topics NG V1.1.0
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
-#### Changes since V1.0.1 (xx/xx/2026)
+#### Changes since V1.0.1 (08/03/2026)
   - [Change] Classes have been switched to constructor property promotion.
   - [Change] Minor changes have been made to the language files.
   - [Change] The metadata is used to display the extension name..
@@ -17,6 +17,7 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Change] Improved vars for `sql_query_limit()`.
   - [Change] Better support for phpBB Collapsed Categories.
   - [Change] Improved sql query for first unread post.
+  - [Change] Improved explanation of user settings in the ACP.
   - [Feature] A function for reading metadata (`composer.json`) has been added to the Common class.
   - [Feature] Added switch in load settings to disable sql request for first unread post in RTNG.
   - [Feature] Added events to `rtng_body_site`.

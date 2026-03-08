@@ -80,7 +80,7 @@ class admin_controller
 		$board_url			= generate_board_url(true);
 		$simple_page_path	= $this->helper->route('imcger_recenttopicsng_page_controller', ['page' => 'simple']);
 		$simple_page_url	= $board_url . explode('?', $simple_page_path)[0];
-		$server_load_url	= append_sid("{$this->phpbb_root_path}adm/index.{$this->phpEx}", 'i=acp_board&mode=load');
+		$server_load_url	= append_sid("{$this->phpbb_root_path}adm/index.{$this->phpEx}", 'i=acp_board&mode=load') . '#rtng_load_first_unrd_post';
 
 		$this->template->assign_vars([
 			'U_ACTION'						=> $this->u_action,

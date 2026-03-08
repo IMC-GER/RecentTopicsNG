@@ -58,7 +58,7 @@ $lang = array_merge($lang, [
 	// ACP load
 	'RTNG_LOAD_OPTIONS'					=> '“Recent Topics NG” options',
 	'RTNG_LOAD_FIRST_UNRD_POST'			=> 'Allows access to the first unread post',
-	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'If this option is enabled, the data of the first unread post is read and made available for further processing.',
+	'RTNG_LOAD_FIRST_UNRD_POST_EXPLAIN' => 'If this option is enabled, the data of the first unread post is read and made available for further processing.<br>“<u><a href="#load_db_lastread">Enable server-side topic marking</a></u>” must be enabled.',
 
 	// Global settings
 	'RTNG_GLOBAL_SETTINGS'			=> 'Global Settings',
@@ -79,7 +79,7 @@ $lang = array_merge($lang, [
 
 	// User Overridable settings. these apply for anon users and can be overridden by UCP
 	'RTNG_OVERRIDABLE'				=> 'UCP overridable Settings',
-	'RTNG_OVERRIDABLE_EXPLAIN'		=> 'In order for the user to be able to change these settings in the user control center, the corresponding user permission must be assigned to them in the permission management. If they do not have this permission, these default settings will be applied for them. These values are also set for new users and guests.<br><br>In order for the title, author, and date of the first unread post to be selected for display in the topic title, this option must be enabled in the <a href="%s">server load</a> settings.',
+	'RTNG_OVERRIDABLE_EXPLAIN'		=> 'In order for the user to be able to change these settings in the user control center, the corresponding user permission must be assigned to them in the permission management. If they do not have this permission, these default settings will be applied for them. These values are also set for new users and guests.<br><br>In order for the title, author, and date of the first unread post to be selected for display in the topic title, this option must be enabled in the <u><a href="%s">server load</a></u> settings.',
 	'RTNG_ENABLE'					=> 'Display recent topics',
 	'RTNG_LOCATION'					=> 'Display location',
 	'RTNG_LOCATION_EXP'				=> 'Select location to display recent topics.',

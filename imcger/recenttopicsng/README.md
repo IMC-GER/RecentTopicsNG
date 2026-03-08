@@ -7,9 +7,13 @@ Based on NV Recent Topics for phpBB 3.0, by Joas Schilling ([nickvergessen](http
 
 [![Tests](https://github.com/IMC-GER/RecentTopicsNG/actions/workflows/tests.yml/badge.svg)](https://github.com/IMC-GER/RecentTopicsNG/actions/workflows/tests.yml)
 
+### Version
+* v1.1.0
+* 08/03/2026
+
 ### Requirements
 * phpBB 3.3.5 - 3.3.x
-* PHP 7.4.0 - 8.4.x
+* PHP 8.0 - 8.5.x
 
 ### Supported Style
 * Prosilver
@@ -23,6 +27,7 @@ Based on NV Recent Topics for phpBB 3.0, by Joas Schilling ([nickvergessen](http
 * [User administration](https://raw.githubusercontent.com/IMC-GER/images/main/screenshots/recenttopicsng/rtng_user_administration.jpg)
 * [ACP settings](https://raw.githubusercontent.com/IMC-GER/images/main/screenshots/recenttopicsng/rtng_acp_settings.jpg)
 * [ACP edit forum](https://raw.githubusercontent.com/IMC-GER/images/main/screenshots/recenttopicsng/rtng_edit_forum.jpg)
+* [ACP server load](https://raw.githubusercontent.com/IMC-GER/images/main/screenshots/recenttopicsng/rtng_acp_load_settings.jpg)
 
 ### Authors
 * © 2022 - IMC-GER & LukeWCS
