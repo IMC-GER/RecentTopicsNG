@@ -455,6 +455,7 @@ class rtng_functions
 			$vars = ['topic_list', 'rowset'];
 			extract($this->dispatcher->trigger_event('imcger.recenttopicsng.modify_topics_list', compact($vars)));
 
+			$s_type_switch = 0;
 			foreach ($rowset as $row)
 			{
 				$first_unread	= [];
@@ -535,7 +536,6 @@ class rtng_functions
 				$topic_unapproved			= ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $forum_id));
 				$posts_unapproved			= ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $forum_id));
 				$u_mcp_queue				= ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$topic_id", true, $this->user->session_id) : '';
-				$s_type_switch				= ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
 
 				if (!empty($icons[$row['icon_id']]))
 				{
@@ -553,9 +553,23 @@ class rtng_functions
 
 				list($topic_author, $topic_author_color, $topic_author_full, $u_topic_author, $last_post_author, $last_post_author_colour, $last_post_author_full, $u_last_post_author) = $this->getusernamestrings($row);
 
+				if ($this->config['rtng_parents'])
+				{
+					$forum_parents = get_forum_parents($row);
+					foreach ($forum_parents as $parent_id => $data)
+					{
+						$parent_forums[] = [
+							'FORUM_ID'		=> $parent_id,
+							'FORUM_NAME'	=> $data[0],
+							'U_VIEW_FORUM'	=> append_sid("{$this->root_path}viewforum.{$this->phpEx}", 'f=' . $parent_id),
+						];
+					}
+				}
+
 				//load language
 				$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 				$tpl_ary = [
+					'parent_forums'						=> $parent_forums,
 					'FORUM_ID'							=> $forum_id,
 					'TOPIC_ID'							=> $topic_id,
 					'TOPIC_AUTHOR'						=> $topic_author,
@@ -621,54 +635,61 @@ class rtng_functions
 				 * @var	string  disp_topic_title	Post in Topic title. first, last or first unread post
 				 * @var	array	row					Array with topic data
 				 * @var	array	tpl_ary				Template block array with topic data
+				 * @var	bool	s_type_switch		Flag indicating if the topic type is [global] announcement
+				 * @var	bool	s_type_switch_test	Flag indicating if the test topic type is [global] announcement
 				 * @since 1.0.0
 				 * @changed 1.1.0 Variables added. $disp_topic_title and properties of the first unread post in $row
+				 * @changed 1.2.0 Variables added. s_type_switch and s_type_switch_test
 				 */
-				$vars = ['disp_topic_title', 'row', 'tpl_ary'];
+				$vars = [
+					'disp_topic_title',
+					'row',
+					'tpl_ary',
+					's_type_switch',
+					's_type_switch_test'
+				];
 				extract($this->dispatcher->trigger_event('imcger.recenttopicsng.modify_tpl_ary', compact($vars)));
 
 				$this->template->assign_block_vars($tpl_loopname, $tpl_ary);
+
 				$this->pagination->generate_template_pagination($view_topic_url, $tpl_loopname . '.pagination', 'start', $replies + 1, $this->config['posts_per_page'], 1, true, true);
 
-				if ($this->config['rtng_parents'])
-				{
-					$forum_parents = get_forum_parents($row);
-					foreach ($forum_parents as $parent_id => $data)
-					{
-						$this->template->assign_block_vars(
-							$tpl_loopname . '.parent_forums', [
-								'FORUM_ID'		=> $parent_id,
-								'FORUM_NAME'	=> $data[0],
-								'U_VIEW_FORUM'	=> append_sid("{$this->root_path}viewforum.$this->phpEx", 'f=' . $parent_id),
-							]
-						);
-					}
-				}
+				// $s_type_switch = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
+
+				/**
+				 * Event after the recent topic data has been assigned to the template
+				 *
+				 * @event imcger.recenttopicsng.topic_row_after
+				 * @var	array	row				Array with the topic data
+				 * @var	array	rowset			Array with topics data
+				 * @var	bool	s_type_switch	Flag indicating if the topic type is [global] announcement
+				 * @var	int		topic_id		The topic ID
+				 * @var	array	topic_list		Array with current recent topics page topic ids
+				 * @var	array	tpl_ary			Template array with topic data
+				 * @since 1.2.0
+				 */
+				$vars = [
+					'row',
+					'rowset',
+					's_type_switch',
+					'topic_id',
+					'topic_list',
+					'tpl_ary',
+				];
+				extract($this->dispatcher->trigger_event('imcger.recenttopicsng.topic_row_after', compact($vars)));
+
 			} // end rowsset
 
 			// Get URL-parameters for pagination
-			$url_params		= explode('&', $this->user->page['query_string']);
-			$append_params	= [];
+			parse_str($this->user->page['query_string'], $append_params);
+			unset($append_params[$tpl_loopname . '_start']);
 
-			foreach ($url_params as $param)
+			// Fix MSSTI Advanced BBCode MOD
+			foreach ($append_params as $key => $value)
 			{
-				if (!$param)
+				if ($value === "" || $value === null)
 				{
-					continue;
-				}
-
-				if (strpos($param, '=') === false)
-				{
-					// Fix MSSTI Advanced BBCode MOD
-					$append_params[$param] = '1';
-					continue;
-				}
-
-				list($name, $value) = explode('=', $param);
-
-				if ($name != $tpl_loopname . '_start')
-				{
-					$append_params[$name] = $value;
+					$append_params[$key] = "1";
 				}
 			}
 

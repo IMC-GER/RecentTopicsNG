@@ -2,33 +2,62 @@
 ## Core Events
 ---
 
-### `imcger.recenttopicsng.modify_topics_list`
-* Description: Event to modify the topics list data before we start the display loop
-* Placement: imcger\recenttopicsng\core\rtng_functions\display_recent_topics
+### `imcger.recenttopicsng.sql_pull_topics_list`
+* Description: Event to modify the SQL query before the allowed topics list data is retrieved
+* Placement: imcger\recenttopicsng\core\rtng_functions\get_allowed_topics_sql
 * Since: 1.0.0
 * known listeners:  /
+* Arguments:
+  - @var   array	sql_array	The SQL array
+
+### `imcger.recenttopicsng.sql_pull_topics_data`
+* Description: Event to modify the SQL query before the topics data is retrieved
+* Placement: imcger\recenttopicsng\core\rtng_functions\get_topics_sql
+* Since: 1.0.0
+* known listeners:
+  - First & Last avatar (caforum/firstlastavatar)
+  - Topic Preview (vse/topicpreview)
+* Arguments:
+  - @var   array	sql_array	The SQL array
+
+### `imcger.recenttopicsng.modify_topics_list`
+* Description: Event to modify the topics list data before we start the display loop
+* Placement: imcger\recenttopicsng\core\rtng_functions\fill_template
+* Since: 1.0.0
+* known listeners:
+  - Topic Preview (vse/topicpreview)
 * Arguments:
   - @var   array   topic_list     Array of all the topic IDs
   - @var   array   rowset         The full topics list array
 
 ### `imcger.recenttopicsng.modify_tpl_ary`
 * Description: Modify the topic data before it is assigned to the template
-* Placement: imcger\recenttopicsng\core\rtng_functions\display_recent_topics
+* Placement: imcger\recenttopicsng\core\rtng_functions\fill_template
 * Since:   1.0.0
 * Changed: 1.1.0 Variables added. $disp_topic_title and properties of the first unread post in $row
-* known listeners:  /
+* @changed 1.2.0 Variables added. s_type_switch and s_type_switch_test
+* known listeners:
+  - First & Last avatar (caforum/firstlastavatar)
+  - Topic Preview (vse/topicpreview)
 * Arguments:
   - @var   string  disp_topic_title Post in Topic title. first, last or first unread post
-  - @var   array   row              Array with topic data
-  - @var   array   tpl_ary          Template block array with topic data
+  - @var   array   row                 Array with topic data
+  - @var   array   tpl_ary             Template block array with topic data
+  - @var   bool    s_type_switch       Flag indicating if the topic type is [global] announcement
+  - @var   bool    s_type_switch_test  Flag indicating if the test topic type is [global] announcement
 
-### `imcger.recenttopicsng.sql_pull_topics_list`
-* Description: Event to modify the SQL query before the allowed topics list data is retrieved
-* Placement: imcger\recenttopicsng\core\rtng_functions\gettopiclist
+### `imcger.recenttopicsng.topic_row_after`
+* Description: Event after the recent topic data has been assigned to the template
+* Placement: imcger\recenttopicsng\core\rtng_functions\fill_template
+* @since 1.2.0
 * known listeners:  /
-* Since: 1.0.0
 * Arguments:
- - @var   array    sql_array      The SQL array
+  - @var   array   row            Array with the topic data
+  - @var   array   rowset         Array with topics data
+  - @var   bool    s_type_switch  Flag indicating if the topic type is [global] announcement
+  - @var   int     topic_id       The topic ID
+  - @var   array   topic_list     Array with current recent topics page topic ids
+  - @var   array   tpl_ary        Template array with topic data
 
 ---
 ## Template Events

@@ -1,5 +1,14 @@
-## Changelog Recent Topics NG V1.1.0
+## Changelog Recent Topics NG V1.2.0-b2
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
+
+#### Changes since V1.1.0 (04/04/2026)
+  - [Change] Template vars for topic parents moved into `$tpl_ary`.
+  - [Change] Improve the code for the pagination URL parameters.
+  - [Chamge] Updated the `switch()` macro to the version of TC 1.3.
+  - [Change] Optimized the Twig code in the ACP & UCP module based on TC 1.3.
+  - [Feature] Added vars in event `modify_tpl_ary`. `$s_type_switch` and `$s_type_switch_test`.
+  - [Feature] Added event `topic_row_after `in `rtng_functions\fill_template`.
+
 
 #### Changes since V1.0.1 (08/03/2026)
   - [Change] Classes have been switched to constructor property promotion.
