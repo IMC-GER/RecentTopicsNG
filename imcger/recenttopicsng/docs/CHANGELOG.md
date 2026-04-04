@@ -1,4 +1,4 @@
-## Changelog Recent Topics NG V1.2.0-b2
+## Changelog Recent Topics NG V1.2.0-b3
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
 #### Changes since V1.1.0 (04/04/2026)
@@ -6,9 +6,9 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Change] Improve the code for the pagination URL parameters.
   - [Chamge] Updated the `switch()` macro to the version of TC 1.3.
   - [Change] Optimized the Twig code in the ACP & UCP module based on TC 1.3.
+  - [Change] Optimized the sql-query for first unread post data.
   - [Feature] Added vars in event `modify_tpl_ary`. `$s_type_switch` and `$s_type_switch_test`.
   - [Feature] Added event `topic_row_after `in `rtng_functions\fill_template`.
-
 
 #### Changes since V1.0.1 (08/03/2026)
   - [Change] Classes have been switched to constructor property promotion.
@@ -37,7 +37,6 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Fixed] Message `RTNG_NO_TOPICS` don't display on index.
   - [Fixed] The red fa-file icon is not removed when topics are marked as unread.
   - [Fixed] Displays locked passworded forums.
-
 
 #### Changes since V1.0.0 (27/09/2025)
   - [Change] Removed unnecessary NCO.
