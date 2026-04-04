@@ -11,7 +11,7 @@
  #}
 
 {%- import '@imcger_recenttopicsng/rtng_macros.html' as common %}
-{%- set switch_type = TOGGLECTRL_RTNG ?? TOGGLECTRL_TYPE ?? 'toggle' %}
+{%- set switch_type = switch_type ?? 'radio' %}
 
 	{%- if RTNG_ENABLE is defined %}
 		<dl>

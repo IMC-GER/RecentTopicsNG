@@ -143,8 +143,7 @@ class controller_common
 
 		if (count($template_vars))
 		{
-			$template_vars['S_RTNG_SHOW']	  = true;
-			$template_vars['TOGGLECTRL_RTNG'] = 'radio';
+			$template_vars['S_RTNG_SHOW'] = true;
 		}
 
 		unset($user_auth);

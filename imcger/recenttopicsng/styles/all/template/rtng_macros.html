@@ -10,7 +10,8 @@
  * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
  #}
 
-{% macro switch(name, checked = false, type = 'toggle') -%}
+{% macro switch(name, checked = false, type = null) -%}
+	{% set type = type ?? TOGGLECTRL_TYPE ?? 'toggle' -%}
 	{% if type == 'toggle' || type == 'checkbox' -%}
 		<input type="checkbox" class="{{ type }}" name="{{ name }}" value="1"{{ checked ? ' checked' }}>
 	{%- elseif type == 'radio' -%}
