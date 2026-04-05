@@ -570,7 +570,7 @@ class rtng_functions
 					'TOPIC_TYPE'						=> $topic_type,
 					'TOPIC_IMG_STYLE'					=> $folder_img,
 					'TOPIC_FOLDER_IMG'			=> $this->user->img($folder_img, $folder_alt),
-					'TOPIC_FOLDER_IMG_ALT'		=> $this->language->lang($folder_alt),
+					'TOPIC_FOLDER_IMG_ALT'		=> $row['topic_unread_post_counter'] ? $row['topic_unread_post_counter'] . ' ' . $this->language->lang($folder_alt) : $this->language->lang($folder_alt),
 					'TOPIC_ICON_IMG'			=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
 					'TOPIC_ICON_IMG_WIDTH'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
 					'TOPIC_ICON_IMG_HEIGHT'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
