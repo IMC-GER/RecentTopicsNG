@@ -212,7 +212,7 @@ class rtng_functions
 
 		$forum_ids = array_diff($forum_ary, $this->user->get_passworded_forums());
 
-		if (count($forum_ids) > 1)
+		if (count($forum_ids) > 0)
 		{
 			$sql_array = [
 				'SELECT'    => 'forum_id',
@@ -685,10 +685,6 @@ class rtng_functions
 			'FROM'		=> [POSTS_TABLE => 'p',	],
 			'LEFT_JOIN' => [
 				[
-					'FROM' => [TOPICS_TABLE => 't', ],
-					'ON'   => "t.topic_id = p.topic_id",
-				],
-				[
 					'FROM' => [TOPICS_TRACK_TABLE => 'tt', ],
 					'ON'   => "tt.user_id = {$this->user->data['user_id']}
 							AND tt.topic_id = p.topic_id",
@@ -696,7 +692,7 @@ class rtng_functions
 				[
 					'FROM' => [FORUMS_TRACK_TABLE => 'ft', ],
 					'ON'   => "ft.user_id = {$this->user->data['user_id']}
-							AND ft.forum_id = t.forum_id",
+							AND ft.forum_id = p.forum_id",
 				],
 				[
 					'FROM' => [USERS_TABLE => 'u', ],
@@ -714,13 +710,7 @@ class rtng_functions
 		$row_set = $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);
 
-		$first_unread_posts = [];
-		foreach ($row_set as $row)
-		{
-			$first_unread_posts[$row['topic_id']] = $row;
-		}
-
-		return $first_unread_posts;
+		return array_combine(array_column($row_set, 'topic_id'), $row_set);
 	}
 
 	public function validate_start(int $start, int $per_page, int $num_items): int

@@ -1,4 +1,4 @@
-## Changelog Recent Topics NG V1.2.0-b4
+## Changelog Recent Topics NG V1.2.0-b6
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
 #### Changes since V1.1.0 (05/04/2026)
@@ -10,6 +10,7 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Feature] Added vars in event `modify_tpl_ary`. `$s_type_switch` and `$s_type_switch_test`.
   - [Feature] Added event `topic_row_after `in `rtng_functions\fill_template`.
   - [Feature] The number of unread posts has been added to the tooltip when the RTNG switch in the Load Settings menu is enabled.
+  - [Fixed] Topics will not be displayed if there is only one forum.
 
 #### Changes since V1.0.1 (08/03/2026)
   - [Change] Classes have been switched to constructor property promotion.
