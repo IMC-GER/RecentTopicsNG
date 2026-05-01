@@ -10,13 +10,15 @@
  * Based on the original NV Recent Topics by Joas Schilling (nickvergessen)
  #}
 
-{% macro switch(name, checked = false, type = 'toggle') -%}
-	{% if type == 'toggle' || type == 'checkbox' -%}
+{% macro switch(name, checked = false, type = null) -%}
+	{% set type = type ?? (TOGGLECTRL_TYPE in ['toggle', 'checkbox', 'radio'] ? TOGGLECTRL_TYPE : 'toggle') -%}
+	{% if type in ['toggle', 'checkbox'] -%}
 		<input type="checkbox" class="{{ type }}" name="{{ name }}" value="1"{{ checked ? ' checked' }}>
 	{%- elseif type == 'radio' -%}
 		<label><input type="radio" class="radio" name="{{ name }}" value="1"{{ checked ? ' checked' }}> {{ lang('YES') }}</label>
 		<label><input type="radio" class="radio" name="{{ name }}" value="0"{{ !checked ? ' checked' }}> {{ lang('NO') }}</label>
 	{%- endif %}
+	{#- v1.3.1 #}
 {%- endmacro %}
 
 {% macro select(name, options, multiple = null, size = null) -%}

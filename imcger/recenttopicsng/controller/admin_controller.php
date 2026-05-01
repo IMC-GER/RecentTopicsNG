@@ -106,7 +106,6 @@ class admin_controller
 		// Read guest account settings as default and setting template vars
 		$user_data		= $this->ctrl_common->get_rtng_user_data(ANONYMOUS);
 		$template_vars	= $this->ctrl_common->get_user_set_template_vars(ANONYMOUS, $user_data);
-		unset($template_vars['TOGGLECTRL_RTNG']);
 		$this->template->assign_vars($template_vars);
 	}
 

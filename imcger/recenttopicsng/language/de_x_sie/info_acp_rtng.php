@@ -41,7 +41,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, [
 	// Language pack author
 	'RTNG_LANG_DESC'				=> 'Deutsch (Sie)',
-	'RTNG_LANG_VER' 				=> '1.1.0',
+	'RTNG_LANG_VER' 				=> '1.2.0',
 	'RTNG_LANG_AUTHOR' 				=> 'IMC-GER / LukeWCS',
 
 	// ACP forums

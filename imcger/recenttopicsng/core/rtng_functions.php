@@ -212,7 +212,7 @@ class rtng_functions
 
 		$forum_ids = array_diff($forum_ary, $this->user->get_passworded_forums());
 
-		if (count($forum_ids) > 1)
+		if (count($forum_ids) > 0)
 		{
 			$sql_array = [
 				'SELECT'    => 'forum_id',
@@ -340,7 +340,7 @@ class rtng_functions
 				],
 				[
 					'FROM' => [TOPICS_POSTED_TABLE => 'tp', ],
-					'ON' => 'tp.topic_id = t.topic_id AND tp.user_id = ' . (int) $this->user->data['user_id'],
+					'ON'   => 'tp.topic_id = t.topic_id AND tp.user_id = ' . (int) $this->user->data['user_id'],
 				],
 			],
 			'WHERE'     => $this->db->sql_in_set('t.topic_id', $excluded_topics, true) . '
@@ -455,64 +455,36 @@ class rtng_functions
 			$vars = ['topic_list', 'rowset'];
 			extract($this->dispatcher->trigger_event('imcger.recenttopicsng.modify_topics_list', compact($vars)));
 
+			// Get author, posttime, id and title of first unread post in topic
+			$first_unread_post_data = [];
+			if ($this->user->data['is_registered'] && $this->config['load_db_lastread'] && $this->config['rtng_load_first_unrd_post'])
+			{
+				$first_unread_post_data = $this->get_first_unread_post_data($topic_list);
+			}
+
+			$s_type_switch = false;
 			foreach ($rowset as $row)
 			{
-				$first_unread	= [];
 				$topic_id		= $row['topic_id'];
 				$forum_id		= $row['forum_id'];
 				$unread_topic	= false;
 				$replies		= $this->content_visibility->get_count('topic_posts', $row, $forum_id) - 1;
-				$s_type_switch_test = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
+				$s_type_switch_test = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL);
 				$disp_topic_title	= $this->user_setting['user_rtng_disp_last_post'] ? 'last_post' : 'first_post';
 
-				if ($this->user->data['is_registered'] && $this->config['load_db_lastread'] && $this->config['rtng_load_first_unrd_post'])
+				if (isset($first_unread_post_data[$topic_id]))
 				{
-					// Get author, posttime, id and title of first unread post in topic
-					$sql_array = [
-						'SELECT'	=> 'p.poster_id, u.username, u.user_colour, p.post_id, p.post_subject, p.post_time',
-						'FROM'		=> [POSTS_TABLE => 'p',	],
-						'LEFT_JOIN' => [
-							[
-								'FROM' => [TOPICS_TABLE => 't', ],
-								'ON'   => "t.topic_id = p.topic_id",
-							],
-							[
-								'FROM' => [TOPICS_TRACK_TABLE => 'tt', ],
-								'ON'   => "tt.user_id = {$this->user->data['user_id']}
-										AND tt.topic_id = p.topic_id",
-							],
-							[
-								'FROM' => [FORUMS_TRACK_TABLE => 'ft', ],
-								'ON'   => "ft.user_id = {$this->user->data['user_id']}
-										AND ft.forum_id = t.forum_id",
-							],
-							[
-								'FROM' => [USERS_TABLE => 'u', ],
-								'ON'   => 'u.user_id = p.poster_id',
-							],
-						],
-						'WHERE'		=> "p.topic_id = $topic_id
-									AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)
-									AND p.forum_id = $forum_id",
-						'ORDER_BY'	=> 'p.post_time ASC, p.post_id ASC',
-					];
+					$unread_topic = true;
 
-					$sql = $this->db->sql_build_query('SELECT', $sql_array);
-					$result = $this->db->sql_query_limit($sql, 1);
-					$first_unread = $this->db->sql_fetchrow($result);
-					$this->db->sql_freeresult($result);
-
-					$unread_topic = !empty($first_unread['post_id']);
-
-					if ($this->user_setting['user_rtng_disp_first_unrd_post'] && $unread_topic)
+					if ($this->user_setting['user_rtng_disp_first_unrd_post'])
 					{
 						$disp_topic_title = 'first_unread_post';
 
-						$first_unread_post_author		= get_username_string('username', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
-						$first_unread_post_author_color	= get_username_string('colour', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
-						$first_unread_post_author_full	= get_username_string('full', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
-						$first_unread_post_time			= $this->user->format_date($first_unread['post_time']);
-						$u_first_unread_post_author		= get_username_string('profile', $first_unread['poster_id'], $first_unread['username'], $first_unread['user_colour']);
+						$first_unread_post_author		= get_username_string('username', $first_unread_post_data[$topic_id]['poster_id'], $first_unread_post_data[$topic_id]['username'], $first_unread_post_data[$topic_id]['user_colour']);
+						$first_unread_post_author_color	= get_username_string('colour', $first_unread_post_data[$topic_id]['poster_id'], $first_unread_post_data[$topic_id]['username'], $first_unread_post_data[$topic_id]['user_colour']);
+						$first_unread_post_author_full	= get_username_string('full', $first_unread_post_data[$topic_id]['poster_id'], $first_unread_post_data[$topic_id]['username'], $first_unread_post_data[$topic_id]['user_colour']);
+						$first_unread_post_time			= $this->user->format_date($first_unread_post_data[$topic_id]['post_time']);
+						$u_first_unread_post_author		= get_username_string('profile', $first_unread_post_data[$topic_id]['poster_id'], $first_unread_post_data[$topic_id]['username'], $first_unread_post_data[$topic_id]['user_colour']);
 					}
 				}
 				else
@@ -520,22 +492,22 @@ class rtng_functions
 					$unread_topic = isset($topic_tracking_info[$forum_id][$row['topic_id']]) && ($row['topic_last_post_time'] > $topic_tracking_info[$forum_id][$row['topic_id']]);
 				}
 
-				$row['topic_first_unread_post_id']		 = $first_unread['post_id'] ?? '';
-				$row['topic_first_unread_poster_id']	 = $first_unread['poster_id'] ?? '';
-				$row['topic_first_unread_poster_name']	 = $first_unread['username'] ?? '';
-				$row['topic_first_unread_poster_colour'] = $first_unread['user_colour'] ?? '';
-				$row['topic_first_unread_post_subject']	 = $first_unread['post_subject'] ?? '';
-				$row['topic_first_unread_post_time']	 = $first_unread['post_time'] ?? '';
+				$row['topic_first_unread_post_id']		 = $first_unread_post_data[$topic_id]['post_id'] ?? '';
+				$row['topic_first_unread_poster_id']	 = $first_unread_post_data[$topic_id]['poster_id'] ?? '';
+				$row['topic_first_unread_poster_name']	 = $first_unread_post_data[$topic_id]['username'] ?? '';
+				$row['topic_first_unread_poster_colour'] = $first_unread_post_data[$topic_id]['user_colour'] ?? '';
+				$row['topic_first_unread_post_subject']	 = $first_unread_post_data[$topic_id]['post_subject'] ?? '';
+				$row['topic_first_unread_post_time']	 = $first_unread_post_data[$topic_id]['post_time'] ?? '';
+				$row['topic_unread_post_counter']		 = $first_unread_post_data[$topic_id]['unread_post_counter'] ?? 0;
 
 				$view_topic_url				= append_sid("{$this->root_path}viewtopic.$this->phpEx", 't=' . $topic_id);
 				$view_last_post_url			= append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $row['topic_last_post_id'] . '#p' . $row['topic_last_post_id']);
-				$view_first_unread_post_url	= !empty($first_unread['post_id']) ? append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $first_unread['post_id'] . '#p' . $first_unread['post_id']) : '';
+				$view_first_unread_post_url	= !empty($first_unread_post_data[$topic_id]['post_id']) ? append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $first_unread_post_data[$topic_id]['post_id'] . '#p' . $first_unread_post_data[$topic_id]['post_id']) : '';
 				$view_report_url			= append_sid("{$this->root_path}mcp.$this->phpEx", 'i=reports&amp;mode=reports&amp;t=' . $topic_id, true, $this->user->session_id);
 				$view_forum_url				= append_sid("{$this->root_path}viewforum.$this->phpEx", 'f=' . $forum_id);
 				$topic_unapproved			= ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $forum_id));
 				$posts_unapproved			= ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $forum_id));
 				$u_mcp_queue				= ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$topic_id", true, $this->user->session_id) : '';
-				$s_type_switch				= ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
 
 				if (!empty($icons[$row['icon_id']]))
 				{
@@ -553,9 +525,24 @@ class rtng_functions
 
 				list($topic_author, $topic_author_color, $topic_author_full, $u_topic_author, $last_post_author, $last_post_author_colour, $last_post_author_full, $u_last_post_author) = $this->getusernamestrings($row);
 
+				if ($this->config['rtng_parents'])
+				{
+					$forum_parents = get_forum_parents($row);
+					$parent_forums = [];
+					foreach ($forum_parents as $parent_id => $data)
+					{
+						$parent_forums[] = [
+							'FORUM_ID'		=> $parent_id,
+							'FORUM_NAME'	=> $data[0],
+							'U_VIEW_FORUM'	=> append_sid("{$this->root_path}viewforum.{$this->phpEx}", 'f=' . $parent_id),
+						];
+					}
+				}
+
 				//load language
 				$this->language->add_lang('rtng_common', 'imcger/recenttopicsng');
 				$tpl_ary = [
+					'parent_forums'						=> $parent_forums,
 					'FORUM_ID'							=> $forum_id,
 					'TOPIC_ID'							=> $topic_id,
 					'TOPIC_AUTHOR'						=> $topic_author,
@@ -583,7 +570,7 @@ class rtng_functions
 					'TOPIC_TYPE'						=> $topic_type,
 					'TOPIC_IMG_STYLE'					=> $folder_img,
 					'TOPIC_FOLDER_IMG'			=> $this->user->img($folder_img, $folder_alt),
-					'TOPIC_FOLDER_IMG_ALT'		=> $this->language->lang($folder_alt),
+					'TOPIC_FOLDER_IMG_ALT'		=> $row['topic_unread_post_counter'] ? $row['topic_unread_post_counter'] . ' ' . $this->language->lang($folder_alt) : $this->language->lang($folder_alt),
 					'TOPIC_ICON_IMG'			=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
 					'TOPIC_ICON_IMG_WIDTH'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
 					'TOPIC_ICON_IMG_HEIGHT'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
@@ -621,54 +608,61 @@ class rtng_functions
 				 * @var	string  disp_topic_title	Post in Topic title. first, last or first unread post
 				 * @var	array	row					Array with topic data
 				 * @var	array	tpl_ary				Template block array with topic data
+				 * @var	bool	s_type_switch		Flag indicating if the topic type is [global] announcement
+				 * @var	bool	s_type_switch_test	Flag indicating if the test topic type is [global] announcement
 				 * @since 1.0.0
 				 * @changed 1.1.0 Variables added. $disp_topic_title and properties of the first unread post in $row
+				 * @changed 1.2.0 Variables added. s_type_switch and s_type_switch_test
 				 */
-				$vars = ['disp_topic_title', 'row', 'tpl_ary'];
+				$vars = [
+					'disp_topic_title',
+					'row',
+					'tpl_ary',
+					's_type_switch',
+					's_type_switch_test',
+				];
 				extract($this->dispatcher->trigger_event('imcger.recenttopicsng.modify_tpl_ary', compact($vars)));
 
 				$this->template->assign_block_vars($tpl_loopname, $tpl_ary);
+
 				$this->pagination->generate_template_pagination($view_topic_url, $tpl_loopname . '.pagination', 'start', $replies + 1, $this->config['posts_per_page'], 1, true, true);
 
-				if ($this->config['rtng_parents'])
-				{
-					$forum_parents = get_forum_parents($row);
-					foreach ($forum_parents as $parent_id => $data)
-					{
-						$this->template->assign_block_vars(
-							$tpl_loopname . '.parent_forums', [
-								'FORUM_ID'		=> $parent_id,
-								'FORUM_NAME'	=> $data[0],
-								'U_VIEW_FORUM'	=> append_sid("{$this->root_path}viewforum.$this->phpEx", 'f=' . $parent_id),
-							]
-						);
-					}
-				}
+				// $s_type_switch = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
+
+				/**
+				 * Event after the recent topic data has been assigned to the template
+				 *
+				 * @event imcger.recenttopicsng.topic_row_after
+				 * @var	array	row				Array with the topic data
+				 * @var	array	rowset			Array with topics data
+				 * @var	bool	s_type_switch	Flag indicating if the topic type is [global] announcement
+				 * @var	int		topic_id		The topic ID
+				 * @var	array	topic_list		Array with current recent topics page topic ids
+				 * @var	array	tpl_ary			Template array with topic data
+				 * @since 1.2.0
+				 */
+				$vars = [
+					'row',
+					'rowset',
+					's_type_switch',
+					'topic_id',
+					'topic_list',
+					'tpl_ary',
+				];
+				extract($this->dispatcher->trigger_event('imcger.recenttopicsng.topic_row_after', compact($vars)));
+
 			} // end rowsset
 
 			// Get URL-parameters for pagination
-			$url_params		= explode('&', $this->user->page['query_string']);
-			$append_params	= [];
+			parse_str($this->user->page['query_string'], $append_params);
+			unset($append_params[$tpl_loopname . '_start']);
 
-			foreach ($url_params as $param)
+			// Fix MSSTI Advanced BBCode MOD
+			foreach ($append_params as $key => $value)
 			{
-				if (!$param)
+				if ($value === "" || $value === null)
 				{
-					continue;
-				}
-
-				if (strpos($param, '=') === false)
-				{
-					// Fix MSSTI Advanced BBCode MOD
-					$append_params[$param] = '1';
-					continue;
-				}
-
-				list($name, $value) = explode('=', $param);
-
-				if ($name != $tpl_loopname . '_start')
-				{
-					$append_params[$name] = $value;
+					$append_params[$key] = "1";
 				}
 			}
 
@@ -682,7 +676,44 @@ class rtng_functions
 		} // topics found
 	}
 
-	public function validate_start($start, $per_page, $num_items)
+	public function get_first_unread_post_data(array $topic_list): array
+	{
+		// Get author, posttime, id and title of first unread post in topic
+		$sql_array = [
+			'SELECT'	=> 'p.topic_id, p.poster_id, u.username, u.user_colour,
+							p.post_id, p.post_subject, p.post_time, COUNT(p.topic_id) AS unread_post_counter',
+			'FROM'		=> [POSTS_TABLE => 'p',	],
+			'LEFT_JOIN' => [
+				[
+					'FROM' => [TOPICS_TRACK_TABLE => 'tt', ],
+					'ON'   => "tt.user_id = {$this->user->data['user_id']}
+							AND tt.topic_id = p.topic_id",
+				],
+				[
+					'FROM' => [FORUMS_TRACK_TABLE => 'ft', ],
+					'ON'   => "ft.user_id = {$this->user->data['user_id']}
+							AND ft.forum_id = p.forum_id",
+				],
+				[
+					'FROM' => [USERS_TABLE => 'u', ],
+					'ON'   => 'u.user_id = p.poster_id',
+				],
+			],
+			'WHERE'		=> $this->db->sql_in_set('p.topic_id', $topic_list) . "
+						AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)",
+			'GROUP_BY'	=> 'p.topic_id',
+			'ORDER_BY'	=> 'p.post_time ASC, p.post_id ASC',
+		];
+
+		$sql	 = $this->db->sql_build_query('SELECT', $sql_array);
+		$result	 = $this->db->sql_query($sql);
+		$row_set = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		return array_combine(array_column($row_set, 'topic_id'), $row_set);
+	}
+
+	public function validate_start(int $start, int $per_page, int $num_items): int
 	{
 		$start = $start >= $num_items ? $num_items - 1 : $start;
 		$start = intdiv($start, $per_page) * $per_page;

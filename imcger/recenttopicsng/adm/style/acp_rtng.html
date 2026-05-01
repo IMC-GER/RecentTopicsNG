@@ -11,7 +11,6 @@
  #}
 
 {% import '@imcger_recenttopicsng/rtng_macros.html' as common %}
-{% set switch_type = TOGGLECTRL_TYPE ?? 'toggle' %}
 
 {% include 'overall_header.html' %}
 
@@ -29,7 +28,7 @@
 				<span>{{ lang('RTNG_ALL_TOPICS_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.switch('rtng_all_topics', RTNG_ALL_TOPICS, switch_type) }}
+				{{ common.switch('rtng_all_topics', RTNG_ALL_TOPICS) }}
 			</dd>
 		</dl>
 		<dl>
@@ -56,7 +55,7 @@
 				<span>{{ lang('RTNG_PARENTS_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.switch('rtng_parents', RTNG_PARENTS, switch_type) }}
+				{{ common.switch('rtng_parents', RTNG_PARENTS) }}
 			</dd>
 		</dl>
 		<dl>
@@ -90,10 +89,10 @@
 	<fieldset>
 		<legend>{{ lang('RTNG_OVERRIDABLE') }}</legend>
 		<p>{{ lang('RTNG_OVERRIDABLE_EXPLAIN', U_SERVER_LOAD) }}</p>
-		
+
 		<hr>
 
-		{% include '@imcger_recenttopicsng/rtng_user_settings.html' %}
+		{% include '@imcger_recenttopicsng/rtng_user_settings.html' with {'switch_type': TOGGLECTRL_TYPE ?? 'toggle'} %}
 
 		<hr>
 
@@ -103,7 +102,7 @@
 				<span>{{ lang('RTNG_RESET_DEFAULT_EXP') }}</span>
 			</dt>
 			<dd>
-				{{ common.switch('rtng_reset_default', false, switch_type) }}
+				{{ common.switch('rtng_reset_default', false) }}
 				{{ _self.confirmbox('rtng_reset_default', lang('RTNG_RESET_ASK_BEFORE_EXP')) }}
 			</dd>
 		</dl>
