@@ -469,7 +469,7 @@ class rtng_functions
 				$forum_id		= $row['forum_id'];
 				$unread_topic	= false;
 				$replies		= $this->content_visibility->get_count('topic_posts', $row, $forum_id) - 1;
-				$s_type_switch_test = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? true : false;
+				$s_type_switch_test = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL);
 				$disp_topic_title	= $this->user_setting['user_rtng_disp_last_post'] ? 'last_post' : 'first_post';
 
 				if (isset($first_unread_post_data[$topic_id]))

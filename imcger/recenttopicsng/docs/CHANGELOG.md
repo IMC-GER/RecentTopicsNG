@@ -1,7 +1,7 @@
-## Changelog Recent Topics NG V1.2.0-b6
+## Changelog Recent Topics NG V1.2.0
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
-#### Changes since V1.1.0 (05/04/2026)
+#### Changes since V1.1.0 (01/05/2026)
   - [Change] Template vars for topic parents moved into `$tpl_ary`.
   - [Change] Improve the code for the pagination URL parameters.
   - [Chamge] Updated the `switch()` macro to the version of TC 1.3.
