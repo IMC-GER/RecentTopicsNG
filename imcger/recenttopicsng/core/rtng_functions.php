@@ -498,7 +498,6 @@ class rtng_functions
 				$row['topic_first_unread_poster_colour'] = $first_unread_post_data[$topic_id]['user_colour'] ?? '';
 				$row['topic_first_unread_post_subject']	 = $first_unread_post_data[$topic_id]['post_subject'] ?? '';
 				$row['topic_first_unread_post_time']	 = $first_unread_post_data[$topic_id]['post_time'] ?? '';
-				$row['topic_unread_post_counter']		 = $first_unread_post_data[$topic_id]['unread_post_counter'] ?? 0;
 
 				$view_topic_url				= append_sid("{$this->root_path}viewtopic.$this->phpEx", 't=' . $topic_id);
 				$view_last_post_url			= append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $row['topic_last_post_id'] . '#p' . $row['topic_last_post_id']);
@@ -570,7 +569,7 @@ class rtng_functions
 					'TOPIC_TYPE'						=> $topic_type,
 					'TOPIC_IMG_STYLE'					=> $folder_img,
 					'TOPIC_FOLDER_IMG'			=> $this->user->img($folder_img, $folder_alt),
-					'TOPIC_FOLDER_IMG_ALT'		=> $row['topic_unread_post_counter'] ? $row['topic_unread_post_counter'] . ' ' . $this->language->lang($folder_alt) : $this->language->lang($folder_alt),
+					'TOPIC_FOLDER_IMG_ALT'		=> $this->language->lang($folder_alt),
 					'TOPIC_ICON_IMG'			=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
 					'TOPIC_ICON_IMG_WIDTH'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
 					'TOPIC_ICON_IMG_HEIGHT'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
@@ -681,7 +680,7 @@ class rtng_functions
 		// Get author, posttime, id and title of first unread post in topic
 		$sql_array = [
 			'SELECT'	=> 'p.topic_id, p.poster_id, u.username, u.user_colour,
-							p.post_id, p.post_subject, p.post_time, COUNT(p.topic_id) AS unread_post_counter',
+							p.post_id, p.post_subject, p.post_time',
 			'FROM'		=> [POSTS_TABLE => 'p',	],
 			'LEFT_JOIN' => [
 				[
