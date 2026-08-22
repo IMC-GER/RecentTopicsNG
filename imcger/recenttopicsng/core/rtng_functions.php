@@ -677,10 +677,9 @@ class rtng_functions
 
 	public function get_first_unread_post_data(array $topic_list): array
 	{
-		// Get author, posttime, id and title of first unread post in topic
-		$sql_array = [
-			'SELECT'	=> 'p.topic_id, p.poster_id, u.username, u.user_colour,
-							p.post_id, p.post_subject, p.post_time',
+		// Get id's of the first unread posts in topics
+		$sql_array_first_post_ids = [
+			'SELECT'	=> 'MIN(p.post_id)',
 			'FROM'		=> [POSTS_TABLE => 'p',	],
 			'LEFT_JOIN' => [
 				[
@@ -693,15 +692,24 @@ class rtng_functions
 					'ON'   => "ft.user_id = {$this->user->data['user_id']}
 							AND ft.forum_id = p.forum_id",
 				],
-				[
-					'FROM' => [USERS_TABLE => 'u', ],
-					'ON'   => 'u.user_id = p.poster_id',
-				],
 			],
 			'WHERE'		=> $this->db->sql_in_set('p.topic_id', $topic_list) . "
 						AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)",
 			'GROUP_BY'	=> 'p.topic_id',
-			'ORDER_BY'	=> 'p.post_time ASC, p.post_id ASC',
+		];
+
+		// Get author, posttime, id and title of first unread posts in topics
+		$sql_array = [
+			'SELECT'	=> 'pd.topic_id, pd.post_id, pd.post_subject, pd.post_time,
+							pd.poster_id, u.username, u.user_colour',
+			'FROM'		=> [POSTS_TABLE => 'pd'],
+			'LEFT_JOIN' => [
+				[
+					'FROM' => [USERS_TABLE => 'u'],
+					'ON'   => 'u.user_id = pd.poster_id',
+				],
+			],
+			'WHERE'		=> 'pd.post_id IN (' . $this->db->sql_build_query('SELECT', $sql_array_first_post_ids) . ')',
 		];
 
 		$sql	 = $this->db->sql_build_query('SELECT', $sql_array);
