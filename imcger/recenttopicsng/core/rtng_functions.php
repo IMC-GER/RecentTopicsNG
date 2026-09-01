@@ -709,7 +709,7 @@ class rtng_functions
 					'ON'   => 'u.user_id = pd.poster_id',
 				],
 			],
-			'WHERE'		=> 'pd.post_id IN (' . $this->db->sql_build_query('SELECT', $sql_array_first_post_ids) . ')',
+			'WHERE'		=> 'pd.post_id IN (' . (string) $this->db->sql_build_query('SELECT', $sql_array_first_post_ids) . ')',
 		];
 
 		$sql	 = $this->db->sql_build_query('SELECT', $sql_array);

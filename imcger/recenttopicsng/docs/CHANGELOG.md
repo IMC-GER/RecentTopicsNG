@@ -1,9 +1,9 @@
-## Changelog Recent Topics NG V1.2.1-b1
+## Changelog Recent Topics NG V1.2.1-b3
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
-#### Changes since V1.2.0 (15/08/2026).
- - [Fixed] Invalid SQL query when using a PostgreSQL database.
- - [Delete] Display the number of unread posts in the tooltip.
+#### Changes since V1.2.0 (01/09/2026).
+  - [Fixed] Invalid SQL query for first unread posts when using a PostgreSQL database.
+  - [Delete] Display the number of unread posts in the tooltip.
 
 #### Changes since V1.1.0 (01/05/2026)
   - [Change] Template vars for topic parents moved into `$tpl_ary`.
