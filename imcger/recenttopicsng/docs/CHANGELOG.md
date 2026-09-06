@@ -1,7 +1,7 @@
-## Changelog Recent Topics NG V1.2.1-b3
+## Changelog Recent Topics NG V1.2.1
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
-#### Changes since V1.2.0 (01/09/2026).
+#### Changes since V1.2.0 (06/09/2026).
   - [Fixed] Invalid SQL query for first unread posts when using a PostgreSQL database.
   - [Delete] Display the number of unread posts in the tooltip.
 
