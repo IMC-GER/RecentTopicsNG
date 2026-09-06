@@ -498,7 +498,6 @@ class rtng_functions
 				$row['topic_first_unread_poster_colour'] = $first_unread_post_data[$topic_id]['user_colour'] ?? '';
 				$row['topic_first_unread_post_subject']	 = $first_unread_post_data[$topic_id]['post_subject'] ?? '';
 				$row['topic_first_unread_post_time']	 = $first_unread_post_data[$topic_id]['post_time'] ?? '';
-				$row['topic_unread_post_counter']		 = $first_unread_post_data[$topic_id]['unread_post_counter'] ?? 0;
 
 				$view_topic_url				= append_sid("{$this->root_path}viewtopic.$this->phpEx", 't=' . $topic_id);
 				$view_last_post_url			= append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $row['topic_last_post_id'] . '#p' . $row['topic_last_post_id']);
@@ -570,7 +569,7 @@ class rtng_functions
 					'TOPIC_TYPE'						=> $topic_type,
 					'TOPIC_IMG_STYLE'					=> $folder_img,
 					'TOPIC_FOLDER_IMG'			=> $this->user->img($folder_img, $folder_alt),
-					'TOPIC_FOLDER_IMG_ALT'		=> $row['topic_unread_post_counter'] ? $row['topic_unread_post_counter'] . ' ' . $this->language->lang($folder_alt) : $this->language->lang($folder_alt),
+					'TOPIC_FOLDER_IMG_ALT'		=> $this->language->lang($folder_alt),
 					'TOPIC_ICON_IMG'			=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
 					'TOPIC_ICON_IMG_WIDTH'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
 					'TOPIC_ICON_IMG_HEIGHT'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
@@ -678,10 +677,9 @@ class rtng_functions
 
 	public function get_first_unread_post_data(array $topic_list): array
 	{
-		// Get author, posttime, id and title of first unread post in topic
-		$sql_array = [
-			'SELECT'	=> 'p.topic_id, p.poster_id, u.username, u.user_colour,
-							p.post_id, p.post_subject, p.post_time, COUNT(p.topic_id) AS unread_post_counter',
+		// Get id's of the first unread posts in topics
+		$sql_array_first_post_ids = [
+			'SELECT'	=> 'MIN(p.post_id)',
 			'FROM'		=> [POSTS_TABLE => 'p',	],
 			'LEFT_JOIN' => [
 				[
@@ -694,15 +692,24 @@ class rtng_functions
 					'ON'   => "ft.user_id = {$this->user->data['user_id']}
 							AND ft.forum_id = p.forum_id",
 				],
-				[
-					'FROM' => [USERS_TABLE => 'u', ],
-					'ON'   => 'u.user_id = p.poster_id',
-				],
 			],
 			'WHERE'		=> $this->db->sql_in_set('p.topic_id', $topic_list) . "
 						AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)",
 			'GROUP_BY'	=> 'p.topic_id',
-			'ORDER_BY'	=> 'p.post_time ASC, p.post_id ASC',
+		];
+
+		// Get author, posttime, id and title of first unread posts in topics
+		$sql_array = [
+			'SELECT'	=> 'pd.topic_id, pd.post_id, pd.post_subject, pd.post_time,
+							pd.poster_id, u.username, u.user_colour',
+			'FROM'		=> [POSTS_TABLE => 'pd'],
+			'LEFT_JOIN' => [
+				[
+					'FROM' => [USERS_TABLE => 'u'],
+					'ON'   => 'u.user_id = pd.poster_id',
+				],
+			],
+			'WHERE'		=> 'pd.post_id IN (' . (string) $this->db->sql_build_query('SELECT', $sql_array_first_post_ids) . ')',
 		];
 
 		$sql	 = $this->db->sql_build_query('SELECT', $sql_array);

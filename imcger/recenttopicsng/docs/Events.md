@@ -26,6 +26,7 @@
 * Since: 1.0.0
 * known listeners:
   - Topic Preview (vse/topicpreview)
+  - Number of unread posts (imcger/numberofunrdposts)
 * Arguments:
   - @var   array   topic_list     Array of all the topic IDs
   - @var   array   rowset         The full topics list array
@@ -39,6 +40,7 @@
 * known listeners:
   - First & Last avatar (caforum/firstlastavatar)
   - Topic Preview (vse/topicpreview)
+  - Number of unread posts (imcger/numberofunrdposts)
 * Arguments:
   - @var   string  disp_topic_title Post in Topic title. first, last or first unread post
   - @var   array   row                 Array with topic data
