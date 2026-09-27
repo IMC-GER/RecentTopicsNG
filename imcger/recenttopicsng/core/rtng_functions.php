@@ -524,10 +524,10 @@ class rtng_functions
 
 				list($topic_author, $topic_author_color, $topic_author_full, $u_topic_author, $last_post_author, $last_post_author_colour, $last_post_author_full, $u_last_post_author) = $this->getusernamestrings($row);
 
+				$parent_forums = [];
 				if ($this->config['rtng_parents'])
 				{
 					$forum_parents = get_forum_parents($row);
-					$parent_forums = [];
 					foreach ($forum_parents as $parent_id => $data)
 					{
 						$parent_forums[] = [
