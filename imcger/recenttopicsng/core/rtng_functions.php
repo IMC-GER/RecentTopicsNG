@@ -653,16 +653,14 @@ class rtng_functions
 			} // end rowsset
 
 			// Get URL-parameters for pagination
+			$append_params = [];
 			parse_str($this->user->page['query_string'], $append_params);
 			unset($append_params[$tpl_loopname . '_start']);
 
-			// Fix MSSTI Advanced BBCode MOD
+			// Encoding query parameters of the URL
 			foreach ($append_params as $key => $value)
 			{
-				if ($value === "" || $value === null)
-				{
-					$append_params[$key] = "1";
-				}
+				$append_params[$key] = urlencode($this->request->variable($key, '1'));
 			}
 
 			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $append_params);
