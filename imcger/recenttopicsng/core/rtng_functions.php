@@ -653,17 +653,17 @@ class rtng_functions
 			} // end rowsset
 
 			// Get URL-parameters for pagination
-			$append_params = [];
+			$append_params = $new_params = [];
 			parse_str($this->user->page['query_string'], $append_params);
 			unset($append_params[$tpl_loopname . '_start']);
 
-			// Encoding query parameters of the URL
+			// Encoding the query parameters of the URL
 			foreach ($append_params as $key => $value)
 			{
-				$append_params[$key] = urlencode($this->request->variable($key, '1'));
+				$new_params[urlencode($key)] = urlencode($this->request->variable($key, '1'));
 			}
 
-			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $append_params);
+			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $new_params);
 			$this->pagination->generate_template_pagination($pagination_url, 'pagination',
 				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, $this->topics_start);
 
