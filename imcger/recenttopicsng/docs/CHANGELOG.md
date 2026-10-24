@@ -1,7 +1,7 @@
-## Changelog Recent Topics NG V1.2.2-b3
+## Changelog Recent Topics NG V1.2.2
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
-#### Changes since V1.2.1 (21/10/2026).
+#### Changes since V1.2.1 (24/10/2026).
   - [Fixed] The language variable for screen reader `VIEW_LATEST_POST` is not displayed in the template.
   - [Fixed] phpBB Debug Warning: Undefined variable $parent_forums.
   - [Change] Encoding query parameters for the pagination URL.

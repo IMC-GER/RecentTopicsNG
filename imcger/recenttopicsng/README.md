@@ -9,7 +9,7 @@ Based on NV Recent Topics for phpBB 3.0, by Joas Schilling ([nickvergessen](http
 
 ### Version
 * v1.2.2
-* 21/10/2026
+* 24/10/2026
 
 ### Requirements
 * phpBB 3.3.5 - 3.3.x
