@@ -524,10 +524,10 @@ class rtng_functions
 
 				list($topic_author, $topic_author_color, $topic_author_full, $u_topic_author, $last_post_author, $last_post_author_colour, $last_post_author_full, $u_last_post_author) = $this->getusernamestrings($row);
 
+				$parent_forums = [];
 				if ($this->config['rtng_parents'])
 				{
 					$forum_parents = get_forum_parents($row);
-					$parent_forums = [];
 					foreach ($forum_parents as $parent_id => $data)
 					{
 						$parent_forums[] = [
@@ -653,19 +653,17 @@ class rtng_functions
 			} // end rowsset
 
 			// Get URL-parameters for pagination
+			$append_params = $new_params = [];
 			parse_str($this->user->page['query_string'], $append_params);
 			unset($append_params[$tpl_loopname . '_start']);
 
-			// Fix MSSTI Advanced BBCode MOD
+			// Encoding the query parameters of the URL
 			foreach ($append_params as $key => $value)
 			{
-				if ($value === "" || $value === null)
-				{
-					$append_params[$key] = "1";
-				}
+				$new_params[urlencode($key)] = urlencode($this->request->variable($key, '1'));
 			}
 
-			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $append_params);
+			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $new_params);
 			$this->pagination->generate_template_pagination($pagination_url, 'pagination',
 				$tpl_loopname . '_start', $topics_count, $this->topics_per_page, $this->topics_start);
 
