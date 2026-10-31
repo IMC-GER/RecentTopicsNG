@@ -78,17 +78,21 @@ class acp_listener implements EventSubscriberInterface
 	 */
 	public function acp_users_prefs_modify_data(object $event): void
 	{
+		$location_ary = ['RTNG_TOP', 'RTNG_BOTTOM', 'RTNG_SIDE', 'RTNG_SEPARATE'];
+		$user_rtng_location = $this->request->variable('user_rtng_location', $event['user_row']['user_rtng_location']);
+		$user_rtng_location = in_array($user_rtng_location, $location_ary) ? $user_rtng_location : 'RTNG_TOP';
+
 		$event['user_row'] = array_merge($event['user_row'], [
-			'user_rtng_enable'				 => $this->request->variable('user_rtng_enable', $event['user_row']['user_rtng_enable']),
-			'user_rtng_sort_start_time'		 => $this->request->variable('user_rtng_sort_start_time', $event['user_row']['user_rtng_sort_start_time']),
-			'user_rtng_unread_only'			 => $this->request->variable('user_rtng_unread_only', $event['user_row']['user_rtng_unread_only']),
-			'user_rtng_location'			 => $this->request->variable('user_rtng_location', $event['user_row']['user_rtng_location']),
-			'user_rtng_disp_last_post'		 => $this->request->variable('user_rtng_disp_last_post', $event['user_row']['user_rtng_disp_last_post']),
-			'user_rtng_disp_first_unrd_post' => $this->request->variable('user_rtng_disp_first_unrd_post', $event['user_row']['user_rtng_disp_first_unrd_post']),
-			'user_rtng_index_topics_qty'	 => $this->request->variable('user_rtng_index_topics_qty', $event['user_row']['user_rtng_index_topics_qty']),
-			'user_rtng_index_page_qty'		 => $this->request->variable('user_rtng_index_page_qty', $event['user_row']['user_rtng_index_page_qty']),
-			'user_rtng_separate_topics_qty'	 => $this->request->variable('user_rtng_separate_topics_qty', $event['user_row']['user_rtng_separate_topics_qty']),
-			'user_rtng_separate_page_qty'	 => $this->request->variable('user_rtng_separate_page_qty', $event['user_row']['user_rtng_separate_page_qty']),
+			'user_rtng_enable'				 => $this->request->variable('user_rtng_enable', (bool) $event['user_row']['user_rtng_enable']),
+			'user_rtng_sort_start_time'		 => $this->request->variable('user_rtng_sort_start_time', (bool) $event['user_row']['user_rtng_sort_start_time']),
+			'user_rtng_unread_only'			 => $this->request->variable('user_rtng_unread_only', (bool) $event['user_row']['user_rtng_unread_only']),
+			'user_rtng_location'			 => $user_rtng_location,
+			'user_rtng_disp_last_post'		 => $this->request->variable('user_rtng_disp_last_post', (bool) $event['user_row']['user_rtng_disp_last_post']),
+			'user_rtng_disp_first_unrd_post' => $this->request->variable('user_rtng_disp_first_unrd_post', (bool) $event['user_row']['user_rtng_disp_first_unrd_post']),
+			'user_rtng_index_topics_qty'	 => max(0, min(999, $this->request->variable('user_rtng_index_topics_qty', $event['user_row']['user_rtng_index_topics_qty']))),
+			'user_rtng_index_page_qty'		 => max(0, min(999, $this->request->variable('user_rtng_index_page_qty', $event['user_row']['user_rtng_index_page_qty']))),
+			'user_rtng_separate_topics_qty'	 => max(0, min(999, $this->request->variable('user_rtng_separate_topics_qty', $event['user_row']['user_rtng_separate_topics_qty']))),
+			'user_rtng_separate_page_qty'	 => max(0, min(999, $this->request->variable('user_rtng_separate_page_qty', $event['user_row']['user_rtng_separate_page_qty']))),
 		]);
 	}
 

@@ -44,19 +44,23 @@ class ucp_listener implements EventSubscriberInterface
 	 */
 	public function ucp_prefs_get_data(object $event): void
 	{
+		$location_ary = ['RTNG_TOP', 'RTNG_BOTTOM', 'RTNG_SIDE', 'RTNG_SEPARATE'];
+		$user_rtng_location = $this->request->variable('user_rtng_location', $this->user->data['user_rtng_location']);
+		$user_rtng_location = in_array($user_rtng_location, $location_ary) ? $user_rtng_location : 'RTNG_TOP';
+
 		// Request the user option vars and add them to the data array
 		$event['data'] = array_merge(
 			$event['data'], [
-				'user_rtng_enable'				 => $this->request->variable('user_rtng_enable', (int) $this->user->data['user_rtng_enable']),
-				'user_rtng_location'			 => $this->request->variable('user_rtng_location', $this->user->data['user_rtng_location']),
-				'user_rtng_sort_start_time'		 => $this->request->variable('user_rtng_sort_start_time', (int) $this->user->data['user_rtng_sort_start_time']),
-				'user_rtng_unread_only'			 => $this->request->variable('user_rtng_unread_only', (int) $this->user->data['user_rtng_unread_only']),
-				'user_rtng_disp_last_post'		 => $this->request->variable('user_rtng_disp_last_post', (int) $this->user->data['user_rtng_disp_last_post']),
+				'user_rtng_enable'				 => $this->request->variable('user_rtng_enable', (bool) $this->user->data['user_rtng_enable']),
+				'user_rtng_location'			 => $user_rtng_location,
+				'user_rtng_sort_start_time'		 => $this->request->variable('user_rtng_sort_start_time', (bool) $this->user->data['user_rtng_sort_start_time']),
+				'user_rtng_unread_only'			 => $this->request->variable('user_rtng_unread_only', (bool) $this->user->data['user_rtng_unread_only']),
+				'user_rtng_disp_last_post'		 => $this->request->variable('user_rtng_disp_last_post', (bool) $this->user->data['user_rtng_disp_last_post']),
 				'user_rtng_disp_first_unrd_post' => $this->request->variable('user_rtng_disp_first_unrd_post', (int) $this->user->data['user_rtng_disp_first_unrd_post']),
-				'user_rtng_index_topics_qty'	 => $this->request->variable('user_rtng_index_topics_qty', (int) $this->user->data['user_rtng_index_topics_qty']),
-				'user_rtng_index_page_qty'		 => $this->request->variable('user_rtng_index_page_qty', (int) $this->user->data['user_rtng_index_page_qty']),
-				'user_rtng_separate_topics_qty'	 => $this->request->variable('user_rtng_separate_topics_qty', (int) $this->user->data['user_rtng_separate_topics_qty']),
-				'user_rtng_separate_page_qty'	 => $this->request->variable('user_rtng_separate_page_qty', (int) $this->user->data['user_rtng_separate_page_qty']),
+				'user_rtng_index_topics_qty'	 => max(0, min(999, $this->request->variable('user_rtng_index_topics_qty', $this->user->data['user_rtng_index_topics_qty']))),
+				'user_rtng_index_page_qty'		 => max(0, min(999, $this->request->variable('user_rtng_index_page_qty', $this->user->data['user_rtng_index_page_qty']))),
+				'user_rtng_separate_topics_qty'	 => max(0, min(999, $this->request->variable('user_rtng_separate_topics_qty', $this->user->data['user_rtng_separate_topics_qty']))),
+				'user_rtng_separate_page_qty'	 => max(0, min(999, $this->request->variable('user_rtng_separate_page_qty', $this->user->data['user_rtng_separate_page_qty']))),
 			]
 		);
 
