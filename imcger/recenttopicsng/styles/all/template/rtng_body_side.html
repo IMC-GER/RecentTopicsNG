@@ -52,6 +52,11 @@
 							{% if rtng.S_UNREAD_TOPIC && !S_IS_BOT %}<a href="{{ rtng.U_NEWEST_POST }}" class="row-item-link"></a>{% endif %}
 							<div class="list-inner">
 								{% EVENT topiclist_row_prepend %}
+								{% if rtng.U_NEWEST_POST && rtng.S_UNREAD_TOPIC && !S_IS_BOT %}
+									<a class="unread" href="{{ rtng.U_NEWEST_POST }}">
+										<i class="icon fa-file fa-fw icon-red icon-md" aria-hidden="true"></i><span class="sr-only">{{ lang('NEW_POST') }}</span>
+									</a>
+								{% endif %}
 								<a href="
 									{% if rtng.S_DISP_FIRST_UNREAD_POST %}
 										{{ rtng.U_FIRST_UNREAD_POST }}

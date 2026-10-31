@@ -89,7 +89,7 @@ class rtng_functions
 			include($this->root_path . 'includes/functions_display.' . $this->phpEx);
 		}
 
-		$rtng_start = max(0, $this->request->variable($tpl_loopname . '_start', 0);
+		$rtng_start = max(0, $this->request->variable($tpl_loopname . '_start', 0));
 
 		$excluded_topics = explode(',', $this->config['rtng_anti_topics']);
 

@@ -8,7 +8,7 @@ Based on NV Recent Topics for phpBB 3.0, by Joas Schilling ([nickvergessen](http
 [![Tests](https://github.com/IMC-GER/RecentTopicsNG/actions/workflows/tests.yml/badge.svg)](https://github.com/IMC-GER/RecentTopicsNG/actions/workflows/tests.yml)
 
 ### Version
-* v1.2.3-b1
+* v1.2.3-b2
 * 31/10/2026
 
 ### Requirements
