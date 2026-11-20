@@ -124,6 +124,11 @@ class rtng_functions
 			$this->topics_page_number = $this->user_setting['user_rtng_index_page_qty'];
 		}
 
+		if ($this->topics_per_page < 1 || $this->topics_page_number < 1)
+		{
+			return;
+		}
+
 		// limit number of pages to be shown
 		// compute as product of topics per page and max number of pages.
 		if ((int) $this->config['rtng_all_topics'] == 0)
@@ -252,6 +257,7 @@ class rtng_functions
 			$sql_extra	   = ' AND ' . $this->db->sql_in_set('t.topic_id', $excluded_topics, true);
 			$sql_extra	  .= ' AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $forum_id_list, $table_alias = 't.');
 			$sql_extra	  .= ' AND t.topic_status <> ' . ITEM_MOVED;
+			$sql_extra	  .= $min_topic_level > 0 ? ' AND t.topic_type >= ' . (int) $min_topic_level : '';
 			$unread_topics = get_unread_topics(false, $sql_extra, '', $total_topics_limit);
 
 			$total_topics_limit = min($total_topics_limit, count($unread_topics));
@@ -665,7 +671,7 @@ class rtng_functions
 			// Encoding the query parameters of the URL
 			foreach ($append_params as $key => $value)
 			{
-				$new_params[urlencode($key)] = urlencode($this->request->variable($key, '1'));
+				$new_params[urlencode($key)] = urlencode(htmlspecialchars_decode($this->request->variable($key, '1', true), ENT_COMPAT));
 			}
 
 			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $new_params);
@@ -697,9 +703,9 @@ class rtng_functions
 				],
 			],
 			'WHERE'		=> $this->db->sql_in_set('p.topic_id', $topic_list) . "
-						AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)",
-			'GROUP_BY'	=> 'p.topic_id',
-		];
+						AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)
+						AND " . (string) $this->content_visibility->get_global_visibility_sql('post', [], 'p.'),
+			'GROUP_BY'	=> 'p.topic_id',		];
 
 		// Get author, posttime, id and title of first unread posts in topics
 		$sql_array = [
