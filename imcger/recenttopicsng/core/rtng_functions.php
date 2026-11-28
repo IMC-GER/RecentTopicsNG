@@ -89,7 +89,7 @@ class rtng_functions
 			include($this->root_path . 'includes/functions_display.' . $this->phpEx);
 		}
 
-		$rtng_start = $this->request->variable($tpl_loopname . '_start', 0);
+		$rtng_start = max(0, $this->request->variable($tpl_loopname . '_start', 0));
 
 		$excluded_topics = explode(',', $this->config['rtng_anti_topics']);
 
@@ -122,6 +122,11 @@ class rtng_functions
 		if (!$this->topics_page_number)
 		{
 			$this->topics_page_number = $this->user_setting['user_rtng_index_page_qty'];
+		}
+
+		if ($this->topics_per_page < 1 || $this->topics_page_number < 1)
+		{
+			return;
 		}
 
 		// limit number of pages to be shown
@@ -252,6 +257,7 @@ class rtng_functions
 			$sql_extra	   = ' AND ' . $this->db->sql_in_set('t.topic_id', $excluded_topics, true);
 			$sql_extra	  .= ' AND ' . $this->content_visibility->get_forums_visibility_sql('topic', $forum_id_list, $table_alias = 't.');
 			$sql_extra	  .= ' AND t.topic_status <> ' . ITEM_MOVED;
+			$sql_extra	  .= $min_topic_level > 0 ? ' AND t.topic_type >= ' . (int) $min_topic_level : '';
 			$unread_topics = get_unread_topics(false, $sql_extra, '', $total_topics_limit);
 
 			$total_topics_limit = min($total_topics_limit, count($unread_topics));
@@ -504,9 +510,12 @@ class rtng_functions
 				$view_first_unread_post_url	= !empty($first_unread_post_data[$topic_id]['post_id']) ? append_sid("{$this->root_path}viewtopic.$this->phpEx", 'p=' . $first_unread_post_data[$topic_id]['post_id'] . '#p' . $first_unread_post_data[$topic_id]['post_id']) : '';
 				$view_report_url			= append_sid("{$this->root_path}mcp.$this->phpEx", 'i=reports&amp;mode=reports&amp;t=' . $topic_id, true, $this->user->session_id);
 				$view_forum_url				= append_sid("{$this->root_path}viewforum.$this->phpEx", 'f=' . $forum_id);
-				$topic_unapproved			= ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $forum_id));
-				$posts_unapproved			= ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $forum_id));
-				$u_mcp_queue				= ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$topic_id", true, $this->user->session_id) : '';
+				$topic_unapproved			= ($row['topic_visibility'] == ITEM_UNAPPROVED || $row['topic_visibility'] == ITEM_REAPPROVE) && $this->auth->acl_get('m_approve', $forum_id);
+				$posts_unapproved			= $row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $forum_id);
+				$topic_deleted				= $row['topic_visibility'] == ITEM_DELETED;
+
+				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$topic_id", true, $this->user->session_id) : '';
+				$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$this->root_path}mcp.$this->phpEx", 'i=queue&amp;mode=deleted_topics&amp;t=' . $topic_id, true, $this->user->session_id) : $u_mcp_queue;
 
 				if (!empty($icons[$row['icon_id']]))
 				{
@@ -576,15 +585,17 @@ class rtng_functions
 					'ATTACH_ICON_IMG'			=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->language->lang('TOTAL_ATTACHMENTS')) : '',
 					'UNAPPROVED_IMG'			=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', $topic_unapproved ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 					'REPORTED_IMG'				=> ($row['topic_reported'] && $this->auth->acl_get('m_report', $forum_id)) ? $this->user->img('icon_topic_reported', 'TOPIC_REPORTED') : '',
-					'S_HAS_POLL'				=> (bool) $row['poll_start'],
+
 					'S_TOPIC_TYPE'				=> $row['topic_type'],
 					'S_UNREAD_TOPIC'			=> $unread_topic,
 					'S_DISP_FIRST_UNREAD_POST'	=> $disp_topic_title == 'first_unread_post',
 					'S_DISP_LAST_POST'			=> $disp_topic_title == 'last_post',
 					'S_DISP_FIRST_POST'			=> $disp_topic_title == 'first_post',
-					'S_TOPIC_REPORTED'			=> $row['topic_reported'] && $this->auth->acl_get('m_report', $forum_id),
+					'S_TOPIC_REPORTED'			=> !empty($row['topic_reported']) && $this->auth->acl_get('m_report', $forum_id),
 					'S_TOPIC_UNAPPROVED'		=> $topic_unapproved,
 					'S_POSTS_UNAPPROVED'		=> $posts_unapproved,
+					'S_TOPIC_DELETED'			=> $topic_deleted,
+					'S_HAS_POLL'				=> (bool) $row['poll_start'],
 					'S_POST_ANNOUNCE'			=> $row['topic_type'] == POST_ANNOUNCE,
 					'S_POST_GLOBAL'				=> $row['topic_type'] == POST_GLOBAL,
 					'S_POST_STICKY'				=> $row['topic_type'] == POST_STICKY,
@@ -660,7 +671,7 @@ class rtng_functions
 			// Encoding the query parameters of the URL
 			foreach ($append_params as $key => $value)
 			{
-				$new_params[urlencode($key)] = urlencode($this->request->variable($key, '1'));
+				$new_params[urlencode($key)] = urlencode(htmlspecialchars_decode($this->request->variable($key, '1', true), ENT_COMPAT));
 			}
 
 			$pagination_url = append_sid($this->root_path . $this->user->page['page_name'], $new_params);
@@ -692,7 +703,8 @@ class rtng_functions
 				],
 			],
 			'WHERE'		=> $this->db->sql_in_set('p.topic_id', $topic_list) . "
-						AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)",
+						AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)
+						AND " . (string) $this->content_visibility->get_global_visibility_sql('post', [], 'p.'),
 			'GROUP_BY'	=> 'p.topic_id',
 		];
 

@@ -52,6 +52,11 @@
 							{% if rtng.S_UNREAD_TOPIC && !S_IS_BOT %}<a href="{{ rtng.U_NEWEST_POST }}" class="row-item-link"></a>{% endif %}
 							<div class="list-inner">
 								{% EVENT topiclist_row_prepend %}
+								{% if rtng.U_NEWEST_POST && rtng.S_UNREAD_TOPIC && !S_IS_BOT %}
+									<a class="unread" href="{{ rtng.U_NEWEST_POST }}">
+										<i class="icon fa-file fa-fw icon-red icon-md" aria-hidden="true"></i><span class="sr-only">{{ lang('NEW_POST') }}</span>
+									</a>
+								{% endif %}
 								<a href="
 									{% if rtng.S_DISP_FIRST_UNREAD_POST %}
 										{{ rtng.U_FIRST_UNREAD_POST }}
@@ -67,6 +72,7 @@
 								</a>
 								<div class="forum-links">
 									{% if rtng.S_HAS_POLL %}<i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i>{% endif %}
+									{% if rtng.ATTACH_ICON_IMG %}<i class="icon fa-paperclip fa-fw" aria-hidden="true"></i>{% endif %}
 									{% if rtng.S_POST_GLOBAL && FORUM_ID != rtng.FORUM_ID %}
 										<a href="{{ rtng.U_VIEW_FORUM }}">{{ rtng.FORUM_NAME }}</a>
 									{% elseif rtng.U_VIEW_FORUM && rtng.FORUM_NAME %}
@@ -102,14 +108,22 @@
 							</dd>
 						{% endif %}
 						<dd class="status-icons">
-							{% if rtng.S_TOPIC_UNAPPROVED || rtng.S_POSTS_UNAPPROVED %}<a href="{{ rtng.U_MCP_QUEUE }}">
-								<i class="icon fa-question fa-fw icon-blue" aria-hidden="true"></i><span class="sr-only"></span></a>
-							{% endif %}
-							{% if rtng.S_TOPIC_DELETED %}<a href="{{ rtng.U_MCP_QUEUE }}"></a>{% endif %}
-							{% if rtng.S_TOPIC_REPORTED %}<a href="{{ rtng.U_MCP_REPORT }}"><i class="icon fa-exclamation fa-fw icon-red" aria-hidden="true"></i><span class="sr-only"></span></a>{% endif %}<br>
-							{% if rtng.ATTACH_ICON_IMG %}<i class="icon fa-paperclip fa-fw" aria-hidden="true"></i>{% endif %}
+							{% if rtng.S_TOPIC_UNAPPROVED || rtng.S_POSTS_UNAPPROVED -%}
+								<a href="{rtng.U_MCP_QUEUE}" title="{{ lang(rtng.S_TOPIC_UNAPPROVED ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') }}">
+									<i class="icon fa-question fa-fw icon-blue" aria-hidden="true"></i><span class="sr-only">{{ lang(rtng.S_TOPIC_UNAPPROVED ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') }}</span>
+								</a>
+							{% endif -%}
+							{%- if rtng.S_TOPIC_DELETED %}
+								<a href="{rtng.U_MCP_QUEUE}" title="{{ lang('TOPIC_DELETED') }}">
+									<i class="icon fa-recycle fa-fw icon-green" aria-hidden="true"></i><span class="sr-only">{{ lang('TOPIC_DELETED') }}</span>
+								</a>
+							{% endif -%}
+							{% if rtng.S_TOPIC_REPORTED -%}
+								<a href="{rtng.U_MCP_REPORT}" title="{{ lang('TOPIC_REPORTED') }}">
+									<i class="icon fa-exclamation fa-fw icon-red" aria-hidden="true"></i><span class="sr-only">{{ lang('TOPIC_REPORTED') }}</span>
+								</a>
+							{% endif -%}
 						</dd>
-
 					</dl>
 				</li>
 				{% if loop.last %}

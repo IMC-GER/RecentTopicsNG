@@ -111,7 +111,7 @@ class main_listener implements EventSubscriberInterface
 		if (strpos($event['row']['session_page'], 'rtng/') !== false)
 		{
 			$session_page_parts = explode('/', $event['row']['session_page']);
-			$site = end($session_page_parts);
+			$site = explode('?', end($session_page_parts))[0];
 			$user_setting = $this->ctrl_common->get_user_setting($event['row']['user_id']);
 			$title = $this->language->lang('RTNG' . ($user_setting['user_rtng_unread_only'] ? '_UNREAD' : '') . '_TITLE');
 

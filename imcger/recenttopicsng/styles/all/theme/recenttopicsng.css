@@ -43,7 +43,11 @@
 
 #rtng-side a.topictitle {
 	font-size: 1.32em;
-} 
+}
+
+#rtng-side .unread {
+	float: left;
+}
 
 #rtng ul {
 	list-style: none;

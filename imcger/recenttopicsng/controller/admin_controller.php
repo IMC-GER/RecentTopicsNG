@@ -54,7 +54,7 @@ class admin_controller
 			$this->set_vars_config();
 
 			// Upate user settings whith default data
-			$overwrite_userset = $this->request->variable('rtng_reset_default', 0);
+			$overwrite_userset = $this->request->variable('rtng_reset_default', false);
 			$this->set_vars_usertable((bool) $overwrite_userset);
 
 			trigger_error($this->language->lang('CONFIG_UPDATED') . adm_back_link($this->u_action));
@@ -91,8 +91,8 @@ class admin_controller
 			'RTNG_EXT_VER'					=> $metadata['version'],
 
 			'RTNG_ANTI_TOPICS'				=> $this->config['rtng_anti_topics'],
-			'RTNG_PARENTS'					=> (int) $this->config['rtng_parents'],
-			'RTNG_ALL_TOPICS'				=> (int) $this->config['rtng_all_topics'],
+			'RTNG_PARENTS'					=> (bool) $this->config['rtng_parents'],
+			'RTNG_ALL_TOPICS'				=> (bool) $this->config['rtng_all_topics'],
 			'RTNG_MIN_TOPIC_LEVEL_OPTIONS'	=> $this->ctrl_common->select_struct((int) $this->config['rtng_min_topic_level'], [
 				'POST'						=> 0,
 				'POST_STICKY'				=> 1,
@@ -114,11 +114,11 @@ class admin_controller
 	 */
 	protected function set_vars_config(): void
 	{
-		$this->config->set('rtng_all_topics', $this->request->variable('rtng_all_topics', 0));
-		$this->config->set('rtng_min_topic_level', $this->request->variable('rtng_min_topic_level', 0));
-		$this->config->set('rtng_parents', $this->request->variable('rtng_parents', 0));
-		$this->config->set('rtng_simple_topics_qty', $this->request->variable('rtng_simple_topics_qty', 5));
-		$this->config->set('rtng_simple_page_qty', $this->request->variable('rtng_simple_page_qty', 3));
+		$this->config->set('rtng_all_topics', $this->request->variable('rtng_all_topics', false));
+		$this->config->set('rtng_min_topic_level', max(0, min(3, $this->request->variable('rtng_min_topic_level', 0))));
+		$this->config->set('rtng_parents', $this->request->variable('rtng_parents', false));
+		$this->config->set('rtng_simple_topics_qty', max(1, min(999, $this->request->variable('rtng_simple_topics_qty', 5))));
+		$this->config->set('rtng_simple_page_qty', max(1, min(999, $this->request->variable('rtng_simple_page_qty', 3))));
 
 		// Variable should be a string ("1234,2457,3928").
 		$rtng_anti_topics = $this->request->variable('rtng_anti_topics', '');
@@ -140,17 +140,21 @@ class admin_controller
 	 */
 	protected function set_vars_usertable(bool $all_user): void
 	{
+		$location_ary = ['RTNG_TOP', 'RTNG_BOTTOM', 'RTNG_SIDE', 'RTNG_SEPARATE'];
+		$user_rtng_location = $this->request->variable('user_rtng_location', 'RTNG_TOP');
+		$user_rtng_location = in_array($user_rtng_location, $location_ary) ? $user_rtng_location : 'RTNG_TOP';
+
 		$sql_ary = [
-			'user_rtng_enable'		 		 => (int) $this->request->variable('user_rtng_enable', 0),
-			'user_rtng_sort_start_time'		 => (int) $this->request->variable('user_rtng_sort_start_time', 0),
-			'user_rtng_unread_only'			 => (int) $this->request->variable('user_rtng_unread_only', 0),
-			'user_rtng_location'			 => $this->request->variable('user_rtng_location', 'RTNG_TOP'),
-			'user_rtng_disp_last_post'		 => (int) $this->request->variable('user_rtng_disp_last_post', 0),
-			'user_rtng_disp_first_unrd_post' => (int) $this->request->variable('user_rtng_disp_first_unrd_post', 0),
-			'user_rtng_index_topics_qty'	 => (int) $this->request->variable('user_rtng_index_topics_qty', 5),
-			'user_rtng_index_page_qty'		 => (int) $this->request->variable('user_rtng_index_page_qty', 3),
-			'user_rtng_separate_topics_qty'	 => (int) $this->request->variable('user_rtng_separate_topics_qty', 10),
-			'user_rtng_separate_page_qty'	 => (int) $this->request->variable('user_rtng_separate_page_qty', 3),
+			'user_rtng_enable'		 		 => $this->request->variable('user_rtng_enable', false),
+			'user_rtng_sort_start_time'		 => $this->request->variable('user_rtng_sort_start_time', false),
+			'user_rtng_unread_only'			 => $this->request->variable('user_rtng_unread_only', false),
+			'user_rtng_location'			 => $user_rtng_location,
+			'user_rtng_disp_last_post'		 => $this->request->variable('user_rtng_disp_last_post', false),
+			'user_rtng_disp_first_unrd_post' => $this->request->variable('user_rtng_disp_first_unrd_post', false),
+			'user_rtng_index_topics_qty'	 => max(0, min(999, $this->request->variable('user_rtng_index_topics_qty', 5))),
+			'user_rtng_index_page_qty'		 => max(0, min(999, $this->request->variable('user_rtng_index_page_qty', 3))),
+			'user_rtng_separate_topics_qty'	 => max(0, min(999, $this->request->variable('user_rtng_separate_topics_qty', 10))),
+			'user_rtng_separate_page_qty'	 => max(0, min(999, $this->request->variable('user_rtng_separate_page_qty', 3))),
 		];
 		$sql_where = $all_user ? '' : ' WHERE user_id = ' . ANONYMOUS;
 
