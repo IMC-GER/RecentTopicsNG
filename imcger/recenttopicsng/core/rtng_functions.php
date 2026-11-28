@@ -705,7 +705,8 @@ class rtng_functions
 			'WHERE'		=> $this->db->sql_in_set('p.topic_id', $topic_list) . "
 						AND p.post_time > COALESCE(tt.mark_time, ft.mark_time, {$this->user->data['user_lastmark']}, 0)
 						AND " . (string) $this->content_visibility->get_global_visibility_sql('post', [], 'p.'),
-			'GROUP_BY'	=> 'p.topic_id',		];
+			'GROUP_BY'	=> 'p.topic_id',
+		];
 
 		// Get author, posttime, id and title of first unread posts in topics
 		$sql_array = [

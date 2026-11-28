@@ -1,7 +1,7 @@
-## Changelog Recent Topics NG V1.2.3-b3
+## Changelog Recent Topics NG V1.2.3
 This is a non-exhaustive (but still near complete) changelog for Recent Topics NG 1.x including release candidate versions.
 
-#### Changes since V1.2.2 (20/11/2026).
+#### Changes since V1.2.2 (27/11/2026).
   - [Change] PHP and HTML code for displaying the moderation status icons has been revised.
   - [Feature] Range check for requested variables.
   - [Feature] A language variable for the screen reader has been added for the “Unread Posts” icon.
@@ -11,7 +11,7 @@ This is a non-exhaustive (but still near complete) changelog for Recent Topics N
   - [Fixed] The icon for soft deleted topics will not be displayed.
   - [Fixed] The 'Minimum Topic Type Level' option was not taken into account by the 'Show Only Unread Posts' function.
   - [Fixed] A problem with passing search parameters.
-  - [Fixed] No visible post was displayed when the first unread post was displayed.
+  - [Fixed] An invisible post was displayed when the first unread post was shown.
   - [Fixed] Misrepresented in 'How is Online'.
 
 #### Changes since V1.2.1 (24/10/2026).
